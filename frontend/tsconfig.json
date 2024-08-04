@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "target": "ES6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "typeRoots": [
+      "node_modules/@types",
+      "src/types"
+    ],
+    "types": [
+      "hammerjs",
+      "prop-types",
+      "react",
+      "shimmer",
+      "use-sync-external-store",
+      "react-native-vector-icons"
+    ]
+  },
+  "include": [
+    "components/**/*",
+    "context/**/*",
+    "screens/**/*",
+    "store/**/*",
+    "styles/**/*",
+    "api/**/*",
+    "App.tsx",
+    "types.ts"
+  ],
+  "exclude": ["dist", "node_modules"],
+  "extends": "expo/tsconfig.base"
+}

@@ -1,0 +1,15 @@
+[
+    {
+      "question": "What is the purpose of this app?",
+      "answer": "This app helps you track swine weight and manage feed formulation."
+    },
+    {
+      "question": "How do I add a new swine?",
+      "answer": "Go to the Home screen and click on 'Add Swine' to add a new swine."
+    },
+    {
+      "question": "How do I add a weight entry?",
+      "answer": "Navigate to the swine detail screen and click on 'Add Weight'."
+    }
+  ]
+  
