@@ -31,8 +31,6 @@ const AddSwineScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View>
-      {/* try edit */}
-      {/* try edit 2*/}
       <Text>ID</Text>
       <TextInput value={id} onChangeText={setId} />
       <Text>Weight</Text>
