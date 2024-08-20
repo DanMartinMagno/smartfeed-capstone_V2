@@ -7,7 +7,6 @@ import { calculateFeed } from '../api';
 import NutrientCard from '../styles/NutrientCard';
 import NutrientGraph from '../components/NutrientGraph';
 
-
 type NutrientAnalysisScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Nutrient Analysis'>;
 type NutrientAnalysisScreenRouteProp = RouteProp<RootStackParamList, 'Nutrient Analysis'>;
 
@@ -31,6 +30,7 @@ interface AnalysisResults {
     crudeFiber: number;
     crudeFat: number;
     calcium: number;
+    moisture: number;
     phosphorus: number;
   };
   analysis: {
@@ -38,14 +38,27 @@ interface AnalysisResults {
     crudeFiber: string;
     crudeFat: string;
     calcium: string;
+    moisture: string;
     phosphorus: string;
   };
 }
+// the rest of your codes.
 
 const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
   const { type, numSwine, selectedIngredients } = route.params;
   const [result, setResult] = useState<AnalysisResults | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [recommendations, setRecommendations] = useState<string[]>([]);
+
+  // Nutrient to Ingredient Mapping (based on available ingredients)
+  const nutrientIngredientMap: { [key: string]: string[] } = {
+    crudeProtein: ['Water Spinach', 'Sweet Potato Leaves', 'Lead Tree Leaves'],
+    crudeFiber: ['Coconut Residue', 'Cassava Leaves', 'Rice Bran'],
+    crudeFat: ['Coconut Residue', 'Duckweed Fern'],
+    calcium: ['Taro Leaves', 'Madre De Agua Leaves'],
+    moisture: ['Banana Pseudostem', 'Water Hyacinth Leaves'],
+    phosphorus: ['Sweet Potato Leaves', 'Duckweed Fern'],
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +67,71 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
         const response = await calculateFeed({ selectedIngredients, numSwine, type: type as 'starter' | 'grower' | 'finisher' });
         const responseData = response.data as AnalysisResults;
         setResult(responseData);
+  
+        // Generate recommendations based on deficiencies
+        const recs: string[] = [];
+  
+        const getAvailableIngredients = (nutrientKey: keyof typeof nutrientIngredientMap) => {
+          return nutrientIngredientMap[nutrientKey].filter(ingredient => !selectedIngredients.includes(ingredient));
+        };
+  
+        if (responseData.analysis.crudeProtein === 'Deficient') {
+          const deficiency = (responseData.recommendations.crudeProtein - responseData.totalNutrients.crudeProtein).toFixed(2);
+          const availableIngredients = getAvailableIngredients('crudeProtein');
+          if (availableIngredients.length > 0) {
+            recs.push(`Increase crude protein by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`);
+          } else {
+            recs.push(`Increase crude protein by ${deficiency}%. All possible ingredients are already selected.`);
+          }
+        }
+        if (responseData.analysis.crudeFiber === 'Deficient') {
+          const deficiency = (responseData.recommendations.crudeFiber - responseData.totalNutrients.crudeFiber).toFixed(2);
+          const availableIngredients = getAvailableIngredients('crudeFiber');
+          if (availableIngredients.length > 0) {
+            recs.push(`Increase crude fiber by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`);
+          } else {
+            recs.push(`Increase crude fiber by ${deficiency}%. All possible ingredients are already selected.`);
+          }
+        }
+        if (responseData.analysis.crudeFat === 'Deficient') {
+          const deficiency = (responseData.recommendations.crudeFat - responseData.totalNutrients.crudeFat).toFixed(2);
+          const availableIngredients = getAvailableIngredients('crudeFat');
+          if (availableIngredients.length > 0) {
+            recs.push(`Increase crude fat by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`);
+          } else {
+            recs.push(`Increase crude fat by ${deficiency}%. All possible ingredients are already selected.`);
+          }
+        }
+        if (responseData.analysis.calcium === 'Deficient') {
+          const deficiency = (responseData.recommendations.calcium - responseData.totalNutrients.calcium).toFixed(2);
+          const availableIngredients = getAvailableIngredients('calcium');
+          if (availableIngredients.length > 0) {
+            recs.push(`Increase calcium by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`);
+          } else {
+            recs.push(`Increase calcium by ${deficiency}%. All possible ingredients are already selected.`);
+          }
+        }
+        if (responseData.analysis.moisture === 'Deficient') {
+          const deficiency = (responseData.recommendations.moisture - responseData.totalNutrients.moisture).toFixed(2);
+          const availableIngredients = getAvailableIngredients('moisture');
+          if (availableIngredients.length > 0) {
+            recs.push(`Increase moisture by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`);
+          } else {
+            recs.push(`Increase moisture by ${deficiency}%. All possible ingredients are already selected.`);
+          }
+        }
+        if (responseData.analysis.phosphorus === 'Deficient') {
+          const deficiency = (responseData.recommendations.phosphorus - responseData.totalNutrients.phosphorus).toFixed(2);
+          const availableIngredients = getAvailableIngredients('phosphorus');
+          if (availableIngredients.length > 0) {
+            recs.push(`Increase phosphorus by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`);
+          } else {
+            recs.push(`Phosphorus is still deficient by ${deficiency}%. Try increasing the proportion of ${nutrientIngredientMap.phosphorus.join(' or ')} in your formulation.`);
+          }
+        }        
+  
+        setRecommendations(recs);
+  
       } catch (error) {
         console.error('Error fetching nutrient analysis:', error);
         Alert.alert('Error', 'An error occurred while fetching the nutrient analysis. Please try again.');
@@ -61,9 +139,10 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, [selectedIngredients, numSwine, type]);
+  
 
   if (loading) {
     return <ActivityIndicator size="large" />;
@@ -123,6 +202,8 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
           title="Moisture"
           value={result.totalNutrients.moisture}
           unit="%"
+          isDeficient={result.analysis.moisture === 'Deficient'}
+          recommendation={result.recommendations.moisture}
         />
         <NutrientCard
           title="Phosphorus"
@@ -131,17 +212,20 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
           isDeficient={result.analysis.phosphorus === 'Deficient'}
           recommendation={result.recommendations.phosphorus}
         />
-        <Text style={styles.header}>Analysis</Text>
-        <NutrientCard title="Crude Protein" value={result.analysis.crudeProtein} />
-        <NutrientCard title="Crude Fiber" value={result.analysis.crudeFiber} />
-        <NutrientCard title="Crude Fat" value={result.analysis.crudeFat} />
-        <NutrientCard title="Calcium" value={result.analysis.calcium} />
-        <NutrientCard title="Phosphorus" value={result.analysis.phosphorus} />
+
         <NutrientGraph data={nutrientData} recommendations={result.recommendations} />
+
+        {recommendations.length > 0 && (
+          <View style={styles.recommendationContainer}>
+            <Text style={styles.recommendationHeader}>Recommendations:</Text>
+            {recommendations.map((rec, index) => (
+              <Text key={index} style={styles.recommendationText}>{rec}</Text>
+            ))}
+          </View>
+        )}
+
         <View style={styles.buttonContainer}>
           <Button title="Save Recipe" onPress={handleSaveRecipe} />
-          <Button title="Make Adjustments" onPress={() => navigation.goBack()} />
-          <Button title="Home" onPress={() => navigation.navigate('Home')} />
         </View>
       </View>
     </ScrollView>
@@ -162,6 +246,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  recommendationContainer: {
+    marginTop: 20,
+    padding: 15,
+    backgroundColor: '#eef',
+    borderRadius: 10,
+  },
+  recommendationHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  recommendationText: {
+    fontSize: 14,
+    marginVertical: 2,
   },
 });
 

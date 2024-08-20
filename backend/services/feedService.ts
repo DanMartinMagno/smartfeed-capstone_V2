@@ -44,7 +44,7 @@ const ingredients: Ingredient[] = [
   },
   {
     name: 'Taro Leaves',
-    nutrients: { crudeProtein: 7.67, crudeFiber: 20, crudeFat: 3, calcium: 2, moisture: 14, phosphorus: 0.8, maxInclusionRate: 80 },
+    nutrients: { crudeProtein: 7.67, crudeFiber: 20, crudeFat: 3, calcium: 2, moisture: 14, phosphorus: 0.18, maxInclusionRate: 80 },
   },
   {
     name: 'Madre De Agua Leaves',
@@ -52,7 +52,7 @@ const ingredients: Ingredient[] = [
   },
   {
     name: 'Water Hyacinth Leaves',
-    nutrients: { crudeProtein: 21.6, crudeFiber: 17.1, crudeFat: 2.1, calcium: 1.6, moisture: 10.5, phosphorus: 0.5, maxInclusionRate: -1 },
+    nutrients: { crudeProtein: 21.6, crudeFiber: 17.1, crudeFat: 2.1, calcium: 1.6, moisture: 10.5, phosphorus: 0.31, maxInclusionRate: -1 },
   },
   {
     name: 'Rice Bran',
@@ -61,9 +61,9 @@ const ingredients: Ingredient[] = [
 ];
 
 const nutrientRequirements = {
-  starter: { crudeProtein: 18, crudeFiber: 5, crudeFat: 3, calcium: 0.8, phosphorus: 0.6 },
-  grower: { crudeProtein: 16, crudeFiber: 5, crudeFat: 3, calcium: 0.7, phosphorus: 0.5 },
-  finisher: { crudeProtein: 14, crudeFiber: 5, crudeFat: 3, calcium: 0.6, phosphorus: 0.4 },
+  starter: { crudeProtein: 18, crudeFiber: 5, crudeFat: 3, calcium: 0.8, moisture: 0.10, phosphorus: 0.50 },
+  grower: { crudeProtein: 16, crudeFiber: 5, crudeFat: 3, calcium: 0.7, moisture: 0.10, phosphorus: 0.005 },
+  finisher: { crudeProtein: 14, crudeFiber: 5, crudeFat: 3, calcium: 0.6, moisture: 0.6, phosphorus: 0.05},
 };
 
 const dailyFeedIntake = {
@@ -122,14 +122,9 @@ const calculateNutrients = (selectedIngredients: Ingredient[], numSwine: number,
   };
 };
 
-// New function to get nutrient recommendations
+// Function to get nutrient recommendations
 const getNutrientRecommendations = (type: 'starter' | 'grower' | 'finisher') => {
-  const recommendations = {
-    starter: { crudeProtein: 18, crudeFiber: 5, crudeFat: 3, calcium: 0.8, phosphorus: 0.6 },
-    grower: { crudeProtein: 16, crudeFiber: 5, crudeFat: 3, calcium: 0.7, phosphorus: 0.5 },
-    finisher: { crudeProtein: 14, crudeFiber: 5, crudeFat: 3, calcium: 0.6, phosphorus: 0.4 },
-  };
-  return recommendations[type];
+  return nutrientRequirements[type];
 };
 
 const feedFormulation = (selectedIngredients: string[], type: 'starter' | 'grower' | 'finisher', numSwine: number) => {
@@ -149,6 +144,7 @@ const feedFormulation = (selectedIngredients: string[], type: 'starter' | 'growe
     crudeFiber: nutrientAnalysis.totalNutrients.crudeFiber / numSwine,
     crudeFat: nutrientAnalysis.totalNutrients.crudeFat / numSwine,
     calcium: nutrientAnalysis.totalNutrients.calcium / numSwine,
+    moisture: nutrientAnalysis.totalNutrients.moisture / numSwine,
     phosphorus: nutrientAnalysis.totalNutrients.phosphorus / numSwine,
   };
 
@@ -161,6 +157,7 @@ const feedFormulation = (selectedIngredients: string[], type: 'starter' | 'growe
       crudeFiber: perSwineNutrients.crudeFiber <= recommendations.crudeFiber ? 'Sufficient' : 'Excess',
       crudeFat: perSwineNutrients.crudeFat <= recommendations.crudeFat ? 'Sufficient' : 'Excess',
       calcium: perSwineNutrients.calcium >= recommendations.calcium ? 'Sufficient' : 'Deficient',
+      moisture: perSwineNutrients.moisture >= recommendations.moisture ? 'Sufficient' : 'Deficient',
       phosphorus: perSwineNutrients.phosphorus >= recommendations.phosphorus ? 'Sufficient' : 'Deficient',
     }
   };

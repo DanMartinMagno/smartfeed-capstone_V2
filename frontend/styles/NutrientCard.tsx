@@ -9,16 +9,23 @@ interface NutrientCardProps {
   recommendation?: number;
 }
 
-const NutrientCard: React.FC<NutrientCardProps> = ({ title, value, unit, isDeficient, recommendation }) => {
+const NutrientCard: React.FC<NutrientCardProps> = ({ title, value, unit = '', isDeficient, recommendation }) => {
   const formattedValue = typeof value === 'number' ? value.toFixed(2) : value;
   const formattedRecommendation = recommendation !== undefined ? recommendation.toFixed(2) : undefined;
 
   return (
     <View style={[styles.card, isDeficient && styles.deficient]}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.value}>{formattedValue}{unit}</Text>
-      {formattedRecommendation !== undefined && (
-        <Text style={styles.recommendation}>Recommended: {formattedRecommendation}{unit}</Text>
+      <Text style={styles.value}>
+        {formattedValue}{unit}
+      </Text>
+      {isDeficient && formattedRecommendation !== undefined && (
+        <Text style={styles.recommendation}>
+          Recommended: {formattedRecommendation}{unit}
+        </Text>
+      )}
+      {isDeficient && (
+        <Text style={styles.deficientText}>Deficient</Text>
       )}
     </View>
   );
@@ -48,6 +55,12 @@ const styles = StyleSheet.create({
   recommendation: {
     fontSize: 14,
     color: 'grey',
+  },
+  deficientText: {
+    fontSize: 14,
+    color: 'red',
+    fontWeight: 'bold',
+    marginTop: 5,
   },
 });
 
