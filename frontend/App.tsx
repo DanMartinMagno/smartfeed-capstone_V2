@@ -7,7 +7,6 @@ import store from './store';
 import DashboardScreen from './screens/DashboardScreen';
 import InputScreen from './screens/InputScreen';
 import ResultScreen from './screens/ResultScreen';
-import SwineWeightTrackerScreen from './screens/SwineWeightTrackerScreen';
 import FAQScreen from './screens/FAQScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -16,7 +15,7 @@ import SwineDetailScreen from './screens/SwineDetailScreen';
 import AddWeightScreen from './screens/AddWeightScreen';
 import GraphScreen from './screens/GraphScreen';
 import EditWeightScreen from './screens/EditWeightScreen';
-import NutrientAnalysisScreen from './screens/NutrientAnalysisScreen'; // Ensure this import
+import NutrientAnalysisScreen from './screens/NutrientAnalysisScreen'; 
 import { RootStackParamList, TabParamList } from './types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { SwineProvider } from './context/SwineContext';
@@ -26,21 +25,83 @@ const Tab = createBottomTabNavigator<TabParamList>();
 
 const DashboardStack = () => (
   <Stack.Navigator initialRouteName="Dashboard">
-    <Stack.Screen name="Dashboard" component={DashboardScreen} />
-    <Stack.Screen name="Input" component={InputScreen} />
-    <Stack.Screen name="Result" component={ResultScreen} />
-    <Stack.Screen name="Nutrient Analysis" component={NutrientAnalysisScreen} />
+    <Stack.Screen 
+      name="Dashboard" 
+      component={DashboardScreen} 
+      options={{ title: 'SmartFeed' }} 
+    />
+    <Stack.Screen 
+      name="Input" 
+      component={InputScreen} 
+      options={{ title: 'Input Data' }} 
+    />
+    <Stack.Screen 
+      name="Result" 
+      component={ResultScreen} 
+      options={{ title: 'Results' }} 
+    />
+    <Stack.Screen 
+      name="Nutrient Analysis" 
+      component={NutrientAnalysisScreen} 
+      options={{ title: 'Nutrient Analysis' }} 
+    />
   </Stack.Navigator>
 );
 
 const SwineStack = () => (
   <Stack.Navigator initialRouteName="Home">
-    <Stack.Screen name="Home" component={HomeScreen} />
-    <Stack.Screen name="Add Swine" component={AddSwineScreen} />
-    <Stack.Screen name="Swine Detail" component={SwineDetailScreen} />
-    <Stack.Screen name="Add Weight" component={AddWeightScreen} />
-    <Stack.Screen name="Graph" component={GraphScreen} />
-    <Stack.Screen name="Edit Weight" component={EditWeightScreen} />
+    <Stack.Screen 
+      name="Home" 
+      component={HomeScreen} 
+      options={{ title: 'Swine Management' }} 
+    />
+    <Stack.Screen 
+      name="Add Swine" 
+      component={AddSwineScreen} 
+      options={{ title: 'Add New Swine' }} 
+    />
+    <Stack.Screen 
+      name="Swine Detail" 
+      component={SwineDetailScreen} 
+      options={{ title: 'Swine Details' }} 
+    />
+    <Stack.Screen 
+      name="Add Weight" 
+      component={AddWeightScreen} 
+      options={{ title: 'Add Swine Weight' }} 
+    />
+    <Stack.Screen 
+      name="Graph" 
+      component={GraphScreen} 
+      options={{ title: 'Weight Graph' }} 
+    />
+    <Stack.Screen 
+      name="Edit Weight" 
+      component={EditWeightScreen} 
+      options={{ title: 'Edit Swine Weight' }} 
+    />
+  </Stack.Navigator>
+);
+
+// Stack navigator for FAQScreen
+const FAQStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+      name="FAQ" 
+      component={FAQScreen} 
+      options={{ title: 'Frequently Asked Questions' }} 
+    />
+  </Stack.Navigator>
+);
+
+// Stack navigator for SettingsScreen
+const SettingsStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+      name="Settings" 
+      component={SettingsScreen} 
+      options={{ title: 'Settings' }} 
+    />
   </Stack.Navigator>
 );
 
@@ -64,12 +125,13 @@ const App: React.FC = () => {
                 }
                 return <Icon name={iconName} size={size} color={color} />;
               },
+              headerShown: false, // Hide the header for the tab navigator
             })}
           >
             <Tab.Screen name="Home" component={DashboardStack} />
             <Tab.Screen name="Swine Weight Tracker" component={SwineStack} />
-            <Tab.Screen name="FAQ" component={FAQScreen} />
-            <Tab.Screen name="Settings" component={SettingsScreen} />
+            <Tab.Screen name="FAQ" component={FAQStack} />
+            <Tab.Screen name="Settings" component={SettingsStack} />
           </Tab.Navigator>
         </NavigationContainer>
       </SwineProvider>

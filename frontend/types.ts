@@ -13,6 +13,8 @@ export type RootStackParamList = {
   'Graph': { swineId: string };
   'Edit Weight': { swineId: string; weightId: string };
   'Nutrient Analysis': { type: string; numSwine: number; selectedIngredients: string[] };
+  FAQ: undefined;
+  Settings: undefined;
 };
 
 export type TabParamList = {
