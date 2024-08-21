@@ -87,7 +87,7 @@ const SwineStack = () => (
 const FAQStack = () => (
   <Stack.Navigator>
     <Stack.Screen 
-      name="FAQ" 
+      name="FAQScreen" 
       component={FAQScreen} 
       options={{ title: 'Frequently Asked Questions' }} 
     />
@@ -98,7 +98,7 @@ const FAQStack = () => (
 const SettingsStack = () => (
   <Stack.Navigator>
     <Stack.Screen 
-      name="Settings" 
+      name="SettingsScreen" 
       component={SettingsScreen} 
       options={{ title: 'Settings' }} 
     />
