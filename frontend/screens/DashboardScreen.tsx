@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { ScrollView, View, Text, StyleSheet, Image, TouchableWithoutFeedback, Animated } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
@@ -14,45 +14,88 @@ type Props = {
 const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch();
 
+  // Create refs for each card's scale animation
+  const starterScaleAnim = useRef(new Animated.Value(0)).current;
+  const growerScaleAnim = useRef(new Animated.Value(0)).current;
+  const finisherScaleAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // Animate the cards when the component mounts
+    Animated.stagger(100, [
+      Animated.spring(starterScaleAnim, { toValue: 1, useNativeDriver: true, friction: 5 }),
+      Animated.spring(growerScaleAnim, { toValue: 1, useNativeDriver: true, friction: 5 }),
+      Animated.spring(finisherScaleAnim, { toValue: 1, useNativeDriver: true, friction: 5 }),
+    ]).start();
+  }, []);
+
   const handlePress = (type: 'starter' | 'grower' | 'finisher') => {
     dispatch(setType(type));
     navigation.navigate('Input');
   };
 
+  const handlePressIn = (scaleAnim: Animated.Value) => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.95, // Scale down when pressed
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = (scaleAnim: Animated.Value, cardType: 'starter' | 'grower' | 'finisher') => {
+    Animated.spring(scaleAnim, {
+      toValue: 1, // Scale back to normal size
+      useNativeDriver: true,
+    }).start(() => handlePress(cardType));
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Starter Card */}
-      <TouchableOpacity style={[styles.featureCard, styles.starterCard]} onPress={() => handlePress('starter')}>
-        <View style={styles.cardHeader}>
-          <Image source={require('../assets/starter-icon.png')} style={styles.featureIcon} />
-          <Text style={styles.featureTitle}>Starter</Text>
-        </View>
-        <Text style={styles.featureDescription}>
-          The Starter plan is ideal for those just beginning their journey. Get the essentials you need to kickstart your progress.
-        </Text>
-      </TouchableOpacity>
+      <TouchableWithoutFeedback
+        onPressIn={() => handlePressIn(starterScaleAnim)}
+        onPressOut={() => handlePressOut(starterScaleAnim, 'starter')}
+      >
+        <Animated.View style={[styles.featureCard, styles.starterCard, { transform: [{ scale: starterScaleAnim }] }]}>
+          <View style={styles.cardHeader}>
+            <Image source={require('../assets/starter-icon.png')} style={styles.featureIcon} />
+            <Text style={styles.featureTitle}>Starter</Text>
+          </View>
+          <Text style={styles.featureDescription}>
+          Starter for native swine, aged 2-4 weeks and weighing 23-35 kg, offers essentials for early growth and development.
+          </Text>
+        </Animated.View>
+      </TouchableWithoutFeedback>
 
       {/* Grower Card */}
-      <TouchableOpacity style={[styles.featureCard, styles.growerCard]} onPress={() => handlePress('grower')}>
-        <View style={styles.cardHeader}>
-          <Image source={require('../assets/grower-icon.jpg')} style={styles.featureIcon} />
-          <Text style={styles.featureTitle}>Grower</Text>
-        </View>
-        <Text style={styles.featureDescription}>
-          The Grower plan is designed to help you expand and take your goals to the next level. Increase your output with advanced tools.
-        </Text>
-      </TouchableOpacity>
+      <TouchableWithoutFeedback
+        onPressIn={() => handlePressIn(growerScaleAnim)}
+        onPressOut={() => handlePressOut(growerScaleAnim, 'grower')}
+      >
+        <Animated.View style={[styles.featureCard, styles.growerCard, { transform: [{ scale: growerScaleAnim }] }]}>
+          <View style={styles.cardHeader}>
+            <Image source={require('../assets/grower-icon.png')} style={styles.featureIcon} />
+            <Text style={styles.featureTitle}>Grower</Text>
+          </View>
+          <Text style={styles.featureDescription}>
+          Grower for native swine, aged 5-12 weeks and weighing 35-75 kg, supports steady growth and muscle development.
+          </Text>
+        </Animated.View>
+      </TouchableWithoutFeedback>
 
       {/* Finisher Card */}
-      <TouchableOpacity style={[styles.featureCard, styles.finisherCard]} onPress={() => handlePress('finisher')}>
-        <View style={styles.cardHeader}>
-          <Image source={require('../assets/finisher-icon.png')} style={styles.featureIcon} />
-          <Text style={styles.featureTitle}>Finisher</Text>
-        </View>
-        <Text style={styles.featureDescription}>
-          The Finisher plan is for those ready to complete their journey with finesse and precision. End strong with all the support you need.
-        </Text>
-      </TouchableOpacity>
+      <TouchableWithoutFeedback
+        onPressIn={() => handlePressIn(finisherScaleAnim)}
+        onPressOut={() => handlePressOut(finisherScaleAnim, 'finisher')}
+      >
+        <Animated.View style={[styles.featureCard, styles.finisherCard, { transform: [{ scale: finisherScaleAnim }] }]}>
+          <View style={styles.cardHeader}>
+            <Image source={require('../assets/finisher-icon.png')} style={styles.featureIcon} />
+            <Text style={styles.featureTitle}>Finisher</Text>
+          </View>
+          <Text style={styles.featureDescription}>
+          Finisher for native swine, aged 13+ weeks and weighing 75 kg+, ensures optimal weight gain and readiness for market.
+          </Text>
+        </Animated.View>
+      </TouchableWithoutFeedback>
     </ScrollView>
   );
 };
@@ -66,34 +109,35 @@ const styles = StyleSheet.create({
     width: '90%',
     borderRadius: 15,
     padding: 20,
-    marginBottom: 20,
+    marginBottom: 15,
   },
   cardHeader: {
-    flexDirection: 'row', // Aligns the icon and title horizontally
-    alignItems: 'center', // Centers the icon and title vertically
-    marginBottom: 10, // Spacing between the header and the description
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
   },
   starterCard: {
-    backgroundColor: '#B2F2BB', // Gold
+    backgroundColor: '#93f9a1',
   },
   growerCard: {
-    backgroundColor: '#E3CFFF', // LimeGreen
+    backgroundColor: '#aabdfd',
   },
   finisherCard: {
-    backgroundColor: '#A0E7E5', // DodgerBlue
+    backgroundColor: '#A0E7E5',
   },
   featureIcon: {
     width: 40,
     height: 40,
-    marginRight: 10, // Spacing between icon and title
+    marginRight: 8,
   },
   featureTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   featureDescription: {
     fontSize: 14,
     color: '#555',
+    fontWeight: '500',
   },
 });
 

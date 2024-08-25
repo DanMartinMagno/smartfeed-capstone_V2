@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import { AddWeightScreenNavigationProp, AddWeightScreenRouteProp } from '../types/navigation';
 import { useSwineContext } from '../context/SwineContext';
@@ -12,38 +12,135 @@ type Props = {
 const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
   const { swineId } = route.params;
   const { addWeight } = useSwineContext();
+
+  const [date, setDate] = useState<string>(
+    new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  );
   const [weight, setWeight] = useState<string>('');
-  const [date, setDate] = useState<string>(new Date().toISOString());
+  const [weightError, setWeightError] = useState<string>('');
+
+  const validateWeight = (text: string) => {
+    const weightValue = parseFloat(text);
+
+    if (!text) {
+      setWeightError('Weight is required.');
+    } else if (isNaN(weightValue) || weightValue < 5 || weightValue > 500) {
+      setWeightError('Weight is too low or too high.');
+    } else {
+      setWeightError(''); // Clear error if valid
+    }
+  };
 
   const handleSubmit = () => {
-    axios.post(`http://192.168.42.108:5000/api/swine/${swineId}/weights`, { date, weight: parseFloat(weight) })
-      .then(response => {
+    const weightValue = parseFloat(weight);
+
+    // Final validation before submission
+    if (weightError || !weight) {
+      Alert.alert('Validation Error', 'Please correct the errors before submitting.');
+      return;
+    }
+
+    axios
+      .post(`http://192.168.42.108:5000/api/swine/${swineId}/weights`, {
+        date,
+        weight: weightValue,
+      })
+      .then((response) => {
         addWeight(swineId, response.data.weights[response.data.weights.length - 1]);
         navigation.navigate('Swine Detail', { swineId });
       })
-      .catch(error => console.error('Error submitting weight', error));
+      .catch((error) => console.error('Error submitting weight', error));
   };
 
   return (
     <View style={styles.container}>
-      <Text>Date</Text>
-      <TextInput value={date} onChangeText={setDate} style={styles.input} />
-      <Text>Weight</Text>
-      <TextInput value={weight} onChangeText={setWeight} keyboardType="numeric" style={styles.input} />
-      <Button title="Submit" onPress={handleSubmit} />
+      <Text style={styles.label}>Date</Text>
+      <TextInput
+        value={date}
+        onChangeText={setDate}
+        style={styles.input}
+        placeholder="Enter Date"
+        placeholderTextColor="#888"
+      />
+
+      <Text style={styles.label}>Weight (kg)</Text>
+      <TextInput
+        value={weight}
+        onChangeText={(text) => {
+          setWeight(text);
+          validateWeight(text); // Real-time validation as the user types
+        }}
+        keyboardType="numeric"
+        style={[styles.input, weightError ? styles.inputError : null]} // Apply error style conditionally
+        placeholder="Enter Weight"
+        placeholderTextColor="#888"
+      />
+      {weightError ? <Text style={styles.errorText}>{weightError}</Text> : null}
+
+      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+        <Text style={styles.submitButtonText}>Submit</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 20,
+    backgroundColor: '#F5F5F5',
+  },
+  label: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 5,
+    marginLeft: 5,
   },
   input: {
+    backgroundColor: '#FFF',
+    padding: 10,
+    borderRadius: 8,
     borderWidth: 1,
-    padding: 8,
-    marginVertical: 10,
+    borderColor: '#DDD',
+    marginBottom: 15,
+    fontSize: 16,
+    color: '#333',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  inputError: {
+    borderColor: '#E74C3C',
+    borderWidth: 2, // More prominent red border for errors
+  },
+  errorText: {
+    color: '#E74C3C',
+    fontSize: 14,
+    marginBottom: 10,
+    marginLeft: 5,
+  },
+  submitButton: {
+    backgroundColor: '#28a745',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  submitButtonText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
