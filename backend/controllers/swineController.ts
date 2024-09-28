@@ -197,15 +197,32 @@ export const updateWeight = async (
       return;
     }
 
-    // Prevent editing the last weight entry
-    if (swine.weights.length === 1) {
-      res.status(400).json({ message: "Cannot edit the last weight entry." });
+    // Validate the weight based on previous and next entries
+    const index = swine.weights.findIndex((w) => w._id.toString() === weightId);
+    const prevWeight = index > 0 ? swine.weights[index - 1].weight : null;
+    const nextWeight =
+      index < swine.weights.length - 1 ? swine.weights[index + 1].weight : null;
+
+    // Check that the new weight is greater than the previous weight
+    if (prevWeight !== null && weight <= prevWeight) {
+      res.status(400).json({
+        message: `New weight must be greater than the previous weight of ${prevWeight} kg.`,
+      });
       return;
     }
 
-    weightEntry.weight = weight; // Update the weight
-    const updatedSwine = await swine.save(); // Save the swine with the updated weight
-    res.json(updatedSwine); // Return the updated swine object, including weights
+    // Check that the new weight is less than the next weight
+    if (nextWeight !== null && weight >= nextWeight) {
+      res.status(400).json({
+        message: `New weight must be less than the next weight of ${nextWeight} kg.`,
+      });
+      return;
+    }
+
+    // Update the weight entry
+    weightEntry.weight = weight;
+    const updatedSwine = await swine.save();
+    res.json(updatedSwine);
   } catch (err) {
     if (isError(err)) {
       res.status(400).json({ message: err.message });
