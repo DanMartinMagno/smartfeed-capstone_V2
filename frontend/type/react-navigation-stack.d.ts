@@ -1,22 +1,24 @@
 // frontend/type/react-navigation-stack.d.ts
 
-declare module 'react-navigation-stack' {
+declare module "react-navigation-stack" {
   import {
     NavigationContainer,
     NavigationRouteConfigMap,
     NavigationScreenProp,
     NavigationRoute,
     NavigationStackScreenOptions,
-  } from 'react-navigation';
+  } from "react-navigation";
 
   export interface StackNavigatorConfig {
     initialRouteName?: string;
-    navigationOptions?: NavigationStackScreenOptions | ((navigationOptionsContainer: {
-      navigation: NavigationScreenProp<NavigationRoute, any>;
-    }) => NavigationStackScreenOptions);
+    navigationOptions?:
+      | NavigationStackScreenOptions
+      | ((navigationOptionsContainer: {
+          navigation: NavigationScreenProp<NavigationRoute, any>;
+        }) => NavigationStackScreenOptions);
     paths?: string;
-    mode?: 'card' | 'modal';
-    headerMode?: 'screen' | 'float' | 'none';
+    mode?: "card" | "modal";
+    headerMode?: "screen" | "float" | "none";
     cardStyle?: any;
     onTransitionStart?: () => void;
     onTransitionEnd?: () => void;

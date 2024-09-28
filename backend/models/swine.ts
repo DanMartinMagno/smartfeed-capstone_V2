@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Document, Schema, Types } from "mongoose";
 
 // Define the WeightEntry schema directly
 const weightSchema = new Schema({
@@ -18,7 +18,7 @@ const swineSchema = new Schema({
   weight: { type: Number, required: true, min: 0 },
   age: { type: Number, required: true, min: 0 },
   date: { type: Date, default: Date.now },
-  weights: { type: [weightSchema], default: [] }
+  weights: { type: [weightSchema], default: [] },
 });
 
 // Create the Swine interface
@@ -30,4 +30,4 @@ interface ISwine extends Document {
   weights: Types.DocumentArray<WeightEntry>;
 }
 
-export default mongoose.model<ISwine>('Swine', swineSchema);
+export default mongoose.model<ISwine>("Swine", swineSchema);

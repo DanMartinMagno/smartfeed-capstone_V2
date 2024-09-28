@@ -1,9 +1,20 @@
-import React, { useRef } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, Animated } from 'react-native';
-import axios from 'axios';
-import { HomeScreenNavigationProp, HomeScreenRouteProp } from '../types/navigation';
-import { useSwineContext } from '../context/SwineContext';
-import { MaterialIcons } from '@expo/vector-icons';
+import React, { useRef } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Animated,
+} from "react-native";
+import axios from "axios";
+import {
+  HomeScreenNavigationProp,
+  HomeScreenRouteProp,
+} from "../types/navigation";
+import { useSwineContext } from "../context/SwineContext";
+import { MaterialIcons } from "@expo/vector-icons";
 
 type Props = {
   navigation: HomeScreenNavigationProp;
@@ -13,10 +24,10 @@ type Props = {
 const SwineCard = ({ item, onPress, confirmDeleteSwine }: any) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  const formattedDate = new Date(item.date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+  const formattedDate = new Date(item.date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 
   const handlePressIn = () => {
@@ -40,13 +51,15 @@ const SwineCard = ({ item, onPress, confirmDeleteSwine }: any) => {
       onPressOut={handlePressOut}
       onPress={onPress}
     >
-      <Animated.View style={[styles.cardStyle, { transform: [{ scale: scaleAnim }] }]}>
+      <Animated.View
+        style={[styles.cardStyle, { transform: [{ scale: scaleAnim }] }]}
+      >
         <View style={styles.infoContainer}>
           <Text style={styles.idText}>{item.id}</Text>
           <Text style={styles.dateText}>{formattedDate}</Text>
         </View>
         <TouchableOpacity onPress={() => confirmDeleteSwine(item.id)}>
-        <MaterialIcons name="delete-outline" size={24} color="black" />
+          <MaterialIcons name="delete-outline" size={24} color="black" />
         </TouchableOpacity>
       </Animated.View>
     </TouchableOpacity>
@@ -62,17 +75,22 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       "Are you sure you want to delete this swine?",
       [
         { text: "Cancel", style: "cancel" },
-        { text: "Delete", style: "destructive", onPress: () => handleDeleteSwine(swineId) }
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => handleDeleteSwine(swineId),
+        },
       ]
     );
   };
 
   const handleDeleteSwine = (swineId: string) => {
-    axios.delete(`http://192.168.42.108:5000/api/swine/${swineId}`)
+    axios
+      .delete(`http://192.168.42.9:5000/api/swine/${swineId}`)
       .then(() => {
         deleteSwine(swineId);
       })
-      .catch(error => console.error('Error deleting swine', error));
+      .catch((error) => console.error("Error deleting swine", error));
   };
 
   if (loading) {
@@ -86,7 +104,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const renderSwineItem = ({ item }: any) => (
     <SwineCard
       item={item}
-      onPress={() => navigation.navigate('Swine Detail', { swineId: item.id })}
+      onPress={() => navigation.navigate("Swine Detail", { swineId: item.id })}
       confirmDeleteSwine={confirmDeleteSwine}
     />
   );
@@ -97,13 +115,15 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         data={swines}
         keyExtractor={(item) => item.id}
         renderItem={renderSwineItem}
-        ListEmptyComponent={<Text style={styles.emptyText}>No swine data available.</Text>}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No swine data available.</Text>
+        }
       />
 
       {/* Floating Action Button */}
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => navigation.navigate('Add Swine')}
+        onPress={() => navigation.navigate("Add Swine")}
       >
         <MaterialIcons name="add" size={24} color="white" />
       </TouchableOpacity>
@@ -115,52 +135,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
   },
   cardStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 15,
     marginVertical: 8,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
     marginBottom: 3,
-    
   },
   infoContainer: {
     flex: 1,
   },
   idText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   dateText: {
     fontSize: 14,
-    color: '#888',
+    color: "#888",
   },
   emptyText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 20,
     fontSize: 16,
-    color: '#888',
+    color: "#888",
   },
   fab: {
-    position: 'absolute',
+    position: "absolute",
     right: 20,
     bottom: 20,
-    backgroundColor: '#28a745',
+    backgroundColor: "#28a745",
     width: 60,
     height: 60,
     borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     elevation: 4,
   },
 });
