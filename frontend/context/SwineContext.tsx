@@ -9,6 +9,7 @@ interface WeightEntry {
 }
 
 interface Swine {
+  ageInWeeks: any;
   id: string;
   weight: number;
   age: number;

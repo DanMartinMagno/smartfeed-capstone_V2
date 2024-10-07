@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#f2f6f9",
   },
   label: {
     fontSize: 16,

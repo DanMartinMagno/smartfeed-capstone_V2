@@ -1,96 +1,108 @@
-import React from 'react';
-import { BarChart } from 'react-native-chart-kit';
-import { Dimensions, View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { LineChart } from "react-native-chart-kit";
+import { View, Dimensions, Text } from "react-native";
 
-interface NutrientData {
+type NutrientData = {
   name: string;
   value: number;
-}
+};
 
-interface Props {
+type NutrientGraphProps = {
   data: NutrientData[];
-  recommendations: { [key: string]: number };
-}
+  recommendations: {
+    crudeProtein: number;
+    crudeFiber: number;
+    crudeFat: number;
+    calcium: number;
+    moisture: number;
+    phosphorus: number;
+  };
+};
 
-const NutrientGraph: React.FC<Props> = ({ data, recommendations }) => {
-  const screenWidth = Dimensions.get('window').width;
-  const chartWidth = screenWidth - 40; // Chart width with some padding
+const NutrientGraph: React.FC<NutrientGraphProps> = ({
+  data,
+  recommendations,
+}) => {
+  const screenWidth = Dimensions.get("window").width;
 
-  const names = data.map(entry => entry.name);
-  const values = data.map(entry => (isNaN(entry.value) ? 0 : parseFloat(entry.value.toFixed(2))));
-  const recommendedValues = data.map(entry => parseFloat((recommendations[entry.name.replace(' ', '')] || 0).toFixed(2)));
+  const labels = data.map((item) => item.name);
+  const nutrientValues = data.map((item) => item.value);
+  const recommendedValues = [
+    recommendations.crudeProtein,
+    recommendations.crudeFiber,
+    recommendations.crudeFat,
+    recommendations.calcium,
+    recommendations.moisture,
+    recommendations.phosphorus,
+  ];
 
-  const chartData = {
-    labels: names.map(name => name.replace('Crude ', '')),
-    datasets: [
-      {
-        data: values,
-        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // Bar color for actual feed
-      },
-      {
-        data: recommendedValues,
-        color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`, // Recommended value color
-      },
-    ],
+  const chartConfig = {
+    backgroundColor: "#ffffff",
+    backgroundGradientFrom: "#ffffff",
+    backgroundGradientTo: "#ffffff",
+    decimalPlaces: 2,
+    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForDots: {
+      r: "",
+      strokeWidth: "2",
+      stroke: "#ffa726",
+    },
+    propsForLabels: {
+      fontSize: 10, // Adjust the font size for labels
+    },
+    propsForBackgroundLines: {
+      strokeDasharray: "", // solid lines for grid
+    },
+    fillShadowGradient: "#0DA813", // Custom color (Green in this case)
+    fillShadowGradientOpacity: 0.2, // Adjust opacity of the fill
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Nutrient Composition</Text>
-      <BarChart
-        data={chartData}
-        width={chartWidth} // Chart width adjusted to fit better
-        height={230}
-        yAxisLabel=""
-        yAxisSuffix="%"
-        fromZero
-        showValuesOnTopOfBars
-        verticalLabelRotation={-45} // Adjusted rotation for better alignment
-        withHorizontalLabels={false} // Hide y-axis labels
-        xLabelsOffset={14} // Fine-tuned label offset for better alignment
-        chartConfig={{
-          backgroundColor: '#e26a00',
-          backgroundGradientFrom: '#fb8c00',
-          backgroundGradientTo: '#ffa726',
-          decimalPlaces: 2,
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          barPercentage: 0.3, // Adjust the bar width percentage for better alignment
-          style: {
-            borderRadius: 16,
-          },
-          propsForLabels: {
-            fontSize: 11, // Adjust label font size
-          },
-          propsForBackgroundLines: {
-            strokeWidth: 0, // Remove grid lines
-          },
+    <View>
+      <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
+        Nutrient Analysis
+      </Text>
+      <LineChart
+        data={{
+          labels: labels,
+          datasets: [
+            {
+              data: nutrientValues,
+              color: () => `rgba(0, 255, 0, 1)`, // Green line for actual values
+              strokeWidth: 2, // Solid line
+            },
+            {
+              data: recommendedValues,
+              color: () => `rgba(255, 165, 0, 1)`, // Orange line for recommended values
+              strokeWidth: 2, // Solid line
+            },
+          ],
+          legend: ["Actual", "Recommended"],
         }}
-        style={styles.chart}
+        width={screenWidth - 35} // Slightly increase the width to utilize space
+        height={280}
+        chartConfig={chartConfig}
+        bezier
+        style={{
+          marginVertical: 8,
+          borderRadius: 16,
+          paddingRight: 20, // Add some padding to the right to balance the chart
+          paddingLeft: 0, // Remove left padding to compensate for no Y-axis labels
+        }}
+        fromZero={true} // Start the graph from zero
+        xLabelsOffset={-10} // Adjust label position slightly
+        verticalLabelRotation={35} // Rotate x-axis labels by 45 degrees
+        yAxisLabel={""} // Remove Y-axis label
+        withInnerLines={true} // Keep inner grid lines
+        withOuterLines={false} // Remove outer grid lines
+        withHorizontalLabels={false} // Remove Y-axis labels
       />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 8,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    marginVertical: 8,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  chart: {
-    borderRadius: 16,
-    paddingLeft: 8, // Reduce the padding on the left-hand side of the chart
-    paddingRight: 8, // Adjust right padding if necessary
-  },
-});
 
 export default NutrientGraph;

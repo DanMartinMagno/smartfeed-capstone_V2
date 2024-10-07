@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Provider } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import store from "./store";
 import DashboardScreen from "./screens/DashboardScreen";
 import InputScreen from "./screens/InputScreen";
@@ -16,6 +17,7 @@ import AddWeightScreen from "./screens/AddWeightScreen";
 import GraphScreen from "./screens/GraphScreen";
 import EditWeightScreen from "./screens/EditWeightScreen";
 import NutrientAnalysisScreen from "./screens/NutrientAnalysisScreen";
+import OnboardingScreen from "./screens/OnboardingScreen"; // Add onboarding screen import
 import { RootStackParamList, TabParamList } from "./types";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { SwineProvider } from "./context/SwineContext";
@@ -83,7 +85,6 @@ const SwineStack = () => (
   </Stack.Navigator>
 );
 
-// Stack navigator for FAQScreen
 const FAQStack = () => (
   <Stack.Navigator>
     <Stack.Screen
@@ -94,7 +95,6 @@ const FAQStack = () => (
   </Stack.Navigator>
 );
 
-// Stack navigator for SettingsScreen
 const SettingsStack = () => (
   <Stack.Navigator>
     <Stack.Screen
@@ -106,33 +106,73 @@ const SettingsStack = () => (
 );
 
 const App: React.FC = () => {
+  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<
+    boolean | null
+  >(null);
+
+  // Check onboarding status from AsyncStorage
+  useEffect(() => {
+    const resetOnboarding = async () => {
+      await AsyncStorage.removeItem("onboardingCompleted"); // Clear onboarding flag for testing
+    };
+
+    resetOnboarding(); // Call this function to reset onboarding status
+
+    const checkOnboardingStatus = async () => {
+      const completed = await AsyncStorage.getItem("onboardingCompleted");
+      setIsOnboardingCompleted(completed !== null);
+    };
+    checkOnboardingStatus();
+  }, []);
+
+  // Mark onboarding as completed
+  const handleOnboardingComplete = async () => {
+    await AsyncStorage.setItem("onboardingCompleted", "true");
+    setIsOnboardingCompleted(true);
+  };
+
+  if (isOnboardingCompleted === null) {
+    // Optionally, show a loading screen until the onboarding status is fetched
+    return null;
+  }
+
   return (
     <Provider store={store}>
       <SwineProvider>
         <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ color, size }) => {
-                let iconName: string = "home";
-                if (route.name === "Home") {
-                  iconName = "home";
-                } else if (route.name === "Swine Weight Tracker") {
-                  iconName = "fitness-center";
-                } else if (route.name === "FAQ") {
-                  iconName = "info";
-                } else if (route.name === "Settings") {
-                  iconName = "settings";
-                }
-                return <Icon name={iconName} size={size} color={color} />;
-              },
-              headerShown: false, // Hide the header for the tab navigator
-            })}
-          >
-            <Tab.Screen name="Home" component={DashboardStack} />
-            <Tab.Screen name="Swine Weight Tracker" component={SwineStack} />
-            <Tab.Screen name="FAQ" component={FAQStack} />
-            <Tab.Screen name="Settings" component={SettingsStack} />
-          </Tab.Navigator>
+          {isOnboardingCompleted ? (
+            <Tab.Navigator
+              screenOptions={({ route }) => ({
+                tabBarIcon: ({ color, size }) => {
+                  let iconName: string = "home";
+                  if (route.name === "Home") {
+                    iconName = "home";
+                  } else if (route.name === "Swine Weight Tracker") {
+                    iconName = "fitness-center";
+                  } else if (route.name === "FAQ") {
+                    iconName = "info";
+                  } else if (route.name === "Settings") {
+                    iconName = "settings";
+                  }
+                  return <Icon name={iconName} size={size} color={color} />;
+                },
+                headerShown: false, // Hide the header for the tab navigator
+              })}
+            >
+              <Tab.Screen name="Home" component={DashboardStack} />
+              <Tab.Screen name="Swine Weight Tracker" component={SwineStack} />
+              <Tab.Screen name="FAQ" component={FAQStack} />
+              <Tab.Screen name="Settings" component={SettingsStack} />
+            </Tab.Navigator>
+          ) : (
+            <Stack.Navigator>
+              <Stack.Screen name="Onboarding" options={{ headerShown: false }}>
+                {() => (
+                  <OnboardingScreen onComplete={handleOnboardingComplete} />
+                )}
+              </Stack.Screen>
+            </Stack.Navigator>
+          )}
         </NavigationContainer>
       </SwineProvider>
     </Provider>

@@ -1,15 +1,58 @@
 [
-    {
-      "question": "What is the purpose of this app?",
-      "answer": "This app helps you track swine weight and manage feed formulation."
-    },
-    {
-      "question": "How do I add a new swine?",
-      "answer": "Go to the Home screen and click on 'Add Swine' to add a new swine."
-    },
-    {
-      "question": "How do I add a weight entry?",
-      "answer": "Navigate to the swine detail screen and click on 'Add Weight'."
-    }
-  ]
-  
+  {
+    "question": "Why should I raise native swine instead of commercial breeds?",
+    "answer": "Native swine are more disease-resistant, require less intensive management, and can thrive on local feeds, making them ideal for small-scale and sustainable farming."
+  },
+  {
+    "question": "What type of housing is suitable for native swine?",
+    "answer": "Native swine thrive in open, spacious, and well-ventilated pens or free-range systems that allow them to root and forage naturally."
+  },
+  {
+    "question": "How much space do I need for raising native swine?",
+    "answer": "Native swine need space for foraging and roaming, especially if raised in a free-range system. Each pig should have at least 4-6 square meters of space in confinement."
+  },
+  {
+    "question": "How do I breed native swine?",
+    "answer": "Native swine can be naturally bred by allowing the sow to mate with a boar. It’s important to select healthy, well-grown animals for breeding."
+  },
+  {
+    "question": "Can native swine be raised in a free-range system?",
+    "answer": "Yes, native swine are well-suited for free-range or semi-free-range systems as they are good foragers and are highly adaptable to outdoor environments."
+  },
+  {
+    "question": "What are the environmental benefits of raising native swine?",
+    "answer": "Raising native swine can be environmentally friendly since they require fewer inputs, can thrive on local resources, and can be part of sustainable farming practices."
+  },
+  {
+    "question": "How profitable is raising native swine?",
+    "answer": "Native swine farming can be profitable, especially if there is demand for organic or traditional pork products, and the farmer uses locally sourced, low-cost feeds."
+  },
+  {
+    "question": "What kind of climate is best for raising native swine?",
+    "answer": "Native swine are highly adaptable and can thrive in a variety of climates, though they need proper shelter and cooling systems (such as wallows) in hot environments."
+  },
+  {
+    "question": "How many piglets does a native sow typically give birth to in one litter?",
+    "answer": "Native sows generally give birth to 6-8 piglets per litter, but this number can vary depending on factors like breed, nutrition, and management."
+  },
+  {
+    "question": "Are native swine prone to diseases?",
+    "answer": "Native swine are generally more resistant to common swine diseases compared to commercial breeds, but they are still susceptible to certain conditions. Good hygiene, vaccination, and proper management are important to prevent disease outbreaks."
+  },
+  {
+    "question": "Are native swine profitable to raise?",
+    "answer": "While native pigs have a slower growth rate, they are more economical to raise because they require less expensive feed and care. If marketed well, especially for niche or premium markets, they can provide a good return on investment."
+  },
+  {
+    "question": "What is the purpose of this app?",
+    "answer": "This app helps you track swine weight and manage feed formulation."
+  },
+  {
+    "question": "How do I add a new swine?",
+    "answer": "Go to the Home screen and click on 'Add Swine' to add a new swine."
+  },
+  {
+    "question": "How do I add a weight entry?",
+    "answer": "Navigate to the swine detail screen and click on 'Add Weight'."
+  }
+]

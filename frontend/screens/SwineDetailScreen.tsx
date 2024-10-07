@@ -1,3 +1,4 @@
+//SwineDetailScreen.tsx
 import React, { useState, useCallback } from "react";
 import {
   View,
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#f2f6f9",
   },
   actionButtonsContainer: {
     flexDirection: "row",

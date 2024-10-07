@@ -1,3 +1,4 @@
+////AddSwineScreen.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -18,21 +19,66 @@ type Props = {
 const AddSwineScreen: React.FC<Props> = ({ navigation }) => {
   const [id, setId] = useState("");
   const [weight, setWeight] = useState("");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState(""); // Age in days
   const { addSwine } = useSwineContext();
 
   const handleSubmit = () => {
     const normalizedId = id.trim().toLowerCase();
+    const parsedWeight = parseFloat(weight);
+    const parsedAge = parseInt(age);
 
+    // Basic validation for required fields
     if (!id || !weight || !age) {
       Alert.alert("Validation Error", "All fields are required.");
       return;
     }
 
+    // Validate weight is a positive number
+    if (isNaN(parsedWeight) || parsedWeight <= 0) {
+      Alert.alert("Validation Error", "Weight must be a positive number.");
+      return;
+    }
+
+    // Validate age falls within the specified growth stages
+    if (isNaN(parsedAge) || parsedAge < 14 || parsedAge > 1000) {
+      Alert.alert("Validation Error", "Age must be between 14 and 1000 days.");
+      return;
+    }
+
+    // Validate weight based on age range (growth stage)
+    if (parsedAge >= 14 && parsedAge <= 28) {
+      // Starter stage: 23-35 kg
+      if (parsedWeight < 5 || parsedWeight > 35) {
+        Alert.alert(
+          "Validation Error",
+          "Weight for Starter stage minimum of 5kg"
+        );
+        return;
+      }
+    } else if (parsedAge >= 29 && parsedAge <= 84) {
+      // Grower stage: 35-75 kg
+      if (parsedWeight < 5 || parsedWeight > 75) {
+        Alert.alert(
+          "Validation Error",
+          "Weight for Grower stage must be between 5 kg and 75 kg."
+        );
+        return;
+      }
+    } else if (parsedAge >= 85 && parsedAge <= 1000) {
+      // Finisher stage: 75-1000 kg
+      if (parsedWeight < 5 || parsedWeight > 1000) {
+        Alert.alert(
+          "Validation Error",
+          "Weight for Finisher stage must be between 5 kg and 1000 kg."
+        );
+        return;
+      }
+    }
+
     const newSwine = {
       id: normalizedId,
-      weight: parseFloat(weight),
-      age: parseInt(age),
+      weight: parsedWeight,
+      age: parsedAge, // Age in days
       date: new Date().toISOString(),
       weights: [], // Start with an empty array for weights
     };
@@ -58,20 +104,21 @@ const AddSwineScreen: React.FC<Props> = ({ navigation }) => {
         style={styles.input}
         placeholder="Enter Swine ID"
       />
+
+      <Text style={styles.label}>Age (days)</Text>
+      <TextInput
+        value={age}
+        onChangeText={setAge}
+        style={styles.input}
+        placeholder="Enter Age in Days"
+        keyboardType="numeric"
+      />
       <Text style={styles.label}>Weight (kg)</Text>
       <TextInput
         value={weight}
         onChangeText={setWeight}
         style={styles.input}
         placeholder="Enter Weight"
-        keyboardType="numeric"
-      />
-      <Text style={styles.label}>Age (months)</Text>
-      <TextInput
-        value={age}
-        onChangeText={setAge}
-        style={styles.input}
-        placeholder="Enter Age"
         keyboardType="numeric"
       />
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
@@ -85,7 +132,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#f2f6f9",
   },
   label: {
     fontSize: 16,

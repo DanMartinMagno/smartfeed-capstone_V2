@@ -9,6 +9,7 @@ export type RootStackParamList = {
   Graph: { swineId: string };
   "Edit Swine": { swineId: string };
   "Edit Weight": { swineId: string; weightId: string }; // Add this line
+  Onboarding: { onComplete: () => void };
 };
 
 export type HomeScreenNavigationProp = StackNavigationProp<

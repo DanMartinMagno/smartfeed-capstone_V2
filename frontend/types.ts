@@ -1,3 +1,4 @@
+//my types.ts
 export type RootStackParamList = {
   Dashboard: undefined;
   Input: undefined;
@@ -6,6 +7,7 @@ export type RootStackParamList = {
     numSwine: number;
     selectedIngredients: string[];
   };
+  Onboarding: undefined;
   Home: undefined;
   "Add Swine": undefined;
   "Swine Detail": { swineId: string; initialWeight?: number };

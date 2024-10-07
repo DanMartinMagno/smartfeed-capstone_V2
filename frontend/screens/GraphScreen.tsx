@@ -46,7 +46,7 @@ const GraphScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Graph weightEntries={weightEntries} />
+      <Graph weightEntries={weightEntries} swineAgeInWeeks={0} />
     </View>
   );
 };

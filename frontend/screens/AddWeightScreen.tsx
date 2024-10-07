@@ -52,13 +52,13 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
       const latestWeight = swine.weights[swine.weights.length - 1].weight;
 
       // Check if the new weight is strictly greater than the latest weight
-      if (weightValue <= latestWeight) {
-        Alert.alert(
-          "Validation Error",
-          `New weight must be strictly greater than ${latestWeight} kg.`
-        );
-        return;
-      }
+     // if (weightValue <= latestWeight) {
+      //  Alert.alert(
+      //    "Validation Error",
+       //   `New weight must be strictly greater than ${latestWeight} kg.`
+       // );
+     //   return;
+    //  }
     }
 
     // Submit the new weight
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#f2f6f9",
   },
   label: {
     fontSize: 16,
