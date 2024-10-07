@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://192.168.42.9:5000/api", // My machine's IP address
+  baseURL: "ttps://my-swine-feed-app.onrender.com/api", // My machine's IP address
 });
 
 interface FeedCalculationRequest {

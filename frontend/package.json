@@ -17,7 +17,7 @@
     "@react-native/metro-config": "^0.74.85",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
-    "@react-navigation/stack": "^6.4.0",
+    "@react-navigation/stack": "^6.4.1",
     "@reduxjs/toolkit": "^2.2.6",
     "axios": "^1.7.2",
     "expo": "^51.0.22",
