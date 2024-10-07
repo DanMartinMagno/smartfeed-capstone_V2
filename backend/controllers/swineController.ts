@@ -100,17 +100,17 @@ export const addWeight = async (req: Request, res: Response): Promise<void> => {
     }
 
     // If there are any existing weights, validate the new weight
-    if (swine.weights.length > 0) {
-      const latestWeightEntry = swine.weights[swine.weights.length - 1];
+    // if (swine.weights.length > 0) {
+    // const latestWeightEntry = swine.weights[swine.weights.length - 1];
 
-      // Ensure the new weight is greater than the latest recorded weight
-      if (weight <= latestWeightEntry.weight) {
-        res.status(400).json({
-          message: `New weight (${weight} kg) must be greater than the latest weight (${latestWeightEntry.weight} kg).`,
-        });
-        return;
-      }
-    }
+    // Ensure the new weight is greater than the latest recorded weight
+    // if (weight <= latestWeightEntry.weight) {
+    // res.status(400).json({
+    //    message: `New weight (${weight} kg) must be greater than the latest weight (${latestWeightEntry.weight} kg).`,
+    //   });
+    //  return;
+    // }
+    // }
 
     // Add the new weight entry (no validation if there are no existing weights)
     swine.weights.push({ date, weight });
@@ -204,9 +204,10 @@ export const updateWeight = async (
       index < swine.weights.length - 1 ? swine.weights[index + 1].weight : null;
 
     // Check that the new weight is greater than the previous weight
+    /*
     if (prevWeight !== null && weight <= prevWeight) {
       res.status(400).json({
-        message: `New weight must be greater than the previous weight of ${prevWeight} kg.`,
+        message: `New weight must be greater than the previoussss weight of ${prevWeight} kg.`,
       });
       return;
     }
@@ -218,7 +219,7 @@ export const updateWeight = async (
       });
       return;
     }
-
+   */
     // Update the weight entry
     weightEntry.weight = weight;
     const updatedSwine = await swine.save();

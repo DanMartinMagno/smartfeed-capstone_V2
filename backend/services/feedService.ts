@@ -299,13 +299,13 @@ const feedFormulation = (
           ? "Sufficient"
           : "Deficient",
       crudeFiber:
-        perSwineNutrients.crudeFiber <= recommendations.crudeFiber
+        perSwineNutrients.crudeFiber >= recommendations.crudeFiber
           ? "Sufficient"
-          : "Excess",
+          : "Deficient",
       crudeFat:
-        perSwineNutrients.crudeFat <= recommendations.crudeFat
+        perSwineNutrients.crudeFat >= recommendations.crudeFat
           ? "Sufficient"
-          : "Excess",
+          : "Deficient",
       calcium:
         perSwineNutrients.calcium >= recommendations.calcium
           ? "Sufficient"
