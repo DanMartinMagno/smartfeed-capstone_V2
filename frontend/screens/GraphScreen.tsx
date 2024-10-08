@@ -18,6 +18,11 @@ interface WeightEntry {
   weight: number;
 }
 
+type GraphProps = {
+  weightEntries: WeightEntry[];
+  swineAgeInWeeks: number;
+};
+
 const GraphScreen: React.FC<Props> = ({ route }) => {
   const { swineId } = route.params;
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
@@ -49,7 +54,7 @@ const GraphScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Graph weightEntries={weightEntries} swineAgeInWeeks={0} />
+      <Graph weightEntries={weightEntries} swineAgeInWeeks={0} swineID={""} />
     </View>
   );
 };

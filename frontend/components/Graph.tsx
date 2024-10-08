@@ -10,6 +10,7 @@ interface WeightEntry {
 interface Props {
   weightEntries: WeightEntry[];
   swineID: string;
+  swineAgeInWeeks: number;
 }
 
 const calculateStats = (weights: number[], rawDates: string[]) => {
