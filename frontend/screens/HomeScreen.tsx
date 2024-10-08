@@ -86,8 +86,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleDeleteSwine = (swineId: string) => {
     axios
-      .delete(`https://my-swine-feed-app.onrender.com/swine/${swineId}`)
-
+      .delete(`https://my-swine-feed-app.onrender.com/api/swine/${swineId}`)
       .then(() => {
         deleteSwine(swineId);
       })
