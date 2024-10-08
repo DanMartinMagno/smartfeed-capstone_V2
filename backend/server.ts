@@ -19,6 +19,12 @@ app.use(bodyParser.json());
 // CORS setup (you can restrict origins if necessary)
 app.use(cors());
 
+app.use(
+  cors({
+    origin: "*", // Allow all origins. You can restrict this to specific domains in production.
+  })
+);
+
 // Routes
 app.use("/api", routes);
 

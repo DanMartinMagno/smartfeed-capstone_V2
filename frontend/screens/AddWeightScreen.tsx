@@ -70,7 +70,6 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
           weight: weightValue,
         }
       );
-
       // Add weight to context
       addWeight(
         swineId,
