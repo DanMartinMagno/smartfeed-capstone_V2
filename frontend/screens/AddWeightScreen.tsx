@@ -52,19 +52,19 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
       const latestWeight = swine.weights[swine.weights.length - 1].weight;
 
       // Check if the new weight is strictly greater than the latest weight
-     // if (weightValue <= latestWeight) {
+      // if (weightValue <= latestWeight) {
       //  Alert.alert(
       //    "Validation Error",
-       //   `New weight must be strictly greater than ${latestWeight} kg.`
-       // );
-     //   return;
-    //  }
+      //   `New weight must be strictly greater than ${latestWeight} kg.`
+      // );
+      //   return;
+      //  }
     }
 
     // Submit the new weight
     try {
       const response = await axios.post(
-        `http://192.168.42.9:5000/api/swine/${swineId}/weights`,
+        `https://my-swine-feed-app.onrender.com/api/swine/${swineId}/weights`,
         {
           date,
           weight: weightValue,
