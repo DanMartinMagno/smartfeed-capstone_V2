@@ -84,7 +84,7 @@ const AddSwineScreen: React.FC<Props> = ({ navigation }) => {
     };
 
     axios
-      .post("https://my-swine-feed-app.onrender.com/api/swine", newSwine)
+      .post("http://192.168.42.9:5000/api/swine", newSwine)
 
       .then((response) => {
         addSwine(response.data);

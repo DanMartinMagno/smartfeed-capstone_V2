@@ -31,9 +31,7 @@ const GraphScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     axios
-      .get(
-        `https://my-swine-feed-app.onrender.com/api/swine/${swineId}/weights`
-      )
+      .get(`http://192.168.42.9:5000/api/swine/${swineId}/weights`)
       .then((response) => {
         setWeightEntries(response.data);
         setLoading(false);

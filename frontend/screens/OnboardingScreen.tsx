@@ -24,21 +24,21 @@ const slides = [
     title: "Start efficient feeding with SmartFeed",
     description:
       "Formulate the perfect feed, monitor growth, and optimize nutrition for your native swine effortlessly.",
-    image: require("../assets/icon.png"),
+    image: require("../assets/getstarted.png"),
   },
   {
     id: "2",
     title: "Get accurate feed recipes in minutes!",
     description:
       "Simply enter number of swine, pick a recipe, and get a complete nutrient breakdown for effective feed formulation.",
-    image: require("../assets/icon.png"),
+    image: require("../assets/onboarding2.png"),
   },
   {
     id: "3",
     title: "Nourish Success with SmartFeed",
     description:
       "Experience easy-to-use tools for formulating feeds, tracking growth, and boosting swine health.",
-    image: require("../assets/icon.png"),
+    image: require("../assets/onboarding3.png"),
   },
 ];
 

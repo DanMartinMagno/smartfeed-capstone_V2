@@ -41,7 +41,7 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
   const fetchSwines = () => {
     setLoading(true);
     axios
-      .get("https://my-swine-feed-app.onrender.com/api/swine")
+      .get("http://192.168.42.9:5000/api/swine")
       .then((response) => {
         setSwines(response.data);
         setLoading(false);
@@ -104,7 +104,7 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // Send DELETE request to the backend
       await axios.delete(
-        `https://my-swine-feed-app.onrender.com/api/swine/${swineId}/weights/${weightId}`
+        `http://192.168.42.9:5000/api/swine/${swineId}/weights/${weightId}`
       );
 
       // Update the frontend state by removing the weight

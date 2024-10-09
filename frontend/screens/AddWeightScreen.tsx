@@ -64,7 +64,7 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
     // Submit the new weight
     try {
       const response = await axios.post(
-        `https://my-swine-feed-app.onrender.com/api/swine/${swineId}/weights`,
+        `http://192.168.42.9:5000/api/swine/${swineId}/weights`,
         {
           date,
           weight: weightValue,

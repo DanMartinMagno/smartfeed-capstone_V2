@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "f9069c88-c96e-4bc1-aa4f-dacaae8981bf"
+      }
+    },
+    "android": {
+      "package": "com.dan_martin.myswinefeedapplatestcopyoct8"
+    }
+  }
+}
