@@ -1,6 +1,6 @@
 // frontend/screens/SwineWeightTrackerScreen.tsx
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 const SwineWeightTrackerScreen: React.FC = () => {
   return (
@@ -13,8 +13,8 @@ const SwineWeightTrackerScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

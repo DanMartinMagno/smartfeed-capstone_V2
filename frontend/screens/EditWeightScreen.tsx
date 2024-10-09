@@ -61,7 +61,7 @@ const EditWeightScreen: React.FC<Props> = ({ navigation, route }) => {
     try {
       // Attempt to update the weight in the backend
       const response = await axios.put(
-        `http://192.168.42.9:5000/api/swine/${swineId}/weights/${weightId}`,
+        `https://my-swine-feed-app.onrender.com/api/swine/${swineId}/weights/${weightId}`,
         {
           weight: weightValue,
         }
