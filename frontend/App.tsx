@@ -1,10 +1,16 @@
+// App.tsx
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Provider } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Icon from "react-native-vector-icons/MaterialIcons";
+
 import store from "./store";
+import { SwineProvider } from "./context/SwineContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+
 import DashboardScreen from "./screens/DashboardScreen";
 import InputScreen from "./screens/InputScreen";
 import ResultScreen from "./screens/ResultScreen";
@@ -17,10 +23,15 @@ import AddWeightScreen from "./screens/AddWeightScreen";
 import GraphScreen from "./screens/GraphScreen";
 import EditWeightScreen from "./screens/EditWeightScreen";
 import NutrientAnalysisScreen from "./screens/NutrientAnalysisScreen";
-import OnboardingScreen from "./screens/OnboardingScreen"; // Add onboarding screen import
+import OnboardingScreen from "./screens/OnboardingScreen";
+import LoginScreen from "./screens/LoginScreen";
+import SignupScreen from "./screens/SignupScreen";
+import EditAccountScreen from "./screens/EditAccountScreen";
+import ChangePasswordScreen from "./screens/ChangePasswordScreen";
+import SaveFormulationScreen from "./screens/SaveFormulationScreen";
+import SavedFormulationDetailScreen from "./screens/SavedFormulationDetailScreen";
+
 import { RootStackParamList, TabParamList } from "./types";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import { SwineProvider } from "./context/SwineContext";
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -46,6 +57,16 @@ const DashboardStack = () => (
       name="Nutrient Analysis"
       component={NutrientAnalysisScreen}
       options={{ title: "Nutrient Analysis" }}
+    />
+    <Stack.Screen
+      name="SaveFormulation"
+      component={SaveFormulationScreen}
+      options={{ title: "Save Formulation" }}
+    />
+    <Stack.Screen
+      name="SavedFormulationDetail"
+      component={SavedFormulationDetailScreen}
+      options={{ title: "Formulation Details" }}
     />
   </Stack.Navigator>
 );
@@ -92,6 +113,11 @@ const FAQStack = () => (
       component={FAQScreen}
       options={{ title: "Frequently Asked Questions" }}
     />
+    <Stack.Screen
+      name="EditAccount"
+      component={EditAccountScreen}
+      options={{ title: "Edit Account" }}
+    />
   </Stack.Navigator>
 );
 
@@ -102,7 +128,39 @@ const SettingsStack = () => (
       component={SettingsScreen}
       options={{ title: "Settings" }}
     />
+    <Stack.Screen
+      name="EditAccount"
+      component={EditAccountScreen}
+      options={{ title: "Edit Account" }}
+    />
+    <Stack.Screen
+      name="ChangePassword"
+      component={ChangePasswordScreen} // Add ChangePassword screen to the stack
+      options={{ title: "Change Password" }}
+    />
   </Stack.Navigator>
+);
+
+const MainAppNavigator = () => (
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ color, size }) => {
+        let iconName: string = "home";
+        if (route.name === "Home") iconName = "home";
+        else if (route.name === "Swine Weight Tracker")
+          iconName = "fitness-center";
+        else if (route.name === "FAQ") iconName = "info";
+        else if (route.name === "Settings") iconName = "settings";
+        return <Icon name={iconName} size={size} color={color} />;
+      },
+      headerShown: false,
+    })}
+  >
+    <Tab.Screen name="Home" component={DashboardStack} />
+    <Tab.Screen name="Swine Weight Tracker" component={SwineStack} />
+    <Tab.Screen name="FAQ" component={FAQStack} />
+    <Tab.Screen name="Settings" component={SettingsStack} />
+  </Tab.Navigator>
 );
 
 const App: React.FC = () => {
@@ -110,14 +168,7 @@ const App: React.FC = () => {
     boolean | null
   >(null);
 
-  // Check onboarding status from AsyncStorage
   useEffect(() => {
-    const resetOnboarding = async () => {
-      await AsyncStorage.removeItem("onboardingCompleted"); // Clear onboarding flag for testing
-    };
-
-    resetOnboarding(); // Call this function to reset onboarding status
-
     const checkOnboardingStatus = async () => {
       const completed = await AsyncStorage.getItem("onboardingCompleted");
       setIsOnboardingCompleted(completed !== null);
@@ -125,57 +176,59 @@ const App: React.FC = () => {
     checkOnboardingStatus();
   }, []);
 
-  // Mark onboarding as completed
   const handleOnboardingComplete = async () => {
     await AsyncStorage.setItem("onboardingCompleted", "true");
     setIsOnboardingCompleted(true);
   };
 
   if (isOnboardingCompleted === null) {
-    // Optionally, show a loading screen until the onboarding status is fetched
     return null;
   }
 
   return (
     <Provider store={store}>
       <SwineProvider>
-        <NavigationContainer>
-          {isOnboardingCompleted ? (
-            <Tab.Navigator
-              screenOptions={({ route }) => ({
-                tabBarIcon: ({ color, size }) => {
-                  let iconName: string = "home";
-                  if (route.name === "Home") {
-                    iconName = "home";
-                  } else if (route.name === "Swine Weight Tracker") {
-                    iconName = "fitness-center";
-                  } else if (route.name === "FAQ") {
-                    iconName = "info";
-                  } else if (route.name === "Settings") {
-                    iconName = "settings";
-                  }
-                  return <Icon name={iconName} size={size} color={color} />;
-                },
-                headerShown: false, // Hide the header for the tab navigator
-              })}
-            >
-              <Tab.Screen name="Home" component={DashboardStack} />
-              <Tab.Screen name="Swine Weight Tracker" component={SwineStack} />
-              <Tab.Screen name="FAQ" component={FAQStack} />
-              <Tab.Screen name="Settings" component={SettingsStack} />
-            </Tab.Navigator>
-          ) : (
-            <Stack.Navigator>
-              <Stack.Screen name="Onboarding" options={{ headerShown: false }}>
-                {() => (
-                  <OnboardingScreen onComplete={handleOnboardingComplete} />
-                )}
-              </Stack.Screen>
-            </Stack.Navigator>
-          )}
-        </NavigationContainer>
+        <AuthProvider>
+          <NavigationContainer>
+            {isOnboardingCompleted ? (
+              <AuthNavigation />
+            ) : (
+              <Stack.Navigator>
+                <Stack.Screen
+                  name="Onboarding"
+                  options={{ headerShown: false }}
+                >
+                  {() => (
+                    <OnboardingScreen onComplete={handleOnboardingComplete} />
+                  )}
+                </Stack.Screen>
+              </Stack.Navigator>
+            )}
+          </NavigationContainer>
+        </AuthProvider>
       </SwineProvider>
     </Provider>
+  );
+};
+
+const AuthNavigation: React.FC = () => {
+  const { user } = useAuth();
+
+  return user ? (
+    <MainAppNavigator />
+  ) : (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Signup"
+        component={SignupScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
   );
 };
 

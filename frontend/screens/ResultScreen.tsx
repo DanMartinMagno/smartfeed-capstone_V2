@@ -123,6 +123,14 @@ const ResultScreen: React.FC<Props> = ({ route, navigation }) => {
               type,
               numSwine,
               selectedIngredients,
+              totalNutrients: {
+                crudeProtein: 0, // Replace with actual values if available
+                crudeFiber: 0,
+                crudeFat: 0,
+                calcium: 0,
+                moisture: 0,
+                phosphorus: 0,
+              },
             })
           }
         >

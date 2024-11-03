@@ -1,3 +1,4 @@
+//NutrientAnalysisScreen.tsx
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -59,7 +60,7 @@ interface AnalysisResults {
 // the rest of your codes.
 
 const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { type, numSwine, selectedIngredients } = route.params;
+  const { type, numSwine, selectedIngredients, totalNutrients } = route.params;
   const [result, setResult] = useState<AnalysisResults | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [recommendations, setRecommendations] = useState<string[]>([]);
@@ -226,13 +227,14 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
     { name: "Phosphorus", value: result.totalNutrients.phosphorus },
   ];
 
-  const handleSaveRecipe = () => {
-    // Logic to save the new feed recipe
-    Alert.alert(
-      "Recipe Saved",
-      "Your new feed recipe has been saved successfully."
-    );
-  };
+const handleSaveFormulation = () => {
+  navigation.navigate("SaveFormulation", {
+    type,
+    numSwine,
+    selectedIngredients,
+    totalNutrients,
+  });
+};
 
   return (
     <ScrollView>
@@ -297,6 +299,7 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
           </View>
         )}
       </View>
+      <Button title="Save Formulation" onPress={handleSaveFormulation} />
     </ScrollView>
   );
 };

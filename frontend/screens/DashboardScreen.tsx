@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import {
   ScrollView,
   View,
@@ -7,12 +7,16 @@ import {
   Image,
   TouchableWithoutFeedback,
   Animated,
+  TouchableOpacity,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types";
 import { setType } from "../store/feedSlice";
-import { LinearGradient } from "expo-linear-gradient"; // Use Expo's LinearGradient
+import { LinearGradient } from "expo-linear-gradient";
+import axiosInstance from "../api/axiosInstance";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../context/AuthContext";
 
 type DashboardScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -23,47 +27,87 @@ type Props = {
   navigation: DashboardScreenNavigationProp;
 };
 
+interface Formulation {
+  _id: string;
+  name: string;
+  description: string;
+  ingredients: { ingredient: string; amount: number }[];
+  totalNutrients: {
+    crudeProtein: number;
+    crudeFiber: number;
+    crudeFat: number;
+    calcium: number;
+    moisture: number;
+    phosphorus: number;
+  };
+}
+
 const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch();
-
-  // Set the scale to 1 initially to prevent bounce effect
   const starterScaleAnim = useRef(new Animated.Value(1)).current;
   const growerScaleAnim = useRef(new Animated.Value(1)).current;
   const finisherScaleAnim = useRef(new Animated.Value(1)).current;
 
-  // Handles card press logic
+  const [savedFormulations, setSavedFormulations] = useState<Formulation[]>([]);
+  const { user } = useContext(AuthContext) ?? {};
+  const userId = user?.userId;
+
   const handlePress = (type: "starter" | "grower" | "finisher") => {
-    dispatch(setType(type)); // Dispatches the type of the card pressed
-    navigation.navigate("Input"); // Navigates to the 'Input' screen
+    dispatch(setType(type));
+    navigation.navigate("Input");
   };
 
-  // Scale down the card when it's pressed
   const handlePressIn = (scaleAnim: Animated.Value) => {
     Animated.spring(scaleAnim, {
-      toValue: 0.95, // Scale down to 95%
+      toValue: 0.95,
       useNativeDriver: true,
     }).start();
   };
 
-  // Scale back the card after pressing and triggers the card's action
   const handlePressOut = (
     scaleAnim: Animated.Value,
     cardType: "starter" | "grower" | "finisher"
   ) => {
     Animated.spring(scaleAnim, {
-      toValue: 1, // Scale back to normal size
+      toValue: 1,
       useNativeDriver: true,
     }).start(() => handlePress(cardType));
   };
 
+  useEffect(() => {
+    const fetchFormulations = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token"); // Retrieve token from AsyncStorage
+        if (!token) {
+          console.warn("No token found, please log in again.");
+          return;
+        }
+
+        const response = await axiosInstance.get(
+          "/formulations/user-formulations",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setSavedFormulations(response.data);
+      } catch (error) {
+        console.error("Error fetching formulations:", error);
+      }
+    };
+
+    fetchFormulations();
+  }, [userId]);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.greetingsContainer}>
+      {/* <View style={styles.greetingsContainer}>
         <Text style={styles.greetingsHeader}>Hi there!</Text>
         <Text style={styles.greetingsText}>
           What feed would you like to formulate today?
         </Text>
-      </View>
+      </View> */}
+
+      {/* Render cards */}
       {/* Starter Card */}
       <TouchableWithoutFeedback
         onPressIn={() => handlePressIn(starterScaleAnim)}
@@ -156,6 +200,23 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
           </LinearGradient>
         </Animated.View>
       </TouchableWithoutFeedback>
+
+      {/* <View>
+        <Text>Saved Formulations</Text>
+        {savedFormulations.map((formulation) => (
+          <TouchableOpacity
+            key={formulation._id}
+            onPress={() =>
+              navigation.navigate("SavedFormulationDetail", {
+                formulation,
+              })
+            }
+          >
+            <Text>{formulation.name}</Text>
+            <Text>{formulation.description}</Text>
+          </TouchableOpacity>
+        ))}
+      </View> */}
     </ScrollView>
   );
 };

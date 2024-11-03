@@ -1,17 +1,64 @@
+// types/navigation.ts
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 export type RootStackParamList = {
+  Login: undefined; // Add Login route here
+  Signup: undefined; // Add Signup route here
   Home: undefined;
   "Add Swine": undefined;
   "Swine Detail": { swineId: string; initialWeight?: number };
   "Add Weight": { swineId: string };
   Graph: { swineId: string };
   "Edit Swine": { swineId: string };
-  "Edit Weight": { swineId: string; weightId: string }; // Add this line
+  "Edit Weight": { swineId: string; weightId: string };
+  EditAccount: undefined;
+  ChangePassword: undefined;
   Onboarding: { onComplete: () => void };
+  NutrientAnalysis: {
+    type: string;
+    numSwine: number;
+    selectedIngredients: string[];
+    totalNutrients: {
+      crudeProtein: number;
+      crudeFiber: number;
+      crudeFat: number;
+      calcium: number;
+      moisture: number;
+      phosphorus: number;
+    };
+  };
+  SaveFormulation: {
+    type: string;
+    numSwine: number;
+    selectedIngredients: string[];
+    totalNutrients: {
+      crudeProtein: number;
+      crudeFiber: number;
+      crudeFat: number;
+      calcium: number;
+      moisture: number;
+      phosphorus: number;
+    };
+  };
+  SavedFormulationDetail: {
+    formulation: {
+      name: string;
+      description: string;
+      ingredients: { ingredient: string; amount: number }[];
+      totalNutrients: {
+        crudeProtein: number;
+        crudeFiber: number;
+        crudeFat: number;
+        calcium: number;
+        moisture: number;
+        phosphorus: number;
+      };
+    };
+  };
 };
 
+// Existing type definitions
 export type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Home"
@@ -63,8 +110,40 @@ export type EditSwineScreenRouteProp = RouteProp<
 export type EditWeightScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Edit Weight"
->; // Add this line
+>;
 export type EditWeightScreenRouteProp = RouteProp<
   RootStackParamList,
   "Edit Weight"
->; // Add this line
+>;
+
+// Add types for Login and Signup screens
+export type LoginScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Login"
+>;
+export type SignupScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Signup"
+>;
+export type EditAccountScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "EditAccount"
+>;
+// New navigation props for SaveFormulation and SavedFormulationDetail screens
+export type SaveFormulationScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "SaveFormulation"
+>;
+export type SaveFormulationScreenRouteProp = RouteProp<
+  RootStackParamList,
+  "SaveFormulation"
+>;
+
+export type SavedFormulationDetailScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "SavedFormulationDetail"
+>;
+export type SavedFormulationDetailScreenRouteProp = RouteProp<
+  RootStackParamList,
+  "SavedFormulationDetail"
+>;

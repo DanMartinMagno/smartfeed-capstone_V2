@@ -1,4 +1,5 @@
-//my types.ts
+// types.ts
+
 export type RootStackParamList = {
   Dashboard: undefined;
   Input: undefined;
@@ -18,9 +19,53 @@ export type RootStackParamList = {
     type: string;
     numSwine: number;
     selectedIngredients: string[];
+    totalNutrients: {
+      crudeProtein: number;
+      crudeFiber: number;
+      crudeFat: number;
+      calcium: number;
+      moisture: number;
+      phosphorus: number;
+    };
   };
   FAQScreen: undefined;
   SettingsScreen: undefined;
+
+  // Authentication screens
+  Login: undefined;
+  Signup: undefined;
+  EditAccount: undefined;
+  ChangePassword: undefined;
+
+  // New screens for formulation saving and details
+  SaveFormulation: {
+    type: string;
+    numSwine: number;
+    selectedIngredients: string[];
+    totalNutrients: {
+      crudeProtein: number;
+      crudeFiber: number;
+      crudeFat: number;
+      calcium: number;
+      moisture: number;
+      phosphorus: number;
+    };
+  };
+  SavedFormulationDetail: {
+    formulation: {
+      name: string;
+      description: string;
+      ingredients: { ingredient: string; amount: number }[];
+      totalNutrients: {
+        crudeProtein: number;
+        crudeFiber: number;
+        crudeFat: number;
+        calcium: number;
+        moisture: number;
+        phosphorus: number;
+      };
+    };
+  };
 };
 
 export type TabParamList = {

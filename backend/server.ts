@@ -1,3 +1,5 @@
+// server.ts
+
 import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -15,17 +17,9 @@ connectDB();
 
 // Middleware
 app.use(bodyParser.json());
+app.use(cors({ origin: "*" })); // Allow all origins
 
-// CORS setup (you can restrict origins if necessary)
-app.use(cors());
-
-app.use(
-  cors({
-    origin: "*", // Allow all origins. You can restrict this to specific domains in production.
-  })
-);
-
-// Routes
+// Use routes with /api prefix
 app.use("/api", routes);
 
 // Basic route to check if server is up

@@ -8,16 +8,47 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useAuth } from "../context/AuthContext";
 
-const SettingsScreen: React.FC = () => {
+const SettingsScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  const settingsOptions = [
+    { title: "Language", icon: "language-outline" },
+    { title: "Notifications", icon: "notifications-outline" },
+    { title: "Privacy", icon: "lock-closed-outline" },
+    { title: "Terms & Conditions", icon: "document-text-outline" },
+    { title: "Security", icon: "key-outline" },
+    { title: "Ads", icon: "megaphone-outline" },
+    { title: "Help", icon: "help-circle-outline" },
+    { title: "About", icon: "information-circle-outline" },
+    {
+      title: "Edit Account",
+      icon: "person-outline",
+      onPress: () => navigation.navigate("EditAccount"),
+    },
+    {
+      title: "Change Password",
+      icon: "key-outline",
+      onPress: () => navigation.navigate("ChangePassword"),
+    },
+    {
+      title: "Logout",
+      icon: "log-out-outline",
+      onPress: handleLogout,
+    },
+  ];
+
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Settings</Text>
       </View>
 
-      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Icon
           name="search-outline"
@@ -32,10 +63,13 @@ const SettingsScreen: React.FC = () => {
         />
       </View>
 
-      {/* Settings List */}
       <View style={styles.list}>
         {settingsOptions.map((option, index) => (
-          <TouchableOpacity key={index} style={styles.listItem}>
+          <TouchableOpacity
+            key={index}
+            style={styles.listItem}
+            onPress={option.onPress}
+          >
             <Icon
               name={option.icon}
               size={24}
@@ -47,32 +81,17 @@ const SettingsScreen: React.FC = () => {
         ))}
       </View>
 
-      {/* Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>SmartFeed</Text>
         <Text style={styles.footerDescription}>
           SmartFeed is currently under development and testing phase. We're
-          working on improving features to provide the best experience for
-          swine raisers
+          working on improving features to provide the best experience for swine
+          raisers
         </Text>
       </View>
     </ScrollView>
   );
 };
-
-// List of settings options
-
-const settingsOptions = [
-  { title: "Language", icon: "language-outline" },
-  { title: "Notifications", icon: "notifications-outline" },
-  { title: "Privacy", icon: "lock-closed-outline" },
-  { title: "Terms & Conditions", icon: "document-text-outline" },
-  { title: "Security", icon: "key-outline" },
-  { title: "Ads", icon: "megaphone-outline" },
-  { title: "Account", icon: "person-circle-outline" },
-  { title: "Help", icon: "help-circle-outline" },
-  { title: "About", icon: "information-circle-outline" },
-];
 
 const styles = StyleSheet.create({
   container: {

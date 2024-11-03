@@ -1,22 +1,47 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+// frontend/store/feedSlice.ts
 
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+// Define the Formulation type
+interface Formulation {
+  _id: string;
+  name: string;
+  description: string;
+  ingredients: { ingredient: string; amount: number }[];
+  totalNutrients: {
+    crudeProtein: number;
+    crudeFiber: number;
+    crudeFat: number;
+    calcium: number;
+    moisture: number;
+    phosphorus: number;
+  };
+}
+
+// Define FeedState with savedFormulations
 interface FeedState {
-  type: 'starter' | 'grower' | 'finisher';
+  savedFormulations: Formulation[]; // Array of Formulation objects
+  type: "starter" | "grower" | "finisher";
   numSwine: number;
   selectedIngredients: string[];
 }
 
+// Initialize FeedState with savedFormulations as an empty array
 const initialState: FeedState = {
-  type: 'starter', // Default value
+  savedFormulations: [], // Initialize as empty array
+  type: "starter",
   numSwine: 0,
   selectedIngredients: [],
 };
 
 const feedSlice = createSlice({
-  name: 'feed',
+  name: "feed",
   initialState,
   reducers: {
-    setType: (state, action: PayloadAction<'starter' | 'grower' | 'finisher'>) => {
+    setType: (
+      state,
+      action: PayloadAction<"starter" | "grower" | "finisher">
+    ) => {
       state.type = action.payload;
     },
     setNumSwine: (state, action: PayloadAction<number>) => {
@@ -25,9 +50,17 @@ const feedSlice = createSlice({
     setSelectedIngredients: (state, action: PayloadAction<string[]>) => {
       state.selectedIngredients = action.payload;
     },
+    setSavedFormulations: (state, action: PayloadAction<Formulation[]>) => {
+      state.savedFormulations = action.payload;
+    },
   },
 });
 
-export const { setType, setNumSwine, setSelectedIngredients } = feedSlice.actions;
+export const {
+  setType,
+  setNumSwine,
+  setSelectedIngredients,
+  setSavedFormulations,
+} = feedSlice.actions;
 
 export default feedSlice.reducer;
