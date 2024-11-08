@@ -7,7 +7,7 @@ const api = axios.create({
 });
 
 interface FeedCalculationRequest {
-  selectedIngredients: string[];
+  selectedIngredients: { ingredient: string; amount: number }[];
   numSwine: number;
   type: "starter" | "grower" | "finisher";
 }

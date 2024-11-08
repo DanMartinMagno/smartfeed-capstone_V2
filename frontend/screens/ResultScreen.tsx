@@ -1,3 +1,4 @@
+//ResultScreen.tsx
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -42,6 +43,8 @@ const ResultScreen: React.FC<Props> = ({ route, navigation }) => {
   const [result, setResult] = useState<FeedCalculationResult | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Fetch and set result
+  // 1. Fetch and set result data
   useEffect(() => {
     setLoading(true);
     calculateFeed({ selectedIngredients, numSwine, type })
@@ -60,9 +63,19 @@ const ResultScreen: React.FC<Props> = ({ route, navigation }) => {
       });
   }, [selectedIngredients, numSwine, type]);
 
-  if (loading) {
-    return <ActivityIndicator size="large" />;
-  }
+  // 2. Handle navigation based on result updates
+  // useEffect(() => {
+  //   if (result) {
+  //     navigation.navigate("SaveFormulation", {
+  //       type,
+  //       numSwine,
+  //       selectedIngredients: result.ingredientAmounts,
+  //       totalNutrients: result.totalNutrients,
+  //     });
+  //   }
+  // }, [result, navigation, type, numSwine]);
+
+  if (loading) return <ActivityIndicator size="large" />;
 
   if (!result) {
     return <Text>Error loading results.</Text>;
@@ -73,7 +86,6 @@ const ResultScreen: React.FC<Props> = ({ route, navigation }) => {
       <View style={styles.container}>
         <Text style={styles.header}>Feeds for {type}</Text>
         <Text style={styles.subHeader1}>Ratio for selected Ingredients</Text>
-
         {result.ingredientAmounts.map((ingredient, index) => (
           <NutrientCard
             key={index}
@@ -82,9 +94,7 @@ const ResultScreen: React.FC<Props> = ({ route, navigation }) => {
             isRatioCard
           />
         ))}
-
         <Text style={styles.subHeader2}>Total nutrients of ingredients</Text>
-
         <NutrientCard
           title="Crude Protein"
           value={result.totalNutrients.crudeProtein}
@@ -122,14 +132,14 @@ const ResultScreen: React.FC<Props> = ({ route, navigation }) => {
             navigation.navigate("Nutrient Analysis", {
               type,
               numSwine,
-              selectedIngredients,
+              selectedIngredients: result.ingredientAmounts, // Pass the calculated ingredient amounts
               totalNutrients: {
-                crudeProtein: 0, // Replace with actual values if available
-                crudeFiber: 0,
-                crudeFat: 0,
-                calcium: 0,
-                moisture: 0,
-                phosphorus: 0,
+                crudeProtein: result.totalNutrients.crudeProtein,
+                crudeFiber: result.totalNutrients.crudeFiber,
+                crudeFat: result.totalNutrients.crudeFat,
+                calcium: result.totalNutrients.calcium,
+                moisture: result.totalNutrients.moisture,
+                phosphorus: result.totalNutrients.phosphorus,
               },
             })
           }

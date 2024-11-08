@@ -7,6 +7,7 @@ export interface IFormulation extends Document {
   name: string;
   description: string;
   type: "starter" | "grower" | "finisher";
+  numSwine: number;
   ingredients: { name: string; amount: number }[]; // Changed to 'ingredients'
   totalNutrients: {
     crudeProtein: number;
@@ -17,6 +18,7 @@ export interface IFormulation extends Document {
     phosphorus: number;
   };
   createdAt: Date;
+  expirationDate: Date;
 }
 
 const FormulationSchema = new Schema<IFormulation>({
@@ -28,6 +30,7 @@ const FormulationSchema = new Schema<IFormulation>({
     required: true,
     enum: ["starter", "grower", "finisher"],
   },
+  numSwine: { type: Number, required: true },
   ingredients: [
     // Updated field name to ingredients
     {
@@ -44,6 +47,7 @@ const FormulationSchema = new Schema<IFormulation>({
     phosphorus: { type: Number, required: true },
   },
   createdAt: { type: Date, default: Date.now },
+  expirationDate: { type: Date, required: true },
 });
 
 export default mongoose.model<IFormulation>("Formulation", FormulationSchema);

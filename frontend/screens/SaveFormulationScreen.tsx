@@ -1,6 +1,8 @@
 // SaveFormulationScreen.tsx
+
 import React, { useContext, useState } from "react";
-import { View, Text, TextInput, Button, Alert } from "react-native";
+import { View, Text, TextInput, Button, Alert, Platform } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import axiosInstance from "../api/axiosInstance";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -31,6 +33,8 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
   const { type, numSwine, selectedIngredients, totalNutrients } = route.params;
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [expirationDate, setExpirationDate] = useState<Date | null>(new Date()); // Store as Date object
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const { user } = useContext(AuthContext) ?? {};
   const userId = user?.userId;
@@ -38,39 +42,39 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
   const handleSave = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        Alert.alert(
+          "Error",
+          "Authorization token is missing. Please log in again."
+        );
+        return;
+      }
 
-      // Map selectedIngredients to the ingredients structure expected by the backend
-      const ingredients: Ingredient[] = selectedIngredients.map(
-        (ingredient: any) => {
-          if (typeof ingredient === "string") {
-            return { name: ingredient, amount: 0 }; // default amount if not provided
-          }
-          return ingredient;
-        }
-      );
+      const ingredients = selectedIngredients.map((ingredient: any) => ({
+        name: ingredient.ingredient,
+        amount: ingredient.amount,
+      }));
+
+      // Ensure expirationDate is a valid date string before sending it
+      if (!expirationDate) {
+        Alert.alert("Error", "Please select a valid expiration date.");
+        return;
+      }
 
       const response = await axiosInstance.post(
         "/formulations/save",
         {
           type,
           numSwine,
-          ingredients, // Changed from selectedIngredients to ingredients
-          totalNutrients: {
-            crudeProtein: totalNutrients.crudeProtein,
-            crudeFiber: totalNutrients.crudeFiber,
-            crudeFat: totalNutrients.crudeFat,
-            calcium: totalNutrients.calcium,
-            moisture: totalNutrients.moisture,
-            phosphorus: totalNutrients.phosphorus,
-          },
+          ingredients,
+          totalNutrients,
           name,
           description,
           userId,
+          expirationDate: expirationDate.toISOString(), // Convert to ISO string format
         },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -81,6 +85,13 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
     } catch (error) {
       console.error("Error saving formulation:", error);
       Alert.alert("Error", "Failed to save formulation. Please try again.");
+    }
+  };
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setExpirationDate(selectedDate); // Store the selected date
     }
   };
 
@@ -100,6 +111,28 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
         placeholder="Enter description"
         multiline
       />
+
+      <Text>Expiration Date</Text>
+      <Button
+        title="Select Expiration Date"
+        onPress={() => setShowDatePicker(true)}
+      />
+
+      {/* Display selected expiration date */}
+      <Text>
+        Selected Date:{" "}
+        {expirationDate ? expirationDate.toLocaleDateString() : "None"}
+      </Text>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={expirationDate || new Date()}
+          mode="date"
+          display={Platform.OS === "ios" ? "inline" : "calendar"}
+          onChange={handleDateChange}
+          minimumDate={new Date()}
+        />
+      )}
 
       <Button title="Save Formulation" onPress={handleSave} />
     </View>

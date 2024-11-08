@@ -35,28 +35,31 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
+// backend/controllers/authController.ts
+
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      console.log("User not found with email:", email); // Debug log
+      console.log("User not found with email:", email);
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const isMatch = await user.comparePassword(password);
-    // console.log("Password match for login:", isMatch); // Should be true if password matches
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "30d",
     });
     res.json({ user, token });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Failed to login", error });
+    console.error("Login error:", (error as Error).message);
+    res
+      .status(500)
+      .json({ message: "Failed to login", error: (error as Error).message });
   }
 };

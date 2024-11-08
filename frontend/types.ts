@@ -6,7 +6,7 @@ export type RootStackParamList = {
   Result: {
     type: "starter" | "grower" | "finisher";
     numSwine: number;
-    selectedIngredients: string[];
+    selectedIngredients: { ingredient: string; amount: number }[];
   };
   Onboarding: undefined;
   Home: undefined;
@@ -18,7 +18,7 @@ export type RootStackParamList = {
   "Nutrient Analysis": {
     type: string;
     numSwine: number;
-    selectedIngredients: string[];
+    selectedIngredients: { ingredient: string; amount: number }[];
     totalNutrients: {
       crudeProtein: number;
       crudeFiber: number;
@@ -41,7 +41,8 @@ export type RootStackParamList = {
   SaveFormulation: {
     type: string;
     numSwine: number;
-    selectedIngredients: string[];
+    selectedIngredients: { ingredient: string; amount: number }[];
+
     totalNutrients: {
       crudeProtein: number;
       crudeFiber: number;
@@ -55,7 +56,10 @@ export type RootStackParamList = {
     formulation: {
       name: string;
       description: string;
-      ingredients: { ingredient: string; amount: number }[];
+      type: "starter" | "grower" | "finisher";
+      expirationDate: string;
+      numSwine: number;
+      ingredients: { name: string; amount: number }[];
       totalNutrients: {
         crudeProtein: number;
         crudeFiber: number;

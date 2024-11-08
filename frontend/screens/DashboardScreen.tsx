@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useRef, useState, useContext } from "react";
 import {
   ScrollView,
   View,
@@ -7,6 +7,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   Animated,
+  Alert,
   TouchableOpacity,
 } from "react-native";
 import { useDispatch } from "react-redux";
@@ -17,6 +18,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import axiosInstance from "../api/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../context/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
+import { deleteFormulation as apiDeleteFormulation } from "../api/formulationApi";
 
 type DashboardScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -28,10 +31,14 @@ type Props = {
 };
 
 interface Formulation {
+  numSwine: number;
+  type: "starter" | "grower" | "finisher";
+  isExpired: boolean;
+  expirationDate: string;
   _id: string;
   name: string;
   description: string;
-  ingredients: { ingredient: string; amount: number }[];
+  ingredients: { name: string; amount: number }[];
   totalNutrients: {
     crudeProtein: number;
     crudeFiber: number;
@@ -74,41 +81,79 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
     }).start(() => handlePress(cardType));
   };
 
-  useEffect(() => {
-    const fetchFormulations = async () => {
-      try {
-        const token = await AsyncStorage.getItem("token"); // Retrieve token from AsyncStorage
-        if (!token) {
-          console.warn("No token found, please log in again.");
-          return;
-        }
-
-        const response = await axiosInstance.get(
-          "/formulations/user-formulations",
-          {
-            headers: { Authorization: `Bearer ${token}` },
+  // Fetch saved formulations whenever the screen gains focus
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchFormulations = async () => {
+        try {
+          const token = await AsyncStorage.getItem("token");
+          if (!token) {
+            console.warn("No token found, please log in again.");
+            return;
           }
-        );
-        setSavedFormulations(response.data);
-      } catch (error) {
-        console.error("Error fetching formulations:", error);
-      }
-    };
 
-    fetchFormulations();
-  }, [userId]);
+          const response = await axiosInstance.get(
+            "/formulations/user-formulations",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          // Mark expired formulations
+          const currentDate = new Date();
+          const updatedFormulations = response.data.map(
+            (formulation: Formulation) => ({
+              ...formulation,
+              isExpired: new Date(formulation.expirationDate) < currentDate,
+            })
+          );
+
+          setSavedFormulations(updatedFormulations);
+        } catch (error) {
+          console.error("Error fetching formulations:", error);
+        }
+      };
+
+      fetchFormulations();
+    }, [userId])
+  );
+
+  const handleDeleteFormulation = async (formulationId: string) => {
+    // Renamed local function
+    try {
+      const response = await apiDeleteFormulation(formulationId);
+      if (response.success) {
+        setSavedFormulations((prev) =>
+          prev.filter((formulation) => formulation._id !== formulationId)
+        );
+      } else {
+        Alert.alert("Error", "Failed to delete formulation");
+      }
+    } catch (error) {
+      console.error("Error deleting formulation:", error);
+      Alert.alert("Error", "Failed to delete formulation");
+    }
+  };
+
+  // Usage of handleDeleteFormulation in your confirmDelete function
+  const confirmDelete = (formulationId: string) => {
+    Alert.alert(
+      "Delete Formulation",
+      "Are you sure you want to delete this formulation?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => handleDeleteFormulation(formulationId), // Use handleDeleteFormulation here
+        },
+      ]
+    );
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* <View style={styles.greetingsContainer}>
-        <Text style={styles.greetingsHeader}>Hi there!</Text>
-        <Text style={styles.greetingsText}>
-          What feed would you like to formulate today?
-        </Text>
-      </View> */}
-
-      {/* Render cards */}
-      {/* Starter Card */}
+      {/* Render feed type cards */}
       <TouchableWithoutFeedback
         onPressIn={() => handlePressIn(starterScaleAnim)}
         onPressOut={() => handlePressOut(starterScaleAnim, "starter")}
@@ -201,22 +246,48 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
         </Animated.View>
       </TouchableWithoutFeedback>
 
-      {/* <View>
+      {/* Saved Formulations List */}
+      <View>
         <Text>Saved Formulations</Text>
         {savedFormulations.map((formulation) => (
           <TouchableOpacity
             key={formulation._id}
+            disabled={formulation.isExpired} // Disable interaction if expired
             onPress={() =>
               navigation.navigate("SavedFormulationDetail", {
-                formulation,
+                formulation: {
+                  ...formulation,
+                  type: formulation.type || "starter",
+                  expirationDate:
+                    formulation.expirationDate || new Date().toISOString(),
+                  numSwine: formulation.numSwine,
+                },
               })
             }
           >
-            <Text>{formulation.name}</Text>
+            <Text
+              style={
+                formulation.isExpired
+                  ? styles.expiredText // Apply expired styling
+                  : styles.formulationName
+              }
+            >
+              {formulation.name}
+            </Text>
             <Text>{formulation.description}</Text>
+            <Text>
+              {formulation.isExpired
+                ? "Expired"
+                : `Valid until ${new Date(formulation.expirationDate).toLocaleDateString()}`}
+            </Text>
+
+            {/* Delete Button */}
+            <TouchableOpacity onPress={() => confirmDelete(formulation._id)}>
+              <Text style={{ color: "red", marginTop: 5 }}>Delete</Text>
+            </TouchableOpacity>
           </TouchableOpacity>
         ))}
-      </View> */}
+      </View>
     </ScrollView>
   );
 };
@@ -292,6 +363,17 @@ const styles = StyleSheet.create({
     color: "#f1f1f1",
     fontWeight: "500",
   },
+  expiredText: {
+    color: "red",
+    textDecorationLine: "line-through",
+  },
+  formulationName: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
 
 export default DashboardScreen;
+function deleteFormulation(formulationId: string) {
+  throw new Error("Function not implemented.");
+}

@@ -1,3 +1,5 @@
+// frontend/screens/SignupScreen.tsx
+
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { useAuth } from "../context/AuthContext";
@@ -16,12 +18,32 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSignup = async () => {
+    setError(""); // Reset error before validation
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     try {
       await signup(lastName, firstName, middleInitial, email, password);
       navigation.navigate("Login");
-    } catch (err) {
-      setError("Error creating account");
+    } catch (err: any) {
+      if (
+        err.response &&
+        err.response.status === 400 &&
+        err.response.data.message === "Email already in use"
+      ) {
+        setError("Email is already exist");
+      } else {
+        setError("Error creating account. Please try again.");
+      }
     }
   };
 

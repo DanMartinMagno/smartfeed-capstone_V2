@@ -38,7 +38,13 @@ const EditAccountScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleSave = async () => {
     try {
-      await updateUser({ lastName, firstName, middleInitial, email });
+      await updateUser({
+        lastName,
+        firstName,
+        middleInitial,
+        email,
+        userId: "",
+      });
       Alert.alert("Success", "Profile updated successfully!");
       navigation.goBack();
     } catch (error) {

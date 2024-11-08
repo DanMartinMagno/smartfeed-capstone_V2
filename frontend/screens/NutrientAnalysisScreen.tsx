@@ -94,7 +94,10 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
           nutrientKey: keyof typeof nutrientIngredientMap
         ) => {
           return nutrientIngredientMap[nutrientKey].filter(
-            (ingredient) => !selectedIngredients.includes(ingredient)
+            (ingredient) =>
+              !selectedIngredients.some(
+                (item) => item.ingredient === ingredient
+              )
           );
         };
 
@@ -227,14 +230,14 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
     { name: "Phosphorus", value: result.totalNutrients.phosphorus },
   ];
 
-const handleSaveFormulation = () => {
-  navigation.navigate("SaveFormulation", {
-    type,
-    numSwine,
-    selectedIngredients,
-    totalNutrients,
-  });
-};
+  const handleSaveFormulation = () => {
+    navigation.navigate("SaveFormulation", {
+      type,
+      numSwine,
+      selectedIngredients, // Now properly typed as { ingredient: string; amount: number }[]
+      totalNutrients,
+    });
+  };
 
   return (
     <ScrollView>

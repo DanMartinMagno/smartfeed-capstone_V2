@@ -19,11 +19,16 @@ interface Formulation {
 }
 
 // Define FeedState with savedFormulations
+interface Ingredient {
+  ingredient: string;
+  amount: number;
+}
+
 interface FeedState {
-  savedFormulations: Formulation[]; // Array of Formulation objects
+  savedFormulations: Formulation[];
   type: "starter" | "grower" | "finisher";
   numSwine: number;
-  selectedIngredients: string[];
+  selectedIngredients: Ingredient[]; // Update to expect an array of Ingredient objects
 }
 
 // Initialize FeedState with savedFormulations as an empty array
@@ -47,7 +52,10 @@ const feedSlice = createSlice({
     setNumSwine: (state, action: PayloadAction<number>) => {
       state.numSwine = action.payload;
     },
-    setSelectedIngredients: (state, action: PayloadAction<string[]>) => {
+    setSelectedIngredients: (
+      state,
+      action: PayloadAction<{ ingredient: string; amount: number }[]>
+    ) => {
       state.selectedIngredients = action.payload;
     },
     setSavedFormulations: (state, action: PayloadAction<Formulation[]>) => {

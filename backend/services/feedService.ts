@@ -261,15 +261,23 @@ const getNutrientRecommendations = (
 };
 
 const feedFormulation = (
-  selectedIngredients: string[],
+  selectedIngredients: { ingredient: string; amount: number }[],
   type: "starter" | "grower" | "finisher",
   numSwine: number
 ) => {
-  const selectedIngredientObjects = selectedIngredients.map((ingredientName) =>
-    ingredients.find((i) => i.name === ingredientName)
-  );
+  const selectedIngredientObjects = selectedIngredients.map((item) => {
+    if (!item || !item.ingredient) {
+      console.error("Malformed ingredient detected:", item);
+      throw new Error("Selected ingredients not found or malformed.");
+    }
+    return ingredients.find(
+      (i) =>
+        i.name.toLowerCase().trim() === item.ingredient.toLowerCase().trim()
+    );
+  });
 
   if (selectedIngredientObjects.includes(undefined)) {
+    console.error("Error: One or more selected ingredients were not found.");
     throw new Error("Selected ingredients not found.");
   }
 
@@ -278,6 +286,7 @@ const feedFormulation = (
     numSwine,
     type
   );
+
   const recommendations = getNutrientRecommendations(type);
 
   const perSwineNutrients = {

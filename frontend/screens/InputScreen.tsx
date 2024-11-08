@@ -32,9 +32,9 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch();
   const type = useSelector((state: RootState) => state.feed.type);
   const [numSwine, setNumSwineState] = useState("");
-  const [selectedIngredients, setSelectedIngredientsState] = useState<string[]>(
-    []
-  );
+  const [selectedIngredients, setSelectedIngredientsState] = useState<
+    { ingredient: string; amount: number }[]
+  >([]); // Updated type to array of objects
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const ingredients = [
@@ -51,10 +51,15 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
     { name: "Rice Bran", icon: "grain" },
   ];
 
-  const toggleIngredient = (ingredient: string) => {
-    if (selectedIngredients.includes(ingredient)) {
+  const toggleIngredient = (ingredientName: string) => {
+    const isSelected = selectedIngredients.some(
+      (ingredient) => ingredient.ingredient === ingredientName
+    );
+
+    if (isSelected) {
+      // Remove the ingredient if already selected
       setSelectedIngredientsState((prev) =>
-        prev.filter((i) => i !== ingredient)
+        prev.filter((i) => i.ingredient !== ingredientName)
       );
       setErrorMessage(null);
     } else {
@@ -64,7 +69,12 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
         );
         return;
       }
-      setSelectedIngredientsState((prev) => [...prev, ingredient]);
+
+      // Add the ingredient with a default amount of 0
+      setSelectedIngredientsState((prev) => [
+        ...prev,
+        { ingredient: ingredientName, amount: 0 },
+      ]);
       setErrorMessage(null);
     }
   };
@@ -167,7 +177,9 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
                   </View>
                   <Checkbox
                     status={
-                      selectedIngredients.includes(ingredient.name)
+                      selectedIngredients.some(
+                        (item) => item.ingredient === ingredient.name
+                      )
                         ? "checked"
                         : "unchecked"
                     }

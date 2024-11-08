@@ -6,7 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Provider } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
-
+import { View, ActivityIndicator } from "react-native";
 import store from "./store";
 import { SwineProvider } from "./context/SwineContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -212,7 +212,15 @@ const App: React.FC = () => {
 };
 
 const AuthNavigation: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#18BD18" />
+      </View>
+    );
+  }
 
   return user ? (
     <MainAppNavigator />

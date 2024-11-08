@@ -1,4 +1,4 @@
-// frontend/src/screens/GraphScreen.tsx
+// frontend/screens/GraphScreen.tsx
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import axios from "axios";

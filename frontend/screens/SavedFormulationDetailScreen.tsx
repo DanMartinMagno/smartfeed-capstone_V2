@@ -19,19 +19,38 @@ const SavedFormulationDetailScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <ScrollView>
-      <Text>{formulation.name}</Text>
-      <Text>{formulation.description}</Text>
+      <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+        {formulation.name}
+      </Text>
+      <Text style={{ marginVertical: 4 }}>{formulation.description}</Text>
 
-      <Text>Ingredient Ratios</Text>
+      {/* Display Type and Expiration Date */}
+      <Text style={{ fontSize: 16, fontWeight: "600" }}>
+        Type:{" "}
+        {formulation.type.charAt(0).toUpperCase() + formulation.type.slice(1)}
+      </Text>
+      <Text style={{ fontSize: 16, fontWeight: "600" }}>
+        Expiration Date:{" "}
+        {formulation.expirationDate
+          ? new Date(formulation.expirationDate).toLocaleDateString()
+          : "N/A"}
+      </Text>
+
+      <Text style={{ fontSize: 16, fontWeight: "600" }}>
+        Number of Swine: {formulation.numSwine}
+      </Text>
+      <Text style={{ marginVertical: 10, fontSize: 18, fontWeight: "600" }}>
+        Ingredient Ratios
+      </Text>
       {formulation.ingredients && formulation.ingredients.length > 0 ? (
         formulation.ingredients.map(
           (
-            ingredient: { ingredient: string; amount: number | undefined },
-            index: React.Key | null | undefined
+            ingredient: { name: string; amount: number | undefined },
+            index: number
           ) => (
             <NutrientCard
               key={index}
-              title={ingredient.ingredient || "Unnamed Ingredient"}
+              title={ingredient.name || "Unnamed Ingredient"}
               value={`${(ingredient.amount ?? 0).toFixed(2)} kg`}
             />
           )
@@ -40,7 +59,9 @@ const SavedFormulationDetailScreen: React.FC<Props> = ({ route }) => {
         <Text>No ingredients available</Text>
       )}
 
-      <Text>Total Nutrients</Text>
+      <Text style={{ marginVertical: 10, fontSize: 18, fontWeight: "600" }}>
+        Total Nutrients
+      </Text>
       <NutrientCard
         title="Crude Protein"
         value={`${(formulation.totalNutrients?.crudeProtein ?? "N/A").toFixed(2)}`}

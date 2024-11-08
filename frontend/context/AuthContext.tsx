@@ -1,4 +1,4 @@
-//AuthContex.tsx
+// frontend/context/AuthContext.tsx
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,10 +10,9 @@ import {
   User,
 } from "../api/authApi";
 
-
 interface AuthContextType {
   user: User | null;
-  loading: boolean; // Add loading state
+  loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (
     lastName: string,
@@ -30,90 +29,107 @@ interface AuthContextType {
   logout: () => void;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true); // Track loading status
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("user");
-        const token = await AsyncStorage.getItem("token");
-        if (storedUser && token) {
+  const loadUserData = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem("user");
+      const token = await AsyncStorage.getItem("token");
+
+      if (token && storedUser) {
+        const base64Payload = token.split(".")[1];
+        const decodedPayload = JSON.parse(decodeBase64Url(base64Payload));
+        const tokenExpiry = decodedPayload.exp * 1000;
+
+        if (Date.now() < tokenExpiry) {
           setUser(JSON.parse(storedUser));
+        } else {
+          await handleLogout();
+          console.warn("Session expired, please log in again.");
         }
-      } catch (error) {
-        console.error("Failed to load user data", error);
-      } finally {
-        setLoading(false); // Mark as loaded
       }
-    };
-    loadUserData();
-  }, []);
-
-  const handleLogin = async (email: string, password: string) => {
-    const userData = await login(email, password);
-    if (userData && userData.token) {
-      setUser(userData);
-      await AsyncStorage.setItem("user", JSON.stringify(userData));
-      await AsyncStorage.setItem("token", userData.token);
-    } else {
-      throw new Error("Token not received or invalid");
+    } catch (error) {
+      console.error("Failed to load user data", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleUpdateUser = async (userData: User) => {
-    const updatedUser = await updateUserData(userData);
-    setUser(updatedUser);
-    await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+  const decodeBase64Url = (base64UrlString: string) => {
+    let base64 = base64UrlString.replace(/-/g, "+").replace(/_/g, "/");
+    while (base64.length % 4 !== 0) {
+      base64 += "=";
+    }
+    return atob(base64);
   };
 
-  const handleChangePassword = async (
-    currentPassword: string,
-    newPassword: string
-  ) => {
+  const handleLogin = async (email: string, password: string) => {
     try {
-      await changePasswordAPI(currentPassword, newPassword);
-      await handleLogout();
-      alert("Password changed successfully. Please log in again.");
+      const userData = await login(email, password);
+      if (userData && userData.token) {
+        await AsyncStorage.setItem("user", JSON.stringify(userData));
+        await AsyncStorage.setItem("token", userData.token);
+        setUser(userData);
+      } else {
+        throw new Error("Token not received or invalid");
+      }
     } catch (error: any) {
-      // Check if the backend response indicates an incorrect current password
       if (
         error.response &&
         error.response.data &&
-        error.response.data.message === "Current password is incorrect"
+        error.response.data.message
       ) {
-        alert(
-          "The current password you entered is incorrect. Please try again."
-        );
+        // Throw custom error message from backend
+        throw new Error(error.response.data.message);
       } else {
-        // Log unexpected errors only
-
-        alert(
-          "An error occurred while trying to change your password. Please try again later."
-        );
+        // Generic error message for unexpected issues
+        throw new Error("An unexpected error occurred. Please try again.");
       }
     }
   };
 
   const handleLogout = async () => {
-    setUser(null);
-    await AsyncStorage.clear();
+    try {
+      setUser(null);
+      await AsyncStorage.removeItem("user");
+      await AsyncStorage.removeItem("token");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        loading, // Provide loading status
+        loading,
         login: handleLogin,
         signup,
-        updateUser: handleUpdateUser,
-        changePassword: handleChangePassword,
+        updateUser: async (userData: User) => {
+          const updatedUser = await updateUserData(userData);
+          setUser(updatedUser);
+          await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+        },
+        changePassword: async (
+          currentPassword: string,
+          newPassword: string
+        ) => {
+          await changePasswordAPI(currentPassword, newPassword);
+          await handleLogout();
+          alert("Password changed successfully. Please log in again.");
+        },
         logout: handleLogout,
       }}
     >
