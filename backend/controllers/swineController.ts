@@ -5,267 +5,268 @@ const isError = (error: unknown): error is Error => {
   return (error as Error).message !== undefined;
 };
 
-export const getSwines = async (req: Request, res: Response): Promise<void> => {
+// Get all swines for the logged-in user
+export const getSwines = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const userId = req.user?.userId;
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+
   try {
-    const swines = await Swine.find();
-    res.json(swines);
+    const swines = await Swine.find({ userId });
+    return res.json(swines);
   } catch (err) {
-    if (isError(err)) {
-      console.error("Error in getSwines:", err.message);
-      res.status(500).json({ message: err.message });
-    } else {
-      console.error("Unknown error in getSwines");
-      res.status(500).json({ message: "Unknown error" });
-    }
+    console.error("Error in getSwines:", err);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
-export const addSwine = async (req: Request, res: Response): Promise<void> => {
+// Add a new swine for the logged-in user
+export const addSwine = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const { id, weight, age } = req.body;
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
 
   try {
-    // Normalize Swine ID by trimming and converting to lowercase
     const normalizedId = id.trim().toLowerCase();
-
-    // Check if a Swine with the same normalized ID already exists
-    const existingSwine = await Swine.findOne({ id: normalizedId });
+    const existingSwine = await Swine.findOne({ id: normalizedId, userId });
     if (existingSwine) {
-      res.status(400).json({ message: "ID already exists" });
-      return;
+      return res
+        .status(400)
+        .json({ message: "Swine ID already exists for this user" });
     }
 
-    // Create a new Swine entry with the normalized ID
     const swine = new Swine({
       id: normalizedId,
       weight,
       age,
-      weights: [{ weight, date: new Date() }], // Include initial weight
+      userId,
+      weights: [{ weight, date: new Date() }],
     });
 
     const newSwine = await swine.save();
-    res.status(201).json(newSwine);
+    return res.status(201).json(newSwine);
   } catch (err) {
-    if (isError(err)) {
-      console.error("Error in addSwine:", err.message);
-      res.status(400).json({ message: err.message });
-    } else {
-      console.error("Unknown error in addSwine");
-      res.status(400).json({ message: "Unknown error" });
-    }
+    console.error("Error in addSwine:", err);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
+// Get all weight entries for a specific swine belonging to the logged-in user
 export const getSwineWeights = async (
   req: Request,
   res: Response
-): Promise<void> => {
+): Promise<Response> => {
+  const { swineId } = req.params;
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+
   try {
-    const { swineId } = req.params;
-
-    // Normalize the Swine ID by trimming and converting to lowercase
-    const normalizedId = swineId.trim().toLowerCase();
-
-    const swine = await Swine.findOne({ id: normalizedId });
+    const swine = await Swine.findOne({
+      id: swineId.trim().toLowerCase(),
+      userId,
+    });
     if (!swine) {
-      console.error(`Swine with id ${normalizedId} not found`);
-      res.status(404).json({ message: "Swine not found" });
-    } else {
-      res.json(swine.weights);
+      return res.status(404).json({ message: "Swine not found" });
     }
+    return res.json(swine.weights);
   } catch (err) {
-    if (isError(err)) {
-      console.error("Error in getSwineWeights:", err.message);
-      res.status(500).json({ message: err.message });
-    } else {
-      console.error("Unknown error in getSwineWeights");
-      res.status(500).json({ message: "Unknown error" });
-    }
+    console.error("Error in getSwineWeights:", err);
+    return res
+      .status(500)
+      .json({ message: isError(err) ? err.message : "Unknown error" });
   }
 };
 
-export const addWeight = async (req: Request, res: Response): Promise<void> => {
+// Add a new weight entry to a swine for the logged-in user
+export const addWeight = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const { swineId } = req.params;
   const { date, weight } = req.body;
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
 
   if (!date || !weight) {
-    res.status(400).json({ message: "Date and weight are required" });
-    return;
+    return res.status(400).json({ message: "Date and weight are required" });
   }
 
   try {
-    const swine = await Swine.findOne({ id: swineId.trim() });
+    const swine = await Swine.findOne({
+      id: swineId.trim().toLowerCase(),
+      userId,
+    });
     if (!swine) {
-      res.status(404).json({ message: "Swine not found" });
-      return;
+      return res.status(404).json({ message: "Swine not found" });
     }
 
-    // If there are any existing weights, validate the new weight
-    // if (swine.weights.length > 0) {
-    // const latestWeightEntry = swine.weights[swine.weights.length - 1];
-
-    // Ensure the new weight is greater than the latest recorded weight
-    // if (weight <= latestWeightEntry.weight) {
-    // res.status(400).json({
-    //    message: `New weight (${weight} kg) must be greater than the latest weight (${latestWeightEntry.weight} kg).`,
-    //   });
-    //  return;
-    // }
-    // }
-
-    // Add the new weight entry (no validation if there are no existing weights)
+    // Add the new weight entry
     swine.weights.push({ date, weight });
     await swine.save();
-    res.json(swine);
+    return res.json(swine);
   } catch (err) {
-    if (isError(err)) {
-      res.status(400).json({ message: err.message });
-    } else {
-      res.status(400).json({ message: "Unknown error" });
-    }
+    console.error("Error in addWeight:", err);
+    return res
+      .status(500)
+      .json({ message: isError(err) ? err.message : "Unknown error" });
   }
 };
 
+// Delete a swine owned by the logged-in user
 export const deleteSwine = async (
   req: Request,
   res: Response
-): Promise<void> => {
+): Promise<Response> => {
   const { swineId } = req.params;
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
 
   try {
-    // Normalize Swine ID by trimming and converting to lowercase
-    const normalizedId = swineId.trim().toLowerCase();
-
-    const swine = await Swine.findOneAndDelete({ id: normalizedId });
+    const swine = await Swine.findOneAndDelete({
+      id: swineId.trim().toLowerCase(),
+      userId,
+    });
     if (!swine) {
-      res.status(404).json({ message: "Swine not found" });
-    } else {
-      res.json({ message: "Swine deleted" });
+      return res.status(404).json({ message: "Swine not found" });
     }
+    return res.json({ message: "Swine deleted" });
   } catch (err) {
-    if (isError(err)) {
-      res.status(400).json({ message: err.message });
-    } else {
-      res.status(400).json({ message: "Unknown error" });
-    }
+    console.error("Error in deleteSwine:", err);
+    return res
+      .status(500)
+      .json({ message: isError(err) ? err.message : "Unknown error" });
   }
 };
 
+// Update a swine's details for the logged-in user
 export const updateSwine = async (
   req: Request,
   res: Response
-): Promise<void> => {
+): Promise<Response> => {
   const { swineId } = req.params;
   const { weight, age } = req.body;
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
 
   try {
     const swine = await Swine.findOneAndUpdate(
-      { id: swineId.trim() }, // Ensure there's no trailing whitespace
+      { id: swineId.trim().toLowerCase(), userId },
       { weight, age },
       { new: true, runValidators: true }
     );
     if (!swine) {
-      res.status(404).json({ message: "Swine not found" });
-    } else {
-      res.json(swine);
+      return res.status(404).json({ message: "Swine not found" });
     }
+    return res.json(swine);
   } catch (err) {
-    if (isError(err)) {
-      res.status(400).json({ message: err.message });
-    } else {
-      res.status(400).json({ message: "Unknown error" });
-    }
+    console.error("Error in updateSwine:", err);
+    return res
+      .status(500)
+      .json({ message: isError(err) ? err.message : "Unknown error" });
   }
 };
 
+// Update a specific weight entry for a swine owned by the logged-in user
 export const updateWeight = async (
   req: Request,
   res: Response
-): Promise<void> => {
+): Promise<Response> => {
   const { swineId, weightId } = req.params;
   const { weight } = req.body;
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
 
   try {
-    const swine = await Swine.findOne({ id: swineId.trim() });
+    const swine = await Swine.findOne({
+      id: swineId.trim().toLowerCase(),
+      userId,
+    });
     if (!swine) {
-      res.status(404).json({ message: "Swine not found" });
-      return;
+      return res.status(404).json({ message: "Swine not found" });
     }
 
     const weightEntry = swine.weights.id(weightId);
     if (!weightEntry) {
-      res.status(404).json({ message: "Weight entry not found" });
-      return;
+      return res.status(404).json({ message: "Weight entry not found" });
     }
 
-    // Validate the weight based on previous and next entries
-    const index = swine.weights.findIndex((w) => w._id.toString() === weightId);
-    const prevWeight = index > 0 ? swine.weights[index - 1].weight : null;
-    const nextWeight =
-      index < swine.weights.length - 1 ? swine.weights[index + 1].weight : null;
-
-    // Check that the new weight is greater than the previous weight
-    /*
-    if (prevWeight !== null && weight <= prevWeight) {
-      res.status(400).json({
-        message: `New weight must be greater than the previoussss weight of ${prevWeight} kg.`,
-      });
-      return;
-    }
-
-    // Check that the new weight is less than the next weight
-    if (nextWeight !== null && weight >= nextWeight) {
-      res.status(400).json({
-        message: `New weight must be less than the next weight of ${nextWeight} kg.`,
-      });
-      return;
-    }
-   */
     // Update the weight entry
     weightEntry.weight = weight;
     const updatedSwine = await swine.save();
-    res.json(updatedSwine);
+    return res.json(updatedSwine);
   } catch (err) {
-    if (isError(err)) {
-      res.status(400).json({ message: err.message });
-    } else {
-      res.status(400).json({ message: "Unknown error" });
-    }
+    console.error("Error in updateWeight:", err);
+    return res
+      .status(500)
+      .json({ message: isError(err) ? err.message : "Unknown error" });
   }
 };
 
+// Delete a specific weight entry from a swine owned by the logged-in user
 export const deleteWeight = async (
   req: Request,
   res: Response
-): Promise<void> => {
+): Promise<Response> => {
   const { swineId, weightId } = req.params;
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
 
   try {
-    const swine = await Swine.findOne({ id: swineId.trim() });
+    const swine = await Swine.findOne({
+      id: swineId.trim().toLowerCase(),
+      userId,
+    });
     if (!swine) {
-      res.status(404).json({ message: "Swine not found" });
-      return;
+      return res.status(404).json({ message: "Swine not found" });
     }
 
     // Prevent deletion if there's only one weight entry
     if (swine.weights.length === 1) {
-      res.status(400).json({ message: "Cannot delete the last weight entry." });
-      return;
+      return res
+        .status(400)
+        .json({ message: "Cannot delete the last weight entry." });
     }
 
     const weightEntry = swine.weights.id(weightId);
     if (!weightEntry) {
-      res.status(404).json({ message: "Weight entry not found" });
-      return;
+      return res.status(404).json({ message: "Weight entry not found" });
     }
 
     weightEntry.remove(); // Remove the weight entry
     const updatedSwine = await swine.save(); // Save the swine without the deleted weight
-    res.json(updatedSwine); // Return the updated swine object
+    return res.json(updatedSwine); // Return the updated swine object
   } catch (err) {
-    if (isError(err)) {
-      res.status(400).json({ message: err.message });
-    } else {
-      res.status(400).json({ message: "Unknown error" });
-    }
+    console.error("Error in deleteWeight:", err);
+    return res
+      .status(500)
+      .json({ message: isError(err) ? err.message : "Unknown error" });
   }
 };

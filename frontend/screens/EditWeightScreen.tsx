@@ -7,12 +7,13 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance"; // Use axiosInstance for authenticated requests
 import {
   EditWeightScreenNavigationProp,
   EditWeightScreenRouteProp,
 } from "../types/navigation";
 import { useSwineContext } from "../context/SwineContext";
+import axios from "axios";
 
 type Props = {
   navigation: EditWeightScreenNavigationProp;
@@ -21,11 +22,12 @@ type Props = {
 
 const EditWeightScreen: React.FC<Props> = ({ navigation, route }) => {
   const { swineId, weightId } = route.params;
-  const { swines, editWeight, fetchSwines } = useSwineContext();
+  const { swines, editWeight } = useSwineContext();
   const [weight, setWeight] = useState<string>("");
   const [weightError, setWeightError] = useState<string>("");
 
   useEffect(() => {
+    // Load the existing weight entry to prefill input field
     const swine = swines.find((sw) => sw.id === swineId);
     if (swine) {
       const weightEntry = swine.weights.find((w) => w._id === weightId);
@@ -49,7 +51,6 @@ const EditWeightScreen: React.FC<Props> = ({ navigation, route }) => {
   const handleSubmit = async () => {
     const weightValue = parseFloat(weight);
 
-    // Validate the weight value before submitting
     if (weightError || !weight) {
       Alert.alert(
         "Validation Error",
@@ -59,26 +60,18 @@ const EditWeightScreen: React.FC<Props> = ({ navigation, route }) => {
     }
 
     try {
-      // Attempt to update the weight in the backend
-      const response = await axios.put(
-        `https://my-swine-feed-app.onrender.com/api/swine/${swineId}/weights/${weightId}`,
-        {
-          weight: weightValue,
-        }
+      const response = await axiosInstance.put(
+        `/swine/${swineId}/weights/${weightId}`,
+        { weight: weightValue }
       );
-
-      // If successful, update the context and navigate back to Swine Detail
-      editWeight(swineId, weightId, weightValue);
+      editWeight(swineId, weightId, weightValue); // Update context state
       navigation.navigate("Swine Detail", { swineId });
     } catch (error) {
-      // Handle error and show alert
       if (axios.isAxiosError(error)) {
-        // If it's an Axios error, use the error response message
         const errorMessage =
           error.response?.data?.message || "Unknown error occurred";
         Alert.alert("Failed to update weight entry", errorMessage);
       } else {
-        // Fallback for unknown errors
         Alert.alert("Error", "Something went wrong while updating the weight.");
       }
     }

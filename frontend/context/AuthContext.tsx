@@ -9,6 +9,7 @@ import {
   changePassword as changePasswordAPI,
   User,
 } from "../api/authApi";
+import { useSwineContext } from "./SwineContext";
 
 interface AuthContextType {
   user: User | null;
@@ -38,6 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const { clearSwines, fetchSwines } = useSwineContext();
 
   const loadUserData = async () => {
     try {
@@ -78,6 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         await AsyncStorage.setItem("user", JSON.stringify(userData));
         await AsyncStorage.setItem("token", userData.token);
         setUser(userData);
+        fetchSwines(); // Fetch user-specific swine data after login
       } else {
         throw new Error("Token not received or invalid");
       }
@@ -101,6 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(null);
       await AsyncStorage.removeItem("user");
       await AsyncStorage.removeItem("token");
+      clearSwines(); // Clear swine data on logout
     } catch (error) {
       console.error("Error during logout:", error);
     }

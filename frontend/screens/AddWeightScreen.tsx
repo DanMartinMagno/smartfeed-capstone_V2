@@ -7,12 +7,13 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance"; // Use axiosInstance for authenticated requests
 import {
   AddWeightScreenNavigationProp,
   AddWeightScreenRouteProp,
 } from "../types/navigation";
 import { useSwineContext } from "../context/SwineContext";
+import axios from "axios";
 
 type Props = {
   navigation: AddWeightScreenNavigationProp;
@@ -21,7 +22,7 @@ type Props = {
 
 const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
   const { swineId } = route.params;
-  const { addWeight, swines, fetchSwines } = useSwineContext(); // Fetch updated swine data
+  const { addWeight, swines, fetchSwines } = useSwineContext();
   const [weight, setWeight] = useState<string>("");
   const [date, setDate] = useState<string>(
     new Date().toLocaleDateString("en-US", {
@@ -46,48 +47,35 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
   const handleSubmit = async () => {
     const weightValue = parseFloat(weight);
 
-    // Fetch the latest weight for comparison
+    // Fetch the latest weight for validation
     const swine = swines.find((sw) => sw.id === swineId);
     if (swine && swine.weights.length > 0) {
       const latestWeight = swine.weights[swine.weights.length - 1].weight;
-
-      // Check if the new weight is strictly greater than the latest weight
+      // Uncomment the next lines for strict weight increase validation
       // if (weightValue <= latestWeight) {
-      //  Alert.alert(
-      //    "Validation Error",
-      //   `New weight must be strictly greater than ${latestWeight} kg.`
-      // );
+      //   Alert.alert("Validation Error", `New weight must be strictly greater than ${latestWeight} kg.`);
       //   return;
-      //  }
+      // }
     }
 
-    // Submit the new weight
+    // Submit new weight entry
     try {
-      const response = await axios.post(
-        `https://my-swine-feed-app.onrender.com/api/swine/${swineId}/weights`,
-        {
-          date,
-          weight: weightValue,
-        }
-      );
-      // Add weight to context
+      const response = await axiosInstance.post(`/swine/${swineId}/weights`, {
+        date,
+        weight: weightValue,
+      });
       addWeight(
         swineId,
         response.data.weights[response.data.weights.length - 1]
       );
-
-      // Refetch updated swine data to ensure state is up to date
-      await fetchSwines();
-
+      await fetchSwines(); // Ensure context is up to date
       navigation.navigate("Swine Detail", { swineId });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        // Axios-specific error handling
         if (error.response && error.response.data) {
           Alert.alert("Error", error.response.data.message);
         }
       } else if (error instanceof Error) {
-        // Generic error handling
         Alert.alert("Error", error.message);
       } else {
         console.error("Unknown error", error);

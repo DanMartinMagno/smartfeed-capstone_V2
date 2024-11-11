@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Alert } from "react-native";
+import axiosInstance from "../api/axiosInstance";
 
 interface WeightEntry {
   date: string;
@@ -22,6 +23,7 @@ interface SwineContextProps {
   loading: boolean;
   error: string;
   fetchSwines: () => void;
+  clearSwines: () => void;
   addSwine: (newSwine: Swine) => void;
   deleteSwine: (swineId: string) => void;
   addWeight: (swineId: string, weightEntry: WeightEntry) => void;
@@ -40,8 +42,8 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const fetchSwines = () => {
     setLoading(true);
-    axios
-      .get("https://my-swine-feed-app.onrender.com/api/swine")
+    axiosInstance
+      .get("/swine")
       .then((response) => {
         setSwines(response.data);
         setLoading(false);
@@ -50,6 +52,11 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
         setError("Error fetching data");
         setLoading(false);
       });
+  };
+
+  // Function to clear swine data, used on logout
+  const clearSwines = () => {
+    setSwines([]);
   };
 
   useEffect(() => {
@@ -89,25 +96,23 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const deleteWeight = async (swineId: string, weightId: string) => {
     try {
-      // Find the swine and check if it has more than one weight
+      // Find the specific swine by ID in the current context state
       const swine = swines.find((sw) => sw.id === swineId);
       if (!swine) {
         Alert.alert("Error", "Swine not found.");
         return;
       }
 
+      // Check if this is the last weight entry to prevent deletion
       if (swine.weights.length === 1) {
-        // Prevent deletion if it's the last weight
         Alert.alert("Error", "Cannot delete the last weight entry.");
         return;
       }
 
-      // Send DELETE request to the backend
-      await axios.delete(
-        `https://my-swine-feed-app.onrender.com/api/swine/${swineId}/weights/${weightId}`
-      );
+      // Send DELETE request to the backend to remove the weight entry for this swine
+      await axiosInstance.delete(`/swine/${swineId}/weights/${weightId}`);
 
-      // Update the frontend state by removing the weight
+      // Update the local state by removing the specified weight entry
       const updatedSwines = swines.map((swine) =>
         swine.id === swineId
           ? {
@@ -118,14 +123,16 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
       );
       setSwines(updatedSwines);
 
-      // Optionally refetch swines from backend to ensure frontend state syncs with backend
+      // Optionally refetch all swine data to sync the frontend state with the backend
       await fetchSwines();
     } catch (error) {
+      // Handle Axios-specific errors and show appropriate alerts
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.message || "Unknown error occurred";
         Alert.alert("Error", errorMessage);
       } else {
+        // Log unexpected errors and show a generic alert
         console.error("Error deleting weight entry", error);
         Alert.alert("Error", "Failed to delete the weight entry.");
       }
@@ -143,6 +150,7 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         error,
         fetchSwines,
+        clearSwines,
         addSwine, // Ensure addSwine is provided here
         addWeight,
         editWeight,

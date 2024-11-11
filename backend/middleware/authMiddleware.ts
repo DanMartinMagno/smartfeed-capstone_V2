@@ -13,28 +13,16 @@ export const authenticateToken = (
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    console.warn("No token provided in request");
     return res.status(401).json({ message: "Token not provided" });
   }
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {
-      // Handle token expiration specifically
-      if (err.name === "TokenExpiredError") {
-        console.warn("Token expired");
-        return res
-          .status(403)
-          .json({ message: "Token expired, please log in again." });
-      }
-      console.error("Token verification failed:", err);
-      return res
-        .status(403)
-        .json({ message: "Token verification failed", error: err });
+      return res.status(403).json({ message: "Token verification failed" });
     }
 
-    // Set the user ID on the request object for use in routes
-    if (typeof user === "object" && "userId" in user) {
-      req.user = user as { userId: string };
+    if (user && typeof user === "object" && "userId" in user) {
+      (req as any).user = { userId: user.userId };
       next();
     } else {
       res.status(403).json({ message: "Invalid token payload" });

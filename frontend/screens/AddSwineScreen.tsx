@@ -1,4 +1,4 @@
-////AddSwineScreen.tsx
+//AddSwineScreen.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -8,9 +8,9 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import axios from "axios";
 import { useSwineContext } from "../context/SwineContext";
 import { AddSwineScreenNavigationProp } from "../types/navigation"; // Import your navigation types
+import axiosInstance from "../api/axiosInstance";
 
 type Props = {
   navigation: AddSwineScreenNavigationProp; // Explicitly define the navigation prop type
@@ -83,9 +83,8 @@ const AddSwineScreen: React.FC<Props> = ({ navigation }) => {
       weights: [], // Start with an empty array for weights
     };
 
-    axios
-      .post("https://my-swine-feed-app.onrender.com/api/swine", newSwine)
-
+    axiosInstance
+      .post("/swine", newSwine) // Use axiosInstance for authenticated requests
       .then((response) => {
         addSwine(response.data);
         navigation.navigate("Home");

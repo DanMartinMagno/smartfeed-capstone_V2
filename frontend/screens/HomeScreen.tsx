@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useCallback, useRef } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -7,8 +8,9 @@ import {
   StyleSheet,
   Alert,
   Animated,
+  ActivityIndicator,
 } from "react-native";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance"; // Import axiosInstance
 import {
   HomeScreenNavigationProp,
   HomeScreenRouteProp,
@@ -67,7 +69,14 @@ const SwineCard = ({ item, onPress, confirmDeleteSwine }: any) => {
 };
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
-  const { swines, loading, error, deleteSwine } = useSwineContext();
+  const { swines, loading, error, fetchSwines, deleteSwine } =
+    useSwineContext();
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchSwines(); // Ensure the swine data is up-to-date for the current user
+    }, [])
+  );
 
   const confirmDeleteSwine = (swineId: string) => {
     Alert.alert(
@@ -84,9 +93,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     );
   };
 
+  // Use axiosInstance to ensure the authorization token is included
   const handleDeleteSwine = (swineId: string) => {
-    axios
-      .delete(`https://my-swine-feed-app.onrender.com/api/swine/${swineId}`)
+    axiosInstance
+      .delete(`/swine/${swineId}`)
       .then(() => {
         deleteSwine(swineId);
       })
@@ -94,7 +104,11 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#18BD18" />
+      </View>
+    );
   }
 
   if (error) {

@@ -1,7 +1,6 @@
-// frontend/screens/GraphScreen.tsx
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance"; // Use axiosInstance for authenticated requests
 import {
   GraphScreenNavigationProp,
   GraphScreenRouteProp,
@@ -18,11 +17,6 @@ interface WeightEntry {
   weight: number;
 }
 
-type GraphProps = {
-  weightEntries: WeightEntry[];
-  swineAgeInWeeks: number;
-};
-
 const GraphScreen: React.FC<Props> = ({ route }) => {
   const { swineId } = route.params;
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
@@ -30,10 +24,9 @@ const GraphScreen: React.FC<Props> = ({ route }) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    axios
-      .get(
-        `https://my-swine-feed-app.onrender.com/api/swine/${swineId}/weights`
-      )
+    // Fetch weight entries for the selected swine
+    axiosInstance
+      .get(`/swine/${swineId}/weights`)
       .then((response) => {
         setWeightEntries(response.data);
         setLoading(false);
@@ -54,7 +47,11 @@ const GraphScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Graph weightEntries={weightEntries} swineAgeInWeeks={0} swineID={""} />
+      <Graph
+        weightEntries={weightEntries}
+        swineAgeInWeeks={0}
+        swineID={swineId}
+      />
     </View>
   );
 };
