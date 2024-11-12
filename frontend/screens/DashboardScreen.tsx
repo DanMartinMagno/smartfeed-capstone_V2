@@ -59,10 +59,8 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   const { user } = useContext(AuthContext) ?? {};
   const userId = user?.userId;
 
-  const handlePress = (type: "starter" | "grower" | "finisher") => {
-    dispatch(setType(type));
-    navigation.navigate("Input");
-  };
+  // Flag to prevent press if scrolling
+  const isScrolling = useRef(false);
 
   const handlePressIn = (scaleAnim: Animated.Value) => {
     Animated.spring(scaleAnim, {
@@ -78,7 +76,22 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
     Animated.spring(scaleAnim, {
       toValue: 1,
       useNativeDriver: true,
-    }).start(() => handlePress(cardType));
+    }).start(() => {
+      // Only trigger navigation if not scrolling
+      if (!isScrolling.current) {
+        dispatch(setType(cardType));
+        navigation.navigate("Input");
+      }
+    });
+  };
+
+  // Detect scroll event
+  const handleScrollBeginDrag = () => {
+    isScrolling.current = true;
+  };
+
+  const handleScrollEndDrag = () => {
+    isScrolling.current = false;
   };
 
   // Fetch saved formulations whenever the screen gains focus
@@ -152,147 +165,158 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Render feed type cards */}
-      <TouchableWithoutFeedback
-        onPressIn={() => handlePressIn(starterScaleAnim)}
-        onPressOut={() => handlePressOut(starterScaleAnim, "starter")}
-      >
-        <Animated.View style={{ transform: [{ scale: starterScaleAnim }] }}>
-          <LinearGradient
-            colors={["#0CB73F", "#95D642"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.featureCard}
-          >
-            <View style={styles.cardContent}>
-              <View style={styles.cardHeader}>
-                <View style={styles.iconBackground}>
-                  <Image
-                    source={require("../assets/starter-icon.png")}
-                    style={styles.featureIcon}
-                  />
+    <ScrollView
+      contentContainerStyle={styles.scrollContainer}
+      onScrollBeginDrag={handleScrollBeginDrag}
+      onScrollEndDrag={handleScrollEndDrag}
+    >
+      <View style={styles.container}>
+        {/* Starter Card */}
+        <TouchableWithoutFeedback
+          onPressIn={() => handlePressIn(starterScaleAnim)}
+          onPressOut={() => handlePressOut(starterScaleAnim, "starter")}
+        >
+          <Animated.View style={{ transform: [{ scale: starterScaleAnim }] }}>
+            <LinearGradient
+              colors={["#0CB73F", "#95D642"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.featureCard}
+            >
+              <View style={styles.cardContent}>
+                <View style={styles.cardHeader}>
+                  <View style={styles.iconBackground}>
+                    <Image
+                      source={require("../assets/starter-icon.png")}
+                      style={styles.featureIcon}
+                    />
+                  </View>
+                  <Text style={styles.featureTitle}>Starter</Text>
                 </View>
-                <Text style={styles.featureTitle}>Starter</Text>
+                <Text style={styles.featureDescription}>
+                  Starter for native swine, aged 2-4 weeks and weighing 23-35
+                  kg, offers essentials for early growth and development.
+                </Text>
               </View>
-              <Text style={styles.featureDescription}>
-                Starter for native swine, aged 2-4 weeks and weighing 23-35 kg,
-                offers essentials for early growth and development.
-              </Text>
-            </View>
-          </LinearGradient>
-        </Animated.View>
-      </TouchableWithoutFeedback>
+            </LinearGradient>
+          </Animated.View>
+        </TouchableWithoutFeedback>
 
-      {/* Grower Card */}
-      <TouchableWithoutFeedback
-        onPressIn={() => handlePressIn(growerScaleAnim)}
-        onPressOut={() => handlePressOut(growerScaleAnim, "grower")}
-      >
-        <Animated.View style={{ transform: [{ scale: growerScaleAnim }] }}>
-          <LinearGradient
-            colors={["#1E90FF", "#87CEFA"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.featureCard}
-          >
-            <View style={styles.cardContent}>
-              <View style={styles.cardHeader}>
-                <View style={styles.iconBackground}>
-                  <Image
-                    source={require("../assets/grower-icon.png")}
-                    style={styles.featureIcon}
-                  />
+        {/* Grower Card */}
+        <TouchableWithoutFeedback
+          onPressIn={() => handlePressIn(growerScaleAnim)}
+          onPressOut={() => handlePressOut(growerScaleAnim, "grower")}
+        >
+          <Animated.View style={{ transform: [{ scale: growerScaleAnim }] }}>
+            <LinearGradient
+              colors={["#1E90FF", "#87CEFA"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.featureCard}
+            >
+              <View style={styles.cardContent}>
+                <View style={styles.cardHeader}>
+                  <View style={styles.iconBackground}>
+                    <Image
+                      source={require("../assets/grower-icon.png")}
+                      style={styles.featureIcon}
+                    />
+                  </View>
+                  <Text style={styles.featureTitle}>Grower</Text>
                 </View>
-                <Text style={styles.featureTitle}>Grower</Text>
+                <Text style={styles.featureDescription}>
+                  Grower stage for native swine, aged 5-12 weeks and weighing
+                  35-75 kg, provides necessary support for steady muscle growth.
+                </Text>
               </View>
-              <Text style={styles.featureDescription}>
-                Grower stage for native swine, aged 5-12 weeks and weighing
-                35-75 kg, provides necessary support for steady muscle growth.
-              </Text>
-            </View>
-          </LinearGradient>
-        </Animated.View>
-      </TouchableWithoutFeedback>
+            </LinearGradient>
+          </Animated.View>
+        </TouchableWithoutFeedback>
 
-      {/* Finisher Card */}
-      <TouchableWithoutFeedback
-        onPressIn={() => handlePressIn(finisherScaleAnim)}
-        onPressOut={() => handlePressOut(finisherScaleAnim, "finisher")}
-      >
-        <Animated.View style={{ transform: [{ scale: finisherScaleAnim }] }}>
-          <LinearGradient
-            colors={["#FF7F50", "#ebb886"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.featureCard}
-          >
-            <View style={styles.cardContent}>
-              <View style={styles.cardHeader}>
-                <View style={styles.iconBackground}>
-                  <Image
-                    source={require("../assets/finisher-icon.png")}
-                    style={styles.featureIcon}
-                  />
+        {/* Finisher Card */}
+        <TouchableWithoutFeedback
+          onPressIn={() => handlePressIn(finisherScaleAnim)}
+          onPressOut={() => handlePressOut(finisherScaleAnim, "finisher")}
+        >
+          <Animated.View style={{ transform: [{ scale: finisherScaleAnim }] }}>
+            <LinearGradient
+              colors={["#FF7F50", "#ebb886"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.featureCard}
+            >
+              <View style={styles.cardContent}>
+                <View style={styles.cardHeader}>
+                  <View style={styles.iconBackground}>
+                    <Image
+                      source={require("../assets/finisher-icon.png")}
+                      style={styles.featureIcon}
+                    />
+                  </View>
+                  <Text style={styles.featureTitle}>Finisher</Text>
                 </View>
-                <Text style={styles.featureTitle}>Finisher</Text>
+                <Text style={styles.featureDescription}>
+                  Finisher for native swine, aged 13+ weeks and weighing 75 kg+,
+                  ensures optimal weight gain and readiness for market.
+                </Text>
               </View>
-              <Text style={styles.featureDescription}>
-                Finisher for native swine, aged 13+ weeks and weighing 75 kg+,
-                ensures optimal weight gain and readiness for market.
-              </Text>
-            </View>
-          </LinearGradient>
-        </Animated.View>
-      </TouchableWithoutFeedback>
+            </LinearGradient>
+          </Animated.View>
+        </TouchableWithoutFeedback>
 
-      {/* Saved Formulations List */}
-      <View>
-        <Text>Saved Formulations</Text>
-        {savedFormulations.map((formulation) => (
-          <TouchableOpacity
-            key={formulation._id}
-            disabled={formulation.isExpired} // Disable interaction if expired
-            onPress={() =>
-              navigation.navigate("SavedFormulationDetail", {
-                formulation: {
-                  ...formulation,
-                  type: formulation.type || "starter",
-                  expirationDate:
-                    formulation.expirationDate || new Date().toISOString(),
-                  numSwine: formulation.numSwine,
-                },
-              })
-            }
-          >
-            <Text
-              style={
-                formulation.isExpired
-                  ? styles.expiredText // Apply expired styling
-                  : styles.formulationName
+        {/* Saved Formulations List */}
+        <View>
+          <Text>Saved Formulations</Text>
+          {savedFormulations.map((formulation) => (
+            <TouchableOpacity
+              key={formulation._id}
+              disabled={formulation.isExpired}
+              onPress={() =>
+                navigation.navigate("SavedFormulationDetail", {
+                  formulation: {
+                    ...formulation,
+                    type: formulation.type || "starter",
+                    expirationDate:
+                      formulation.expirationDate || new Date().toISOString(),
+                    numSwine: formulation.numSwine,
+                  },
+                })
               }
             >
-              {formulation.name}
-            </Text>
-            <Text>{formulation.description}</Text>
-            <Text>
-              {formulation.isExpired
-                ? "Expired"
-                : `Valid until ${new Date(formulation.expirationDate).toLocaleDateString()}`}
-            </Text>
+              <Text
+                style={
+                  formulation.isExpired
+                    ? styles.expiredText
+                    : styles.formulationName
+                }
+              >
+                {formulation.name}
+              </Text>
+              <Text>{formulation.description}</Text>
+              <Text>
+                {formulation.isExpired
+                  ? "Expired"
+                  : `Valid until ${new Date(
+                      formulation.expirationDate
+                    ).toLocaleDateString()}`}
+              </Text>
 
-            {/* Delete Button */}
-            <TouchableOpacity onPress={() => confirmDelete(formulation._id)}>
-              <Text style={{ color: "red", marginTop: 5 }}>Delete</Text>
+              {/* Delete Button */}
+              <TouchableOpacity onPress={() => confirmDelete(formulation._id)}>
+                <Text style={{ color: "red", marginTop: 5 }}>Delete</Text>
+              </TouchableOpacity>
             </TouchableOpacity>
-          </TouchableOpacity>
-        ))}
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    backgroundColor: "#f2f6f9",
+  },
   container: {
     flex: 1,
     backgroundColor: "#f2f6f9",

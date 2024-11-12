@@ -100,91 +100,92 @@ const SwineDetailScreen: React.FC<Props> = ({ navigation, route }) => {
     return <Text>No swine data available</Text>;
   }
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.actionButtonsContainer}>
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={() => navigation.navigate("Add Weight", { swineId })}
-        >
-          <MaterialIcons name="add" size={24} color="white" />
-          <Text style={styles.actionButtonText}>Add Weight</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={() => navigation.navigate("Graph", { swineId })}
-        >
-          <MaterialIcons name="show-chart" size={24} color="white" />
-          <Text style={styles.actionButtonText}>Show Graph</Text>
-        </TouchableOpacity>
-      </View>
-
-      <FlatList
-        data={weightEntries}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={styles.textContainer}>
-              <Text style={styles.dateText}>
-                Date:{" "}
-                {new Date(item.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </Text>
-              <Text style={styles.weightText}>Weight: {item.weight} kg</Text>
-            </View>
-            <TouchableOpacity onPress={() => handleOpenMenu(item)}>
-              <MaterialIcons name="more-horiz" size={24} color="black" />
-            </TouchableOpacity>
+return (
+  <View style={styles.container}>
+    <FlatList
+      data={weightEntries}
+      keyExtractor={(item) => item._id}
+      renderItem={({ item }) => (
+        <View style={styles.card}>
+          <View style={styles.textContainer}>
+            <Text style={styles.dateText}>
+              Date:{" "}
+              {new Date(item.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </Text>
+            <Text style={styles.weightText}>Weight: {item.weight} kg</Text>
           </View>
-        )}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>No weight entries available.</Text>
-        }
-      />
+          <TouchableOpacity onPress={() => handleOpenMenu(item)}>
+            <MaterialIcons name="more-horiz" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+      )}
+      ListEmptyComponent={
+        <Text style={styles.emptyText}>No weight entries available.</Text>
+      }
+      contentContainerStyle={{ paddingBottom: 80 }}
+    />
 
-      <Modal
-        transparent={true}
-        visible={menuVisible}
-        onRequestClose={handleCloseMenu}
-        animationType="fade"
+    <View style={styles.actionButtonsContainer}>
+      <TouchableOpacity
+        style={styles.actionButton}
+        onPress={() => navigation.navigate("Add Weight", { swineId })}
       >
-        <TouchableOpacity style={styles.modalOverlay} onPress={handleCloseMenu}>
-          <View style={styles.menuContainer}>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                if (selectedEntry?._id) {
-                  navigation.navigate("Edit Weight", {
-                    swineId,
-                    weightId: selectedEntry._id,
-                  });
-                  handleCloseMenu();
-                }
-              }}
-            >
-              <MaterialIcons name="edit" size={24} color="#28a745" />
-              <Text style={styles.menuItemText}>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                if (selectedEntry?._id) {
-                  handleDeleteWeight(selectedEntry._id);
-                  handleCloseMenu();
-                }
-              }}
-            >
-              <MaterialIcons name="delete" size={24} color="red" />
-              <Text style={styles.menuItemText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
+        <MaterialIcons name="add" size={24} color="white" />
+        <Text style={styles.actionButtonText}>Add Weight</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.actionButton}
+        onPress={() => navigation.navigate("Graph", { swineId })}
+      >
+        <MaterialIcons name="show-chart" size={24} color="white" />
+        <Text style={styles.actionButtonText}>Show Graph</Text>
+      </TouchableOpacity>
     </View>
-  );
+
+    <Modal
+      transparent={true}
+      visible={menuVisible}
+      onRequestClose={handleCloseMenu}
+      animationType="fade"
+    >
+      <TouchableOpacity style={styles.modalOverlay} onPress={handleCloseMenu}>
+        <View style={styles.menuContainer}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => {
+              if (selectedEntry?._id) {
+                navigation.navigate("Edit Weight", {
+                  swineId,
+                  weightId: selectedEntry._id,
+                });
+                handleCloseMenu();
+              }
+            }}
+          >
+            <MaterialIcons name="edit" size={24} color="#28a745" />
+            <Text style={styles.menuItemText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => {
+              if (selectedEntry?._id) {
+                handleDeleteWeight(selectedEntry._id);
+                handleCloseMenu();
+              }
+            }}
+          >
+            <MaterialIcons name="delete" size={24} color="red" />
+            <Text style={styles.menuItemText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  </View>
+);
 };
 
 const styles = StyleSheet.create({
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
   actionButtonsContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginBottom: 15,
+    marginBottom: 5,
   },
   actionButton: {
     flexDirection: "row",
@@ -207,13 +208,14 @@ const styles = StyleSheet.create({
   },
   actionButtonText: {
     color: "white",
-    marginLeft: 5,
+    marginLeft: 15,
     fontSize: 16,
+    marginRight: 15,
   },
   card: {
     backgroundColor: "#fff",
     padding: 15,
-    marginVertical: 8,
+    marginVertical: 5,
     borderRadius: 10,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -228,13 +230,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dateText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "bold",
     color: "#333",
     marginBottom: 5,
   },
   weightText: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#666",
   },
   emptyText: {

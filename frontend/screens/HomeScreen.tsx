@@ -164,13 +164,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
-    marginBottom: 3,
+    marginBottom: 1,
   },
   infoContainer: {
     flex: 1,
   },
   idText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "bold",
     color: "#333",
   },

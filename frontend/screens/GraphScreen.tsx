@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import axiosInstance from "../api/axiosInstance"; // Use axiosInstance for authenticated requests
 import {
   GraphScreenNavigationProp,
@@ -38,7 +38,11 @@ const GraphScreen: React.FC<Props> = ({ route }) => {
   }, [swineId]);
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#18BD18" />
+      </View>
+    );
   }
 
   if (error) {
@@ -59,7 +63,7 @@ const GraphScreen: React.FC<Props> = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    
     backgroundColor: "#f5f5f5",
   },
 });
