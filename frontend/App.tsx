@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Provider } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/Ionicons";
 import { View, ActivityIndicator } from "react-native";
 import store from "./store";
 import { SwineProvider } from "./context/SwineContext";
@@ -37,106 +37,256 @@ const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
 const DashboardStack = () => (
-  <Stack.Navigator initialRouteName="Dashboard">
+  <Stack.Navigator
+    initialRouteName="Dashboard"
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: "#39AD3D", // Green background for the header
+        height: 85,
+      },
+      headerTintColor: "#FFFFFF", // White text for the header
+      headerTitleStyle: {
+        fontWeight: "700", // Bold title
+        fontSize: 24,
+      },
+    }}
+  >
     <Stack.Screen
       name="Dashboard"
       component={DashboardScreen}
-      options={{ title: "SmartFeed" }}
+      options={{
+        title: "SmartFeed",
+        headerTitleAlign: "center", // Center the title only for this screen
+      }}
     />
     <Stack.Screen
       name="Input"
       component={InputScreen}
-      options={{ title: "Input Data" }}
+      options={{
+        title: "Input Data",
+        headerTitleStyle: {
+          fontWeight: "600", // Semi-bold font
+          fontSize: 21, // Adjusted font size
+        },
+      }}
     />
     <Stack.Screen
       name="Result"
       component={ResultScreen}
-      options={{ title: "Results" }}
+      options={{
+        title: "Results",
+        headerTitleStyle: {
+          fontWeight: "600", // Bold font
+          fontSize: 21, // Larger font size
+        },
+      }}
     />
     <Stack.Screen
       name="Nutrient Analysis"
       component={NutrientAnalysisScreen}
-      options={{ title: "Nutrient Analysis" }}
+      options={{
+        title: "Nutrient Analysis",
+        headerTitleStyle: {
+          fontWeight: "600", // Medium font weight
+          fontSize: 21, // Smaller font size
+        },
+      }}
     />
     <Stack.Screen
       name="SaveFormulation"
       component={SaveFormulationScreen}
-      options={{ title: "Save Formulation" }}
+      options={{
+        title: "Save Formulation",
+        headerTitleStyle: {
+          fontWeight: "600", // Semi-bold font
+          fontSize: 21,
+        },
+      }}
     />
     <Stack.Screen
       name="SavedFormulationDetail"
       component={SavedFormulationDetailScreen}
-      options={{ title: "Formulation Details" }}
+      options={{
+        title: "Formulation Details",
+        headerTitleStyle: {
+          fontWeight: "600", // Bold font
+          fontSize: 21,
+        },
+      }}
     />
   </Stack.Navigator>
 );
 
 const SwineStack = () => (
-  <Stack.Navigator initialRouteName="Home">
+  <Stack.Navigator
+    initialRouteName="Home"
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: "#39AD3D", // Green background for the header
+        height: 85, // Increased header height
+      },
+      headerTintColor: "#FFFFFF", // White text for the header
+      headerTitleStyle: {
+        fontWeight: "600", // Semi-bold font for default screens
+        fontSize: 21, // Default font size
+      },
+    }}
+  >
     <Stack.Screen
       name="Home"
       component={HomeScreen}
-      options={{ title: "Swine Management" }}
+      options={{
+        title: "Swine Management",
+        headerTitleAlign: "left", // Ensure the title is aligned to the left
+        headerTitleStyle: {
+          fontWeight: "600", // Bold font for emphasis
+          fontSize: 21, // Larger font size for prominence
+        },
+      }}
     />
     <Stack.Screen
       name="Add Swine"
       component={AddSwineScreen}
-      options={{ title: "Add New Swine" }}
+      options={{
+        title: "Add New Swine",
+        headerTitleStyle: {
+          fontWeight: "600", // Semi-bold font
+          fontSize: 21,
+        },
+      }}
     />
     <Stack.Screen
       name="Swine Detail"
       component={SwineDetailScreen}
-      options={{ title: "Swine Details" }}
+      options={{
+        title: "Swine Details",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 21,
+        },
+      }}
     />
     <Stack.Screen
       name="Add Weight"
       component={AddWeightScreen}
-      options={{ title: "Add Swine Weight" }}
+      options={{
+        title: "Add Swine Weight",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 21,
+        },
+      }}
     />
     <Stack.Screen
       name="Graph"
       component={GraphScreen}
-      options={{ title: "Weight Graph" }}
+      options={{
+        title: "Weight Graph",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 21,
+        },
+      }}
     />
     <Stack.Screen
       name="Edit Weight"
       component={EditWeightScreen}
-      options={{ title: "Edit Swine Weight" }}
+      options={{
+        title: "Edit Swine Weight",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 21,
+        },
+      }}
     />
   </Stack.Navigator>
 );
 
 const FAQStack = () => (
-  <Stack.Navigator>
+  <Stack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: "#39AD3D", // Green background for the header
+        height: 85, // Increased header height
+      },
+      headerTintColor: "#FFFFFF", // White text for the header
+      headerTitleStyle: {
+        fontWeight: "600", // Default semi-bold font weight
+        fontSize: 21, // Default font size
+      },
+    }}
+  >
     <Stack.Screen
       name="FAQScreen"
       component={FAQScreen}
-      options={{ title: "Frequently Asked Questions" }}
+      options={{
+        title: "Frequently Asked Questions",
+        headerTitleStyle: {
+          fontWeight: "600", // Bold font for emphasis
+          fontSize: 21, // Larger font size for prominence
+        },
+      }}
     />
     <Stack.Screen
       name="EditAccount"
       component={EditAccountScreen}
-      options={{ title: "Edit Account" }}
+      options={{
+        title: "Edit Account",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 21,
+        },
+      }}
     />
   </Stack.Navigator>
 );
 
 const SettingsStack = () => (
-  <Stack.Navigator>
+  <Stack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: "#39AD3D", // Green background for the header
+        height: 85, // Increased header height
+      },
+      headerTintColor: "#FFFFFF", // White text for the header
+      headerTitleStyle: {
+        fontWeight: "600", // Default semi-bold font weight
+        fontSize: 21, // Default font size
+      },
+    }}
+  >
     <Stack.Screen
       name="SettingsScreen"
       component={SettingsScreen}
-      options={{ title: "Settings" }}
+      options={{
+        title: "Settings",
+        headerTitleStyle: {
+          fontWeight: "600", // Bold font
+          fontSize: 21, // Larger font size
+        },
+      }}
     />
     <Stack.Screen
       name="EditAccount"
       component={EditAccountScreen}
-      options={{ title: "Edit Account" }}
+      options={{
+        title: "Edit Account",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 21,
+        },
+      }}
     />
     <Stack.Screen
       name="ChangePassword"
-      component={ChangePasswordScreen} // Add ChangePassword screen to the stack
-      options={{ title: "Change Password" }}
+      component={ChangePasswordScreen}
+      options={{
+        title: "Change Password",
+        headerTitleStyle: {
+          fontWeight: "600",
+          fontSize: 21,
+        },
+      }}
     />
   </Stack.Navigator>
 );
@@ -144,20 +294,40 @@ const SettingsStack = () => (
 const MainAppNavigator = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
-      tabBarIcon: ({ color, size }) => {
-        let iconName: string = "home";
-        if (route.name === "Home") iconName = "home";
-        else if (route.name === "Swine Weight Tracker")
-          iconName = "fitness-center";
-        else if (route.name === "FAQ") iconName = "info";
-        else if (route.name === "Settings") iconName = "settings";
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName: string = "";
+
+        // Set the icon names based on the route
+        if (route.name === "Home")
+          iconName = focused ? "home" : "home-outline"; // Filled when active
+        else if (route.name === "Weight")
+          iconName = focused ? "albums" : "albums-outline"; // Filled when active
+        else if (route.name === "FAQ")
+          iconName = focused
+            ? "information-circle"
+            : "information-circle-outline";
+        // Filled when active
+        else if (route.name === "Settings")
+          iconName = focused ? "settings" : "settings-outline"; // Filled when active
+
+        // Return the icon with dynamic name
         return <Icon name={iconName} size={size} color={color} />;
+      },
+      tabBarActiveTintColor: "#39AD3D", // Active icon color (Green fill)
+      tabBarInactiveTintColor: "#5C5C5C", // Inactive icon color (Gray)
+      tabBarStyle: {
+        backgroundColor: "#f2f6f9",
+        height: 60, // Adjust height
+        paddingBottom: 10, // Space below icons
+      },
+      tabBarLabelStyle: {
+        fontSize: 11, // Text size
       },
       headerShown: false,
     })}
   >
     <Tab.Screen name="Home" component={DashboardStack} />
-    <Tab.Screen name="Swine Weight Tracker" component={SwineStack} />
+    <Tab.Screen name="Weight" component={SwineStack} />
     <Tab.Screen name="FAQ" component={FAQStack} />
     <Tab.Screen name="Settings" component={SettingsStack} />
   </Tab.Navigator>

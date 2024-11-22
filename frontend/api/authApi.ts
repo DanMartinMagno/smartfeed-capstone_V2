@@ -109,3 +109,10 @@ export const getSavedRecipes = async () => {
   });
   return response.data;
 };
+
+export const getUserProfile = async (token: string) => {
+  const response = await axios.get(`${API_URL}/user/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};

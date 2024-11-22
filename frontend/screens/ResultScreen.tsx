@@ -75,8 +75,13 @@ const ResultScreen: React.FC<Props> = ({ route, navigation }) => {
   //   }
   // }, [result, navigation, type, numSwine]);
 
-  if (loading) return <ActivityIndicator size="large" />;
-
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#18BD18" />
+      </View>
+    );
+  }
   if (!result) {
     return <Text>Error loading results.</Text>;
   }
@@ -153,7 +158,7 @@ const ResultScreen: React.FC<Props> = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 15,
     backgroundColor: "#f2f6f9",
   },
   header: {
@@ -164,16 +169,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   subHeader1: {
-    fontSize: 15,
-    fontWeight: "600",
+    fontSize: 16,
+    fontWeight: "bold",
     marginBottom: 10,
-    color: "#555",
+    color: "#515252",
   },
   subHeader2: {
-    fontSize: 15,
-    fontWeight: "600",
+    fontSize: 16,
+    fontWeight: "bold",
     marginBottom: 10,
-    color: "#555",
+    marginTop: 10,
+    color: "#515252",
   },
   button: {
     backgroundColor: "#28a745",

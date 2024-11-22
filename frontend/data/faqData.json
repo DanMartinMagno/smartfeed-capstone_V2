@@ -54,5 +54,25 @@
   {
     "question": "How do I add a weight entry?",
     "answer": "Navigate to the swine detail screen and click on 'Add Weight'."
+  },
+  {
+    "question": "Are native swine prone to diseases?",
+    "answer": "Native swine are generally more resistant to common swine diseases compared to commercial breeds, but they are still susceptible to certain conditions. Good hygiene, vaccination, and proper management are important to prevent disease outbreaks."
+  },
+  {
+    "question": "Are native swine profitable to raise?",
+    "answer": "While native pigs have a slower growth rate, they are more economical to raise because they require less expensive feed and care. If marketed well, especially for niche or premium markets, they can provide a good return on investment."
+  },
+  {
+    "question": "What is the purpose of this app?",
+    "answer": "This app helps you track swine weight and manage feed formulation."
+  },
+  {
+    "question": "How do I add a new swine?",
+    "answer": "Go to the Home screen and click on 'Add Swine' to add a new swine."
+  },
+  {
+    "question": "How do I add a weight entry?",
+    "answer": "Navigate to the swine detail screen and click on 'Add Weight'."
   }
 ]

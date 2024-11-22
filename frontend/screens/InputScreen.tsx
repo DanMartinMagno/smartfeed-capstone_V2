@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, ScrollView, TouchableWithoutFeedback } from "react-native";
+import { View, ScrollView, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import { setNumSwine, setSelectedIngredients } from "../store/feedSlice";
@@ -114,7 +114,6 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
       contentContainerStyle={styles.scrollContent}
     >
       <View style={styles.container}>
-        <Text style={styles.header}>Feed Formulation</Text>
         <Card style={styles.card}>
           <Card.Title title={`Feeds for ${type}`} />
           <Card.Content>
@@ -124,7 +123,8 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
               onChangeText={setNumSwineState}
               keyboardType="numeric"
               mode="outlined"
-              placeholderTextColor="#9E9E9E"
+              outlineColor="#cccccc"
+              placeholderTextColor="#888888"
               autoComplete="off"
               error={
                 !!errorMessage &&
@@ -135,7 +135,7 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
               style={styles.input}
               theme={{
                 colors: {
-                  primary: "green",
+                  primary: "#20B742",
                   placeholder: "#9E9E9E",
                 },
               }}
@@ -192,18 +192,9 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
         ))}
 
         {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
-        <TouchableWithoutFeedback onPress={handleSubmit}>
-          <View>
-            <Button
-              mode="contained"
-              onPress={handleSubmit}
-              style={styles.button}
-              color="green"
-            >
-              Formulate
-            </Button>
-          </View>
-        </TouchableWithoutFeedback>
+        <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+          <Text style={styles.buttonText}>Formulate</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

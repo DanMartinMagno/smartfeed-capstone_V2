@@ -35,15 +35,12 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
-// backend/controllers/authController.ts
-
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      console.log("User not found with email:", email);
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
@@ -61,5 +58,21 @@ export const login = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ message: "Failed to login", error: (error as Error).message });
+  }
+};
+
+export const getUserProfile = async (req: Request, res: Response) => {
+  if (!req.user || !req.user.userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const user = await User.findById(req.user.userId).select("-password"); // Exclude password
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user profile", error });
   }
 };

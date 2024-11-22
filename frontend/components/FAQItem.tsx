@@ -1,3 +1,4 @@
+// FAQItem.tsx
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, LayoutAnimation } from "react-native";
 import { styles } from "../styles/faqScreen_styles";
@@ -17,33 +18,23 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
   };
 
   return (
-    <View>
-      <TouchableOpacity
-        onPress={toggleOpen}
-        style={[styles.itemContainer, isOpen && styles.activeItem]}
-      >
-        <View style={styles.row}>
-          {/* Wrap text in <Text> */}
-          <Text style={[styles.question, isOpen && styles.activeQuestion]}>
-            {question}
-          </Text>
-          {/* Icon should not cause this error, but ensure it's placed inside a <View> or inline with Text */}
-          <Ionicons
-            name={isOpen ? "chevron-up-outline" : "chevron-down-outline"}
-            size={24}
-            color={isOpen ? "#4CAF50" : "#333"}
-          />
-        </View>
-      </TouchableOpacity>
-
-      {isOpen && (
-        <Text style={styles.answer}>
-          {answer} {/* Ensure this is inside a <Text> */}
+    <TouchableOpacity
+      onPress={toggleOpen}
+      style={[styles.itemContainer, isOpen && styles.activeItem]}
+    >
+      <View style={styles.row}>
+        <Text style={[styles.question, isOpen && styles.activeQuestion]}>
+          {question}
         </Text>
-      )}
-
-      <View style={styles.separator} />
-    </View>
+        <Ionicons
+          name={isOpen ? "chevron-up-outline" : "chevron-down-outline"}
+          size={20}
+          color={isOpen ? "#19AA1F" : "#19AA1F"}
+          style={styles.arrow}
+        />
+      </View>
+      {isOpen && <Text style={styles.answer}>{answer}</Text>}
+    </TouchableOpacity>
   );
 };
 

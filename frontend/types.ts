@@ -74,7 +74,7 @@ export type RootStackParamList = {
 
 export type TabParamList = {
   Home: undefined;
-  "Swine Weight Tracker": undefined;
+  "Weight": undefined;
   FAQ: undefined;
   Settings: undefined;
 };

@@ -1,7 +1,15 @@
-// SaveFormulationScreen.tsx
+// frontend/screens/SaveFormulationScreen.tsx
 
 import React, { useContext, useState } from "react";
-import { View, Text, TextInput, Button, Alert, Platform } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
+import { TextInput, Divider } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axiosInstance from "../api/axiosInstance";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -9,6 +17,7 @@ import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
 import { AuthContext } from "../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Icon from "react-native-vector-icons/Ionicons";
 
 type SaveFormulationScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -19,11 +28,6 @@ type SaveFormulationScreenRouteProp = RouteProp<
   "SaveFormulation"
 >;
 
-interface Ingredient {
-  name: string;
-  amount: number;
-}
-
 interface Props {
   navigation: SaveFormulationScreenNavigationProp;
   route: SaveFormulationScreenRouteProp;
@@ -33,20 +37,47 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
   const { type, numSwine, selectedIngredients, totalNutrients } = route.params;
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [expirationDate, setExpirationDate] = useState<Date | null>(new Date()); // Store as Date object
+  const [expirationDate, setExpirationDate] = useState<Date | null>(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const [nameError, setNameError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+  const [expirationDateError, setExpirationDateError] = useState("");
 
   const { user } = useContext(AuthContext) ?? {};
   const userId = user?.userId;
 
   const handleSave = async () => {
+    let isValid = true;
+
+    // Validation
+    if (!name.trim()) {
+      setNameError("Please enter a feed name.");
+      isValid = false;
+    } else {
+      setNameError("");
+    }
+
+    if (!description.trim()) {
+      setDescriptionError("Please enter a description.");
+      isValid = false;
+    } else {
+      setDescriptionError("");
+    }
+
+    if (!expirationDate) {
+      setExpirationDateError("Please select an expiration date.");
+      isValid = false;
+    } else {
+      setExpirationDateError("");
+    }
+
+    if (!isValid) return;
+
     try {
       const token = await AsyncStorage.getItem("token");
       if (!token) {
-        Alert.alert(
-          "Error",
-          "Authorization token is missing. Please log in again."
-        );
+        setNameError("Authorization token is missing. Please log in again.");
         return;
       }
 
@@ -54,12 +85,6 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
         name: ingredient.ingredient,
         amount: ingredient.amount,
       }));
-
-      // Ensure expirationDate is a valid date string before sending it
-      if (!expirationDate) {
-        Alert.alert("Error", "Please select a valid expiration date.");
-        return;
-      }
 
       const response = await axiosInstance.post(
         "/formulations/save",
@@ -71,7 +96,8 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
           name,
           description,
           userId,
-          expirationDate: expirationDate.toISOString(), // Convert to ISO string format
+          expirationDate:
+            expirationDate?.toISOString() || new Date().toISOString(), // Handle possible null
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -79,50 +105,86 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
       );
 
       if (response.status === 201) {
-        Alert.alert("Success", "Formulation saved successfully!");
         navigation.navigate("Dashboard");
       }
     } catch (error) {
       console.error("Error saving formulation:", error);
-      Alert.alert("Error", "Failed to save formulation. Please try again.");
+      setNameError("Failed to save formulation. Please try again.");
     }
   };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
     setShowDatePicker(false);
     if (selectedDate) {
-      setExpirationDate(selectedDate); // Store the selected date
+      setExpirationDate(selectedDate);
+      setExpirationDateError("");
     }
   };
 
   return (
-    <View>
-      <Text>Feed Name</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.header}>Save New Formulation</Text>
+
       <TextInput
+        label="Feed Name"
         value={name}
-        onChangeText={setName}
+        onChangeText={(text) => {
+          setName(text);
+          setNameError("");
+        }}
         placeholder="Enter feed name"
+        mode="outlined"
+        outlineColor="#EDEFEF"
+        activeOutlineColor="#26B346"
+        style={[styles.input, styles.textInput]}
+        placeholderTextColor="#888888"
+        theme={{
+          colors: {
+            primary: "#26B346",
+            text: "#838383",
+            placeholder: "#888888",
+          },
+        }}
       />
+      {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
 
-      <Text>Description</Text>
       <TextInput
+        label="Description"
         value={description}
-        onChangeText={setDescription}
+        onChangeText={(text) => {
+          setDescription(text);
+          setDescriptionError("");
+        }}
         placeholder="Enter description"
+        mode="outlined"
+        outlineColor="#EDEFEF"
+        activeOutlineColor="#26B346"
+        style={[styles.input, styles.textInput]}
+        placeholderTextColor="#888888"
         multiline
+        theme={{
+          colors: { primary: "#26B346", text: "#333", placeholder: "#888888" },
+        }}
       />
+      {descriptionError ? (
+        <Text style={styles.errorText}>{descriptionError}</Text>
+      ) : null}
 
-      <Text>Expiration Date</Text>
-      <Button
-        title="Select Expiration Date"
+      <Divider style={styles.divider} />
+
+      <TouchableOpacity
+        style={styles.datePickerContainer}
         onPress={() => setShowDatePicker(true)}
-      />
-
-      {/* Display selected expiration date */}
-      <Text>
-        Selected Date:{" "}
-        {expirationDate ? expirationDate.toLocaleDateString() : "None"}
-      </Text>
+      >
+        <Text style={styles.datePickerLabel}>Expiration Date</Text>
+        <Text style={styles.datePickerText}>
+          {expirationDate ? expirationDate.toLocaleDateString() : "Select Date"}
+        </Text>
+        <Icon name="calendar-outline" size={20} color="#26B346" />
+      </TouchableOpacity>
+      {expirationDateError ? (
+        <Text style={styles.errorText}>{expirationDateError}</Text>
+      ) : null}
 
       {showDatePicker && (
         <DateTimePicker
@@ -134,9 +196,82 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
         />
       )}
 
-      <Button title="Save Formulation" onPress={handleSave} />
-    </View>
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Text style={styles.saveButtonText}>Save Formulation</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 15,
+    backgroundColor: "#f2f6f9",
+    flexGrow: 1,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#515252",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  input: {
+    borderRadius: 15,
+    marginBottom: 5,
+    backgroundColor: "#fff",
+  },
+  textInput: {
+    fontSize: 15,
+    borderRadius: 15,
+    backgroundColor: "#fff",
+  },
+  errorText: {
+    fontSize: 14,
+    color: "red",
+    marginBottom: 10,
+  },
+  divider: {
+    marginVertical: 15,
+  },
+  datePickerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderColor: "#EDEFEF",
+    borderWidth: 1,
+    borderRadius: 6,
+    padding: 13,
+    backgroundColor: "#fff",
+    marginBottom: 5,
+  },
+  datePickerLabel: {
+    fontSize: 15,
+    color: "#666",
+  },
+  datePickerText: {
+    fontSize: 15,
+    color: "#333",
+  },
+  saveButton: {
+    backgroundColor: "#28a745",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    width: "100%",
+    alignItems: "center",
+    marginTop: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});
 
 export default SaveFormulationScreen;

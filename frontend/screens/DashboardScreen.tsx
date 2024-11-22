@@ -10,7 +10,9 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
+
 import { useDispatch } from "react-redux";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons"; // or any other icon library you prefer
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types";
 import { setType } from "../store/feedSlice";
@@ -122,9 +124,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
           );
 
           setSavedFormulations(updatedFormulations);
-        } catch (error) {
-          console.error("Error fetching formulations:", error);
-        }
+        } catch (error) {}
       };
 
       fetchFormulations();
@@ -164,25 +164,63 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
     );
   };
 
+  // Function to map formulation types to icons and background colors
+  const getIconDetails = (type: "starter" | "grower" | "finisher") => {
+    switch (type) {
+      case "starter":
+        return { icon: "database" as const, color: "#6EB743" };
+      case "grower":
+        return { icon: "save" as const, color: "#85B6F1" };
+      case "finisher":
+        return { icon: "archive" as const, color: "#F1B56A" };
+      default:
+        throw new Error(`Unsupported formulation type: ${type}`);
+    }
+  };
+  const [isStarterPressed, setIsStarterPressed] = useState(false);
+  const [isGrowerPressed, setIsGrowerPressed] = useState(false);
+  const [isFinisherPressed, setIsFinisherPressed] = useState(false);
+  // Render delete button for swipe-to-delete
+
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContainer}
       onScrollBeginDrag={handleScrollBeginDrag}
       onScrollEndDrag={handleScrollEndDrag}
+      keyboardShouldPersistTaps="handled" // Ensures taps during scroll are ignored
     >
+      <View style={styles.greetingsContainer}>
+        <Text style={styles.greetingsHeader}>Hi there!</Text>
+        <Text style={styles.greetingsText}>
+          What feed would you like to formulate today?
+        </Text>
+      </View>
       <View style={styles.container}>
         {/* Starter Card */}
-        <TouchableWithoutFeedback
-          onPressIn={() => handlePressIn(starterScaleAnim)}
-          onPressOut={() => handlePressOut(starterScaleAnim, "starter")}
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressIn={() => setIsStarterPressed(true)}
+          onPressOut={() => setIsStarterPressed(false)}
+          onPress={() => handlePressOut(starterScaleAnim, "starter")}
         >
           <Animated.View style={{ transform: [{ scale: starterScaleAnim }] }}>
             <LinearGradient
-              colors={["#0CB73F", "#95D642"]}
+              colors={["#39AD3D", "#95D642"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={styles.featureCard}
+              style={[styles.featureCard, { position: "relative" }]}
             >
+              {/* Hover effect overlay */}
+              {isStarterPressed && (
+                <View
+                  style={{
+                    ...StyleSheet.absoluteFillObject,
+                    backgroundColor: "rgba(107, 107, 107, 0.2)",
+                    borderRadius: 13,
+                  }}
+                />
+              )}
+
               <View style={styles.cardContent}>
                 <View style={styles.cardHeader}>
                   <View style={styles.iconBackground}>
@@ -200,20 +238,33 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
               </View>
             </LinearGradient>
           </Animated.View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
 
         {/* Grower Card */}
-        <TouchableWithoutFeedback
-          onPressIn={() => handlePressIn(growerScaleAnim)}
-          onPressOut={() => handlePressOut(growerScaleAnim, "grower")}
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressIn={() => setIsGrowerPressed(true)}
+          onPressOut={() => setIsGrowerPressed(false)}
+          onPress={() => handlePressOut(growerScaleAnim, "grower")}
         >
           <Animated.View style={{ transform: [{ scale: growerScaleAnim }] }}>
             <LinearGradient
               colors={["#1E90FF", "#87CEFA"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={styles.featureCard}
+              style={[styles.featureCard, { position: "relative" }]}
             >
+              {/* Hover effect overlay */}
+              {isGrowerPressed && (
+                <View
+                  style={{
+                    ...StyleSheet.absoluteFillObject,
+                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    borderRadius: 13,
+                  }}
+                />
+              )}
+
               <View style={styles.cardContent}>
                 <View style={styles.cardHeader}>
                   <View style={styles.iconBackground}>
@@ -231,20 +282,33 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
               </View>
             </LinearGradient>
           </Animated.View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
 
         {/* Finisher Card */}
-        <TouchableWithoutFeedback
-          onPressIn={() => handlePressIn(finisherScaleAnim)}
-          onPressOut={() => handlePressOut(finisherScaleAnim, "finisher")}
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressIn={() => setIsFinisherPressed(true)}
+          onPressOut={() => setIsFinisherPressed(false)}
+          onPress={() => handlePressOut(finisherScaleAnim, "finisher")}
         >
           <Animated.View style={{ transform: [{ scale: finisherScaleAnim }] }}>
             <LinearGradient
               colors={["#FF7F50", "#ebb886"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={styles.featureCard}
+              style={[styles.featureCard, { position: "relative" }]}
             >
+              {/* Hover effect overlay */}
+              {isFinisherPressed && (
+                <View
+                  style={{
+                    ...StyleSheet.absoluteFillObject,
+                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    borderRadius: 13,
+                  }}
+                />
+              )}
+
               <View style={styles.cardContent}>
                 <View style={styles.cardHeader}>
                   <View style={styles.iconBackground}>
@@ -262,51 +326,68 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
               </View>
             </LinearGradient>
           </Animated.View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
 
         {/* Saved Formulations List */}
         <View>
-          <Text>Saved Formulations</Text>
-          {savedFormulations.map((formulation) => (
-            <TouchableOpacity
-              key={formulation._id}
-              disabled={formulation.isExpired}
-              onPress={() =>
-                navigation.navigate("SavedFormulationDetail", {
-                  formulation: {
-                    ...formulation,
-                    type: formulation.type || "starter",
-                    expirationDate:
-                      formulation.expirationDate || new Date().toISOString(),
-                    numSwine: formulation.numSwine,
-                  },
-                })
-              }
-            >
-              <Text
-                style={
-                  formulation.isExpired
-                    ? styles.expiredText
-                    : styles.formulationName
+          <Text style={styles.headerText}>My Formulations</Text>
+          {savedFormulations.map((formulation) => {
+            const { icon, color } = getIconDetails(formulation.type);
+
+            return (
+              <TouchableOpacity
+                key={formulation._id}
+                style={[
+                  styles.card,
+                  formulation.isExpired && styles.expiredCard,
+                ]}
+                onLongPress={() => confirmDelete(formulation._id)}
+                onPress={() =>
+                  !formulation.isExpired &&
+                  navigation.navigate("SavedFormulationDetail", {
+                    formulation: {
+                      ...formulation,
+                      type: formulation.type || "starter",
+                      expirationDate:
+                        formulation.expirationDate || new Date().toISOString(),
+                      numSwine: formulation.numSwine,
+                    },
+                  })
                 }
               >
-                {formulation.name}
-              </Text>
-              <Text>{formulation.description}</Text>
-              <Text>
-                {formulation.isExpired
-                  ? "Expired"
-                  : `Valid until ${new Date(
-                      formulation.expirationDate
-                    ).toLocaleDateString()}`}
-              </Text>
+                <View
+                  style={[styles.iconContainer, { backgroundColor: color }]}
+                >
+                  <FontAwesome name={icon} size={24} color="white" />
+                </View>
 
-              {/* Delete Button */}
-              <TouchableOpacity onPress={() => confirmDelete(formulation._id)}>
-                <Text style={{ color: "red", marginTop: 5 }}>Delete</Text>
+                <View style={styles.textContainer}>
+                  <Text
+                    style={[
+                      styles.formulationName,
+                      formulation.isExpired && styles.expiredText,
+                    ]}
+                  >
+                    {formulation.name}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.expirationText,
+                      formulation.isExpired && styles.expiredText,
+                    ]}
+                  >
+                    {formulation.isExpired
+                      ? "Expired"
+                      : `Valid until ${new Date(
+                          formulation.expirationDate
+                        ).toLocaleDateString()}`}
+                  </Text>
+                </View>
+
+                <FontAwesome name="angle-right" size={24} color="#999" />
               </TouchableOpacity>
-            </TouchableOpacity>
-          ))}
+            );
+          })}
         </View>
       </View>
     </ScrollView>
@@ -321,11 +402,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f2f6f9",
     alignItems: "center",
-    paddingVertical: 20,
   },
   greetingsContainer: {
     alignSelf: "stretch",
-    marginLeft: 20,
+    marginLeft: 12,
+    marginBottom: 1,
   },
   greetingsText: {
     fontSize: 15,
@@ -334,21 +415,25 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     textAlign: "left",
     marginTop: 0,
-    marginBottom: 15,
+    marginBottom: 0.1,
   },
   greetingsHeader: {
-    fontSize: 19,
+    fontSize: 18,
     fontWeight: "800",
-    color: "#333",
+    color: "#4C4C4C",
     marginVertical: 12,
     textAlign: "left",
     marginBottom: 0,
   },
+
   featureCard: {
     alignItems: "center",
-    width: "90%",
+    padding: 10,
+    margin: 10,
+    width: "95%",
     borderRadius: 13,
-    marginBottom: 12,
+    marginBottom: 0.1,
+    marginTop: 10,
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -357,12 +442,15 @@ const styles = StyleSheet.create({
     height: 150,
   },
   cardContent: {
-    padding: 20,
+    padding: 9,
+    margin: 9,
+    width: "95%",
+    flex: 1,
   },
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 3,
   },
   iconBackground: {
     width: 60,
@@ -381,11 +469,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#fff",
+    marginBottom: 10,
   },
   featureDescription: {
     fontSize: 14,
     color: "#f1f1f1",
     fontWeight: "500",
+    marginBottom: 17,
   },
   expiredText: {
     color: "red",
@@ -394,6 +484,69 @@ const styles = StyleSheet.create({
   formulationName: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#4C4C4C",
+  },
+  headerText: {
+    marginBottom: 9,
+    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#515252",
+    marginVertical: 15,
+    paddingHorizontal: 16,
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    marginVertical: 3,
+    marginHorizontal: 16,
+    width: "95%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+
+    elevation: 1,
+  },
+  expiredCard: {
+    backgroundColor: "#f9f9f9",
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  description: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 4,
+  },
+  expirationText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#7D7D7D",
+    marginTop: 2,
+  },
+  deleteButtonContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 80,
+    backgroundColor: "red",
+    borderRadius: 10,
+    marginVertical: 8,
+    marginRight: 16,
+  },
+  deleteText: {
+    color: "white",
+    fontSize: 14,
+    marginTop: 5,
   },
 });
 

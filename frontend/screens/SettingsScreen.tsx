@@ -4,28 +4,35 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useAuth } from "../context/AuthContext";
 
 const SettingsScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    logout();
+    Alert.alert(
+      "Confirm Logout",
+      "Are you sure you want to log out?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          onPress: () => logout(),
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const settingsOptions = [
-    { title: "Language", icon: "language-outline" },
-    { title: "Notifications", icon: "notifications-outline" },
-    { title: "Privacy", icon: "lock-closed-outline" },
-    { title: "Terms & Conditions", icon: "document-text-outline" },
-    { title: "Security", icon: "key-outline" },
-    { title: "Ads", icon: "megaphone-outline" },
-    { title: "Help", icon: "help-circle-outline" },
-    { title: "About", icon: "information-circle-outline" },
     {
       title: "Edit Account",
       icon: "person-outline",
@@ -43,43 +50,43 @@ const SettingsScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     },
   ];
 
+  const fullName = user
+    ? `${user.firstName} ${user.middleInitial || ""} ${user.lastName}`.trim()
+    : "";
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Settings</Text>
-      </View>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          {user ? (
+            <>
+              <Text style={styles.userName}>{fullName}</Text>
+              <Text style={styles.userEmail}>{user.email}</Text>
+            </>
+          ) : (
+            <Text style={styles.loadingText}>Loading user info...</Text>
+          )}
+        </View>
 
-      <View style={styles.searchContainer}>
-        <Icon
-          name="search-outline"
-          size={20}
-          color="#999"
-          style={styles.searchIcon}
-        />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          placeholderTextColor="#999"
-        />
-      </View>
-
-      <View style={styles.list}>
-        {settingsOptions.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.listItem}
-            onPress={option.onPress}
-          >
-            <Icon
-              name={option.icon}
-              size={24}
-              color="#000"
-              style={styles.itemIcon}
-            />
-            <Text style={styles.itemText}>{option.title}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+        <View style={styles.list}>
+          {settingsOptions.map((option, index) => (
+            <View key={index} style={styles.card}>
+              <TouchableOpacity
+                style={styles.cardContent}
+                onPress={option.onPress}
+              >
+                <Icon
+                  name={option.icon}
+                  size={24}
+                  color="#000"
+                  style={styles.itemIcon}
+                />
+                <Text style={styles.itemText}>{option.title}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>SmartFeed</Text>
@@ -89,14 +96,19 @@ const SettingsScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
           raisers
         </Text>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    padding: 1,
     flex: 1,
     backgroundColor: "#f2f6f9",
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 80, // Space for footer
   },
   header: {
     paddingTop: 20,
@@ -105,37 +117,36 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
-  title: {
-    fontSize: 24,
+  userName: {
+    fontSize: 17,
     fontWeight: "bold",
   },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    padding: 10,
-    marginVertical: 10,
-    marginHorizontal: 16,
-    borderRadius: 8,
-    borderColor: "#ddd",
-    borderWidth: 1,
+  userEmail: {
+    fontSize: 15,
+    color: "#777",
   },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
+  loadingText: {
     fontSize: 16,
+    color: "#777",
   },
   list: {
-    marginHorizontal: 16,
+    marginHorizontal: 10,
+    marginTop: 20,
   },
-  listItem: {
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    marginBottom: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // For Android shadow
+  },
+  cardContent: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    padding: 15,
   },
   itemIcon: {
     marginRight: 15,
@@ -144,10 +155,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   footer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: "#ddd",
     alignItems: "center",
+    backgroundColor: "#f2f6f9",
   },
   footerText: {
     fontSize: 16,

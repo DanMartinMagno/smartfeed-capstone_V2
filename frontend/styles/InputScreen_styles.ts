@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 20,
+    padding: 15,
   },
   container: {
     flex: 1,
@@ -71,16 +71,24 @@ export const styles = StyleSheet.create({
     elevation: 3,
   },
   button: {
-    backgroundColor: "#28a745",
-    padding: 8,
+    backgroundColor: "#28a745", // Same green color
+    paddingVertical: 15,
+    paddingHorizontal: 20,
     borderRadius: 8,
-    alignItems: "center",
     marginTop: 10,
+    alignItems: "center",
+    width: "100%", // Full width
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
     elevation: 3,
+    padding: 15,
+  },
+  buttonText: {
+    color: "#F6FDF8",
+    fontSize: 16,
+    fontWeight: "700",
   },
   error: {
     color: "red",

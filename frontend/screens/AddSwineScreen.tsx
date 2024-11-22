@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#DDD",
     marginBottom: 15,
-    fontSize: 16,
+    fontSize: 15,
   },
   submitButton: {
     backgroundColor: "#28a745",

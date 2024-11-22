@@ -10,6 +10,6 @@
     "rootDir": "./",
     "types": ["node", "mongoose", "dotenv"]
   },
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "services/feedService.ts"],
   "exclude": ["node_modules", "dist"]
 }

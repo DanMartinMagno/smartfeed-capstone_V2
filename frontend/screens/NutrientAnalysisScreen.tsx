@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   Button,
+  TouchableOpacity,
 } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -214,7 +215,11 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
   }, [selectedIngredients, numSwine, type]);
 
   if (loading) {
-    return <ActivityIndicator size="large" />;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#18BD18" />
+      </View>
+    );
   }
 
   if (!result) {
@@ -302,18 +307,22 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
           </View>
         )}
       </View>
-      <Button title="Save Formulation" onPress={handleSaveFormulation} />
+      {/* Custom button with styles */}
+      <TouchableOpacity style={styles.button} onPress={handleSaveFormulation}>
+        <Text style={styles.buttonText}>Save Formulation</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 15,
     backgroundColor: "#f2f6f9",
   },
   header: {
-    fontSize: 18,
+    color: "#515252",
+    fontSize: 16,
     fontWeight: "bold",
     marginVertical: 10,
   },
@@ -335,6 +344,20 @@ const styles = StyleSheet.create({
   recommendationText: {
     fontSize: 14,
     marginVertical: 2,
+  },
+  button: {
+    backgroundColor: "#28a745",
+    paddingVertical: 15,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: "center",
+    marginVertical: 16,
+    margin: 15,
+  },
+  buttonText: {
+    color: "#FFFFFF", // White text
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 

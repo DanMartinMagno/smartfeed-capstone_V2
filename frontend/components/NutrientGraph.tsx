@@ -63,7 +63,15 @@ const NutrientGraph: React.FC<NutrientGraphProps> = ({
 
   return (
     <View>
-      <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
+      <Text
+        style={{
+          fontSize: 16,
+          fontWeight: "bold",
+          marginTop: 12,
+          marginBottom: 9,
+          color: "#515252",
+        }}
+      >
         Nutrient Analysis
       </Text>
       <LineChart

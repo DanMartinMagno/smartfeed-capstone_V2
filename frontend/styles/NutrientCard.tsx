@@ -81,7 +81,8 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 16,
-    color: "green",
+    fontWeight: "bold",
+    color: "#28a745",
   },
   recommendation: {
     fontSize: 14,
