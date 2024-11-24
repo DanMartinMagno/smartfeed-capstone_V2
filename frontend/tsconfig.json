@@ -27,7 +27,8 @@
     "styles/**/*",
     "api/**/*",
     "App.tsx",
-    "types.ts"
+    "types.ts",
+    "declarations.d.ts"
   ],
   "exclude": ["dist", "node_modules"],
   "extends": "expo/tsconfig.base"

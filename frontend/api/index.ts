@@ -1,9 +1,10 @@
 //api/index.ts
 
 import axios from "axios";
+import { API_URL } from "@env";
 
 const api = axios.create({
-  baseURL: "http://192.168.43.166:5000/api", // My machine's IP address
+  baseURL: API_URL, // Uses the environment variable
 });
 
 interface FeedCalculationRequest {

@@ -38,8 +38,8 @@ const ChangePasswordScreen: React.FC<Props> = ({ navigation }) => {
       Alert.alert("Error", "New passwords do not match.");
       return;
     }
-    if (newPassword.length < 6) {
-      Alert.alert("Error", "New password must be at least 6 characters long.");
+    if (newPassword.length < 3) {
+      Alert.alert("Error", "New password must be at least 3 characters long.");
       return;
     }
 

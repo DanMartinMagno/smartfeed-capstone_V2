@@ -12,7 +12,7 @@
         "*": ["node_modules/*", "types/*"]
       }
     },
-    "include": ["backend/**/*.ts", "frontend/**/*.ts", "frontend/**/*.tsx"],
+    "include": ["backend/**/*.ts", "frontend/**/*.ts", "frontend/**/*.tsx", "frontend/declarations.d.ts"],
     "exclude": ["node_modules", "dist"]
   }
   

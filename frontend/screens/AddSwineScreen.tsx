@@ -11,6 +11,7 @@ import {
 import { useSwineContext } from "../context/SwineContext";
 import { AddSwineScreenNavigationProp } from "../types/navigation"; // Import your navigation types
 import axiosInstance from "../api/axiosInstance";
+import axios from "axios";
 
 type Props = {
   navigation: AddSwineScreenNavigationProp; // Explicitly define the navigation prop type
@@ -47,16 +48,14 @@ const AddSwineScreen: React.FC<Props> = ({ navigation }) => {
 
     // Validate weight based on age range (growth stage)
     if (parsedAge >= 14 && parsedAge <= 28) {
-      // Starter stage: 23-35 kg
       if (parsedWeight < 5 || parsedWeight > 35) {
         Alert.alert(
           "Validation Error",
-          "Weight for Starter stage minimum of 5kg"
+          "Weight for Starter stage must be between 5 kg and 35 kg."
         );
         return;
       }
     } else if (parsedAge >= 29 && parsedAge <= 84) {
-      // Grower stage: 35-75 kg
       if (parsedWeight < 5 || parsedWeight > 75) {
         Alert.alert(
           "Validation Error",
@@ -65,7 +64,6 @@ const AddSwineScreen: React.FC<Props> = ({ navigation }) => {
         return;
       }
     } else if (parsedAge >= 85 && parsedAge <= 1000) {
-      // Finisher stage: 75-1000 kg
       if (parsedWeight < 5 || parsedWeight > 1000) {
         Alert.alert(
           "Validation Error",
@@ -84,14 +82,20 @@ const AddSwineScreen: React.FC<Props> = ({ navigation }) => {
     };
 
     axiosInstance
-      .post("/swine", newSwine) // Use axiosInstance for authenticated requests
+      .post("/swine", newSwine) // Send the request to the backend
       .then((response) => {
-        addSwine(response.data);
-        navigation.navigate("Home");
+        addSwine(response.data); // Add the swine to the context
+        navigation.navigate("Home"); // Navigate back to the Home screen
       })
       .catch((error) => {
-        console.error("Error submitting data", error);
-        Alert.alert("Error", "Something went wrong.");
+
+        if (error.response?.status === 400 && error.response?.data?.message) {
+          // Show a user-friendly error message from the backend
+          Alert.alert("Error", error.response.data.message);
+        } else {
+          // Fallback for other errors
+          Alert.alert("Error", "Something went wrong.");
+        }
       });
   };
 

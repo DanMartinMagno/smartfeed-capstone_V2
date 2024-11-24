@@ -30,7 +30,7 @@ export const addSwine = async (
   res: Response
 ): Promise<Response> => {
   const { id, weight, age } = req.body;
-  const userId = req.user?.userId;
+  const userId = req.user?.userId; // Extract the logged-in user's ID
 
   if (!userId) {
     return res.status(401).json({ message: "User not authenticated" });
@@ -38,24 +38,28 @@ export const addSwine = async (
 
   try {
     const normalizedId = id.trim().toLowerCase();
-    const existingSwine = await Swine.findOne({ id: normalizedId, userId });
-    if (existingSwine) {
-      return res
-        .status(400)
-        .json({ message: "Swine ID already exists for this user" });
-    }
 
     const swine = new Swine({
       id: normalizedId,
+      userId, // Associate the swine with the logged-in user
       weight,
       age,
-      userId,
       weights: [{ weight, date: new Date() }],
     });
 
     const newSwine = await swine.save();
-    return res.status(201).json(newSwine);
-  } catch (err) {
+    return res.status(201).json(newSwine); // Return the newly created swine
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      (err as any).code === 11000 // MongoDB duplicate key error
+    ) {
+      // Handle duplicate key error
+      return res.status(400).json({
+        message: `Swine with ID "${id}" already exists.`,
+      });
+    }
+
     console.error("Error in addSwine:", err);
     return res.status(500).json({ message: "Server error" });
   }
