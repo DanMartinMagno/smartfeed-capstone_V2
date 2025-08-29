@@ -26,8 +26,30 @@ const FAQScreen: React.FC = () => {
   const groupedFAQs = [
     { header: "Raising Native Swine", questions: filteredFAQs.slice(0, 5) },
     { header: "Swine Housing", questions: filteredFAQs.slice(5, 10) },
-    { header: "Feeding and Nutrition", questions: filteredFAQs.slice(10, 15) },
-    { header: "Other Questions", questions: filteredFAQs.slice(15) },
+    {
+      header: "Pagkain at Nutrisyon bagong walay",
+      questions: filteredFAQs.slice(10, 15),
+    },
+    {
+      header: "Kalusugan at Pag-iwas sa Sakit (Biik)",
+      questions: filteredFAQs.slice(15, 20),
+    },
+    {
+      header: "Nutrisyon (Grower Stage)",
+      questions: filteredFAQs.slice(20, 25),
+    },
+    {
+      header: "Kalusugan at Pag-iwas sa Sakit (Grower Pigs)",
+      questions: filteredFAQs.slice(25, 30),
+    },
+    {
+      header: "Pagkain at Nutrisyon (Finisher Stage)",
+      questions: filteredFAQs.slice(30, 35),
+    },
+    {
+      header: "Paglaki at Paghahanda para sa Merkado",
+      questions: filteredFAQs.slice(35, 40),
+    },
   ].filter((group) => group.questions.length > 0); // Remove empty groups
 
   return (

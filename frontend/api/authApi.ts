@@ -1,6 +1,6 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL } from "@env"; // Added import to access API_URL from .env file
+import { EXPO_PUBLIC_API_URL } from "@env"; // Added import to access API_URL from .env file
 
 export interface User {
   userId: string;
@@ -29,7 +29,7 @@ const getToken = async () => {
 };
 
 export const login = async (email: string, password: string) => {
-  const response = await axios.post(`${API_URL}/auth/login`, {
+  const response = await axios.post(`${EXPO_PUBLIC_API_URL}/auth/login`, {
     email,
     password,
   }); // Replaced hardcoded URL with API_URL
@@ -43,7 +43,7 @@ export const signup = async (
   email: string,
   password: string
 ) => {
-  const response = await axios.post(`${API_URL}/auth/signup`, {
+  const response = await axios.post(`${EXPO_PUBLIC_API_URL}/auth/signup`, {
     lastName,
     firstName,
     middleInitial,
@@ -55,9 +55,13 @@ export const signup = async (
 
 export const updateUserData = async (userData: User) => {
   const token = await getToken();
-  const response = await axios.put(`${API_URL}/user/update`, userData, {
-    headers: { Authorization: `Bearer ${token}` },
-  }); // Replaced hardcoded URL with API_URL
+  const response = await axios.put(
+    `${EXPO_PUBLIC_API_URL}/user/update`,
+    userData,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  ); // Replaced hardcoded URL with API_URL
   return response.data;
 };
 
@@ -70,7 +74,7 @@ export const changePassword = async (
 
   try {
     const response = await axios.put(
-      `${API_URL}/user/change-password`,
+      `${EXPO_PUBLIC_API_URL}/user/change-password`,
       { oldPassword: currentPassword, newPassword },
       { headers: { Authorization: `Bearer ${token}` } }
     ); // Replaced hardcoded URL with API_URL
@@ -85,9 +89,13 @@ export const saveRecipe = async (recipeData: Recipe) => {
   if (!token) throw new Error("No token found");
 
   try {
-    const response = await axios.post(`${API_URL}/recipes/save`, recipeData, {
-      headers: { Authorization: `Bearer ${token}` },
-    }); // Replaced hardcoded URL with API_URL
+    const response = await axios.post(
+      `${EXPO_PUBLIC_API_URL}/recipes/save`,
+      recipeData,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    ); // Replaced hardcoded URL with API_URL
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || "Save failed");
@@ -96,14 +104,14 @@ export const saveRecipe = async (recipeData: Recipe) => {
 
 export const getSavedRecipes = async () => {
   const token = await getToken();
-  const response = await axios.get(`${API_URL}/recipes/all`, {
+  const response = await axios.get(`${EXPO_PUBLIC_API_URL}/recipes/all`, {
     headers: { Authorization: `Bearer ${token}` },
   }); // Replaced hardcoded URL with API_URL
   return response.data;
 };
 
 export const getUserProfile = async (token: string) => {
-  const response = await axios.get(`${API_URL}/user/profile`, {
+  const response = await axios.get(`${EXPO_PUBLIC_API_URL}/user/profile`, {
     headers: { Authorization: `Bearer ${token}` },
   }); // Replaced hardcoded URL with API_URL
   return response.data;

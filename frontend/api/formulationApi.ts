@@ -2,11 +2,11 @@
 
 import axios from "axios";
 import axiosInstance from "./axiosInstance";
-import { API_URL } from "@env";
+import { EXPO_PUBLIC_API_URL } from "@env";
 
 export const saveFormulation = async (formulationData: any, token: string) => {
   const response = await axios.post(
-    `${API_URL}/formulations/save`,
+    `${EXPO_PUBLIC_API_URL}/formulations/save`,
     formulationData,
     { headers: { Authorization: `Bearer ${token}` } }
   );
@@ -15,7 +15,7 @@ export const saveFormulation = async (formulationData: any, token: string) => {
 
 export const getFormulations = async (token: string) => {
   const response = await axios.get(
-    `${API_URL}/formulations/user-formulations`, // Verify correct URL here
+    `${EXPO_PUBLIC_API_URL}/formulations/user-formulations`, // Verify correct URL here
     {
       headers: { Authorization: `Bearer ${token}` },
     }

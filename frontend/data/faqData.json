@@ -39,40 +39,126 @@
     "question": "Are native swine prone to diseases?",
     "answer": "Native swine are generally more resistant to common swine diseases compared to commercial breeds, but they are still susceptible to certain conditions. Good hygiene, vaccination, and proper management are important to prevent disease outbreaks."
   },
+
   {
-    "question": "Are native swine profitable to raise?",
-    "answer": "While native pigs have a slower growth rate, they are more economical to raise because they require less expensive feed and care. If marketed well, especially for niche or premium markets, they can provide a good return on investment."
+    "question": "Ano ang angkop na pakain para sa mga biik matapos ang pagwalay?",
+    "answer": "Angkop ang starter feeds na may mataas na protina (18%) upang masuportahan ang mabilis na paglaki ng biik. Maaari rin itong ihalo sa alternatibong pagkain tulad ng dahon ng camote (19.4% CP) at kangkong (28% CP), na parehong mayaman sa nutrisyon. Siguraduhing hindi sosobra ang crude fiber upang hindi makasama sa kanilang digestive system."
   },
   {
-    "question": "What is the purpose of this app?",
-    "answer": "This app helps you track swine weight and manage feed formulation."
+    "question": "Paano ko papakainin ang bagong walay na biik?",
+    "answer": "Unting-unting bigyan ng bagong pagkain o ihalo sa dating pinapakain upang maiwasan ang stress at pagtatae. Unahin ang malalambot na pagkain tulad ng lugaw mula sa mais o darak, at unti-unting dagdagan ang solid feeds. Mahalagang sundin ang wastong dami para hindi sila mabigla sa pagbabago ng diyeta."
   },
   {
-    "question": "How do I add a new swine?",
-    "answer": "Go to the Home screen and click on 'Add Swine' to add a new swine."
+    "question": "Gaano kadalas dapat pakainin ang mga biik araw-araw?",
+    "answer": "Pakainin ang mga biik ng 3-4 na beses kada araw upang maayos na mahati ang kanilang pagkain at matugunan ang kanilang pangangailangan. Iwasan ang overfeeding dahil maaaring magdulot ito ng pagtatae at pagkaaksaya ng pagkain."
   },
   {
-    "question": "How do I add a weight entry?",
-    "answer": "Navigate to the swine detail screen and click on 'Add Weight'."
+    "question": "Paano ko masisiguro na sapat ang tubig na iniinom ng mga biik?",
+    "answer": "Siguraduhing malinis, malamig, at madaling maabot ang tubig ng mga biik sa lahat ng oras. Regular na linisin ang kanilang inuman upang maiwasan ang kontaminasyon na maaaring magdulot ng sakit."
   },
   {
-    "question": "Are native swine prone to diseases?",
-    "answer": "Native swine are generally more resistant to common swine diseases compared to commercial breeds, but they are still susceptible to certain conditions. Good hygiene, vaccination, and proper management are important to prevent disease outbreaks."
+    "question": "Gaano dapat tumaba ang isang biik linggo-linggo?",
+    "answer": "Ang isang malusog na biik ay dapat tumaba ng 1-2 kg linggo-linggo depende sa kanilang pagkain at kondisyon. Ang tamang timbang ay indikasyon ng maayos na nutrisyon at wastong pag-aalaga."
   },
   {
-    "question": "Are native swine profitable to raise?",
-    "answer": "While native pigs have a slower growth rate, they are more economical to raise because they require less expensive feed and care. If marketed well, especially for niche or premium markets, they can provide a good return on investment."
+    "question": "Ano ang mga palatandaan ng malusog na biik?",
+    "answer": "Ang malusog na biik ay aktibo, may makintab na balahibo, at regular ang pagkain. Wala silang sintomas ng sakit tulad ng lagnat, pagtatae, o pamumutla. Ang maayos na paglaki ay isa ring senyales ng mabuting kalusugan."
   },
   {
-    "question": "What is the purpose of this app?",
-    "answer": "This app helps you track swine weight and manage feed formulation."
+    "question": "Kailan dapat bakunahan ang mga biik at laban sa anong mga sakit?",
+    "answer": "Bakunahan ang biik sa edad na 6-8 linggo laban sa hog cholera, leptospirosis, at foot-and-mouth disease (FMD). Sundin ang iskedyul ng pagbabakuna ayon sa rekomendasyon ng beterinaryo upang masiguro ang kanilang kalusugan."
   },
   {
-    "question": "How do I add a new swine?",
-    "answer": "Go to the Home screen and click on 'Add Swine' to add a new swine."
+    "question": "Paano maiiwasan ang pagkakasakit ng mga biik?",
+    "answer": "Panatilihin ang kalinisan sa kulungan at tiyaking may sapat na espasyo para maiwasan ang stress. Bigyan sila ng tamang nutrisyon at i-deworm ang mga biik sa tamang panahon. Siguraduhin din ang tamang bentilasyon ng kulungan."
   },
   {
-    "question": "How do I add a weight entry?",
-    "answer": "Navigate to the swine detail screen and click on 'Add Weight'."
+    "question": "Paano panatilihing mainit ang mga biik sa yugto ng simula?",
+    "answer": "Maglagay ng heat lamp o dayami sa kulungan upang mapanatili ang init lalo na sa malamig na panahon. Ang tamang temperatura ay mahalaga upang maiwasan ang hypothermia sa mga biik."
+  },
+  {
+    "question": "Paano mapanatili ang kalinisan ng mga biik upang maiwasan ang impeksyon?",
+    "answer": "Linisin ang kulungan araw-araw at disimpektahan linggu-linggo upang maalis ang bakterya. Siguraduhin ding ang pagkain at tubig ay sariwa at hindi kontaminado."
+  },
+  {
+    "question": "Ano ang dapat ipakain sa lumalaking native na baboy para sa mas mabilis na paglaki?",
+    "answer": "Angkop ang grower feeds na may 16-18% crude protein upang mapabilis ang paglaki. Maaaring haluan ng mga alternatibong pagkain tulad ng kangkong, darak, at cassava leaves upang makatipid at magbigay ng balanseng nutrisyon."
+  },
+  {
+    "question": "Puwede bang kumain ng damo at tira-tirang pagkain mula sa kusina ang mga native na baboy?",
+    "answer": "Oo, ngunit tiyaking ang tira-tira ay malinis at hindi panis upang maiwasan ang sakit. Ang mga damo tulad ng napier grass ay makakatulong sa pagdagdag ng hibla sa kanilang diyeta."
+  },
+  {
+    "question": "Paano ko mapangangalagaan ang iskedyul ng pagpapakain sa mga grower pigs?",
+    "answer": "Magpakain sa parehong oras araw-araw upang masanay ang baboy sa regular na iskedyul. Ito ay nakatutulong sa pagpapabuti ng kanilang gana at pagtunaw ng pagkain."
+  },
+  {
+    "question": "Ano ang gagawin kung tumigil sa pagkain ang isang grower pig?",
+    "answer": "Obserbahan ito sa loob ng 24 oras at suriin kung may iba pang sintomas ng sakit. Kumonsulta agad sa beterinaryo kung magpatuloy ang kawalan ng gana upang maagapan ang problema."
+  },
+  {
+    "question": "Paano mapapabuti ang protina sa diyeta ng mga grower pigs?",
+    "answer": "Magdagdag ng soybean meal, fishmeal, o legume-based feed para sa karagdagang protina. Ang mga alternatibo tulad ng kangkong at madre de agua ay mabuting mapagkukunan ng protina at mura pa."
+  },
+
+  {
+    "question": "Kailan dapat i-deworm ang mga grower pigs?",
+    "answer": "Dapat i-deworm ang mga grower pigs tuwing 2-3 buwan upang maiwasan ang impeksiyon ng bulate. Gumamit ng angkop na gamot ayon sa payo ng beterinaryo at tiyaking tama ang dosage para sa kanilang timbang."
+  },
+  {
+    "question": "Paano maiiwasan ang mga sakit sa mga grower pigs?",
+    "answer": "Siguraduhing malinis ang kulungan at iwasan ang overcrowding. Regular na linisin ang pagkain at inuman, at tiyakin na sapat ang bentilasyon. Sundin ang tamang iskedyul ng bakuna upang mapanatiling malusog ang mga baboy."
+  },
+  {
+    "question": "Anong mga bakuna ang mahalaga para sa mga grower pigs?",
+    "answer": "Mahalagang bakunahan sila laban sa hog cholera, leptospirosis, at FMD. Ang pagbabakuna ay isang epektibong paraan upang maiwasan ang mga nakahahawang sakit na karaniwan sa mga baboy."
+  },
+  {
+    "question": "Ano ang mga karaniwang sintomas ng sakit sa mga grower pigs?",
+    "answer": "Ang karaniwang sintomas ay kawalan ng gana, pagsusuka, pagtatae, at lagnat. Kapag napansin ang mga ito, mahalagang ihiwalay agad ang may sakit na baboy at kumonsulta sa beterinaryo para sa tamang paggamot."
+  },
+  {
+    "question": "Paano maiiwasan ang mga parasito sa mga grower pigs?",
+    "answer": "Panatilihing malinis ang kulungan at maglagay ng sapat na tuyong bedding upang maiwasan ang pag-usbong ng parasito. Regular ding linisin at disimpektahan ang kulungan, at gumamit ng preventive deworming program."
+  },
+  {
+    "question": "Ano ang magandang pakain para sa pagpataba ng native na baboy?",
+    "answer": "Angkop ang finisher feeds na may 14-16% na crude protein para sa mas mabilis na pagpataba. Maaari ding isama ang alternatibong pagkain tulad ng saging na saba at coconut residue upang magbigay ng dagdag na enerhiya at taba sa diyeta."
+  },
+  {
+    "question": "Paano ko maiaayos ang gastusin sa pagpapakain ng mga finisher pigs?",
+    "answer": "Gumamit ng lokal na sangkap tulad ng taro leaves, kangkong, at darak na mura ngunit mayaman sa nutrisyon. Iwasan ang sobrang pagkain upang maiwasan ang pagkaaksaya at mabawasan ang gastos."
+  },
+  {
+    "question": "Gaano karaming tubig ang kailangan ng finisher pig araw-araw?",
+    "answer": "Kailangan ng finisher pigs ng 10-15 litro ng malinis na tubig araw-araw upang masuportahan ang kanilang paglaki. Ang sapat na tubig ay mahalaga sa digestion at upang maiwasan ang dehydration."
+  },
+  {
+    "question": "Paano ko maisasama ang mga lokal na alternatibo bilang pagkain ng finisher pigs?",
+    "answer": "Isama ang coconut residue, banana pseudostem, at cassava leaves bilang bahagi ng kanilang diyeta. Tiyaking tama ang dami ng crude protein at fiber upang mapanatili ang balanse ng nutrisyon."
+  },
+  {
+    "question": "Paano mababalanse ang enerhiya at taba sa diyeta ng finisher pigs?",
+    "answer": "Magdagdag ng root crops tulad ng kamote at mais, o maghalo ng coconut residue para sa karagdagang taba. Ang paggamit ng banana pseudostem at darak ay makakatulong din upang mapanatiling sapat ang enerhiya sa kanilang pagkain."
+  },
+  {
+    "question": "Gaano dapat tumaba ang isang finisher pig linggo-linggo?",
+    "answer": "Ang finisher pig ay dapat tumaba ng 3-5 kg bawat linggo upang maabot ang ideal na timbang bago ang merkado. Ang tamang pagkain at stress-free na kapaligiran ay mahalaga sa kanilang paglaki."
+  },
+  {
+    "question": "Paano ko malalaman kung handa na ang baboy para sa merkado?",
+    "answer": "Kapag umabot na sa 60-90 kg ang timbang ng baboy, handa na itong ibenta. Suriin din ang kondisyon ng karne at taba, dahil mahalaga ang kalidad para sa mas mataas na presyo."
+  },
+  {
+    "question": "Ano ang ideal na timbang ng native na baboy bago ibenta?",
+    "answer": "Ang ideal na timbang ay nasa 80-90 kg, depende sa hinihingi ng merkado. Ang timbang na ito ay nagbibigay ng sapat na karne habang pinapanatili ang kalidad."
+  },
+  {
+    "question": "Paano mapapaganda ang kalidad ng karne ng native na baboy?",
+    "answer": "Bigyan sila ng tamang nutrisyon at huwag silang stressin bago katayin. Ang paggamit ng natural na feeds tulad ng kangkong at darak ay makatutulong upang mapanatiling malasa ang karne."
+  },
+  {
+    "question": "Ano ang mga pinakamainam na paraan para sa pag-transport ng baboy sa merkado?",
+    "answer": "Gumamit ng malinis at maaliwalas na sasakyan upang maiwasan ang stress at injury. Siguraduhing may sapat na espasyo ang baboy upang hindi sila maipit o magdulot ng stress sa transportasyon."
   }
 ]

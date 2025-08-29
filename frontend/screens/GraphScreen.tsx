@@ -32,7 +32,7 @@ const GraphScreen: React.FC<Props> = ({ route }) => {
         setLoading(false);
       })
       .catch((error) => {
-        setError("Error fetching data");
+        setError("No internet connection. Please try again.");
         setLoading(false);
       });
   }, [swineId]);
@@ -63,7 +63,7 @@ const GraphScreen: React.FC<Props> = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
+
     backgroundColor: "#f5f5f5",
   },
 });

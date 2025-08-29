@@ -9,6 +9,7 @@ import {
   Animated,
   Alert,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 
 import { useDispatch } from "react-redux";
@@ -409,28 +410,27 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   greetingsText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
     color: "#7D7D7D",
-    marginVertical: 12,
+
     textAlign: "left",
-    marginTop: 0,
-    marginBottom: 0.1,
+    marginBottom: 10,
   },
   greetingsHeader: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "800",
     color: "#4C4C4C",
-    marginVertical: 12,
+    marginVertical: 5,
     textAlign: "left",
-    marginBottom: 0,
+    marginTop: 10,
   },
 
   featureCard: {
     alignItems: "center",
     padding: 10,
     margin: 10,
-    width: "95%",
+    width: Dimensions.get("window").width * 0.95,
     borderRadius: 13,
     marginBottom: 0.1,
     marginTop: 10,
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-    height: 150,
+    height: 160,
   },
   cardContent: {
     padding: 9,
@@ -475,7 +475,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#f1f1f1",
     fontWeight: "500",
-    marginBottom: 17,
+    marginBottom: 10,
+    lineHeight: 18,
   },
   expiredText: {
     color: "red",
@@ -489,7 +490,7 @@ const styles = StyleSheet.create({
   headerText: {
     marginBottom: 9,
     marginLeft: 10,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "bold",
     color: "#515252",
     marginVertical: 15,

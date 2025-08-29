@@ -1,4 +1,4 @@
-//ResultScreen.tsx
+// ResultScreen.tsx
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
   StyleSheet,
   ScrollView,
-  Alert,
   TouchableOpacity,
 } from "react-native";
 import { calculateFeed } from "../api";
@@ -42,48 +41,55 @@ const ResultScreen: React.FC<Props> = ({ route, navigation }) => {
   const { type, numSwine, selectedIngredients } = route.params;
   const [result, setResult] = useState<FeedCalculationResult | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
 
-  // Fetch and set result
-  // 1. Fetch and set result data
-  useEffect(() => {
+  const fetchResult = () => {
     setLoading(true);
+    setError(false);
     calculateFeed({ selectedIngredients, numSwine, type })
       .then((response) => {
         const responseData = response.data as FeedCalculationResult;
         setResult(responseData);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error("Error fetching feed calculation:", error);
-        Alert.alert(
-          "Error",
-          "An error occurred while fetching the feed calculation. Please try again."
-        );
+      .catch((err) => {
+        setError(true);
         setLoading(false);
       });
-  }, [selectedIngredients, numSwine, type]);
+  };
 
-  // 2. Handle navigation based on result updates
-  // useEffect(() => {
-  //   if (result) {
-  //     navigation.navigate("SaveFormulation", {
-  //       type,
-  //       numSwine,
-  //       selectedIngredients: result.ingredientAmounts,
-  //       totalNutrients: result.totalNutrients,
-  //     });
-  //   }
-  // }, [result, navigation, type, numSwine]);
+  useEffect(() => {
+    fetchResult();
+  }, [selectedIngredients, numSwine, type]);
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.centeredContainer}>
         <ActivityIndicator size="large" color="#18BD18" />
       </View>
     );
   }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorMessage}>
+          Oops! Something went wrong. Please check your internet connection or
+          try again later.
+        </Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchResult}>
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   if (!result) {
-    return <Text>Error loading results.</Text>;
+    return (
+      <View style={styles.centeredContainer}>
+        <Text style={styles.errorMessage}>Error loading results.</Text>
+      </View>
+    );
   }
 
   return (
@@ -130,22 +136,14 @@ const ResultScreen: React.FC<Props> = ({ route, navigation }) => {
           value={result.totalNutrients.phosphorus}
           unit="%"
         />
-
         <TouchableOpacity
           style={styles.button}
           onPress={() =>
             navigation.navigate("Nutrient Analysis", {
               type,
               numSwine,
-              selectedIngredients: result.ingredientAmounts, // Pass the calculated ingredient amounts
-              totalNutrients: {
-                crudeProtein: result.totalNutrients.crudeProtein,
-                crudeFiber: result.totalNutrients.crudeFiber,
-                crudeFat: result.totalNutrients.crudeFat,
-                calcium: result.totalNutrients.calcium,
-                moisture: result.totalNutrients.moisture,
-                phosphorus: result.totalNutrients.phosphorus,
-              },
+              selectedIngredients: result.ingredientAmounts,
+              totalNutrients: result.totalNutrients,
             })
           }
         >
@@ -160,6 +158,12 @@ const styles = StyleSheet.create({
   container: {
     padding: 15,
     backgroundColor: "#f2f6f9",
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
   },
   header: {
     fontSize: 24,
@@ -197,6 +201,30 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#f2f6f9",
+    borderRadius: 8,
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: "#353434",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: "#f2f6f9",
+    padding: 10,
+    borderRadius: 5,
+    elevation: 4,
+  },
+  retryButtonText: {
+    color: "#353434",
+    fontWeight: "bold",
   },
 });
 

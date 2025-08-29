@@ -1,13 +1,11 @@
-// frontend/screens/ChangePasswordScreen.tsx
-
 import React, { useState } from "react";
 import {
   View,
   StyleSheet,
-  Alert,
   ScrollView,
   TouchableOpacity,
   Text,
+  Alert,
 } from "react-native";
 import { TextInput } from "react-native-paper";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -33,15 +31,43 @@ const ChangePasswordScreen: React.FC<Props> = ({ navigation }) => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
-  const handleChangePassword = async () => {
+  const [errors, setErrors] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+
+  const validateInputs = () => {
+    let isValid = true;
+    const newErrors = {
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    };
+
+    if (!currentPassword.trim()) {
+      newErrors.currentPassword = "Current password is required.";
+      isValid = false;
+    }
+    if (!newPassword.trim()) {
+      newErrors.newPassword = "New password is required.";
+      isValid = false;
+    } else if (newPassword.length < 3) {
+      newErrors.newPassword =
+        "New password must be at least 3 characters long.";
+      isValid = false;
+    }
     if (newPassword !== confirmNewPassword) {
-      Alert.alert("Error", "New passwords do not match.");
-      return;
+      newErrors.confirmNewPassword = "Passwords do not match.";
+      isValid = false;
     }
-    if (newPassword.length < 3) {
-      Alert.alert("Error", "New password must be at least 3 characters long.");
-      return;
-    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleChangePassword = async () => {
+    if (!validateInputs()) return;
 
     try {
       await changePassword(currentPassword, newPassword);
@@ -50,7 +76,10 @@ const ChangePasswordScreen: React.FC<Props> = ({ navigation }) => {
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Failed to change password.";
-      Alert.alert("Error", errorMessage);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        currentPassword: errorMessage,
+      }));
     }
   };
 
@@ -60,10 +89,13 @@ const ChangePasswordScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.inputContainer}>
         <TextInput
           label="Current Password"
-          outlineColor="#cccccc"
-          activeOutlineColor="#26B346"
+          outlineColor={errors.currentPassword ? "#FF0000" : "#EEEFEF"}
+          activeOutlineColor={errors.currentPassword ? "#FF0000" : "#26B346"}
           value={currentPassword}
-          onChangeText={setCurrentPassword}
+          onChangeText={(value) => {
+            setCurrentPassword(value);
+            setErrors((prev) => ({ ...prev, currentPassword: "" }));
+          }}
           secureTextEntry={!showCurrentPassword}
           mode="outlined"
           style={styles.input}
@@ -80,14 +112,20 @@ const ChangePasswordScreen: React.FC<Props> = ({ navigation }) => {
             />
           }
         />
+        {errors.currentPassword ? (
+          <Text style={styles.errorText}>{errors.currentPassword}</Text>
+        ) : null}
       </View>
       <View style={styles.inputContainer}>
         <TextInput
           label="New Password"
-          outlineColor="#cccccc"
-          activeOutlineColor="#26B346"
+          outlineColor={errors.newPassword ? "#FF0000" : "#EEEFEF"}
+          activeOutlineColor={errors.newPassword ? "#FF0000" : "#26B346"}
           value={newPassword}
-          onChangeText={setNewPassword}
+          onChangeText={(value) => {
+            setNewPassword(value);
+            setErrors((prev) => ({ ...prev, newPassword: "" }));
+          }}
           secureTextEntry={!showNewPassword}
           mode="outlined"
           style={styles.input}
@@ -104,14 +142,20 @@ const ChangePasswordScreen: React.FC<Props> = ({ navigation }) => {
             />
           }
         />
+        {errors.newPassword ? (
+          <Text style={styles.errorText}>{errors.newPassword}</Text>
+        ) : null}
       </View>
       <View style={styles.inputContainer}>
         <TextInput
           label="Confirm New Password"
-          outlineColor="#cccccc"
-          activeOutlineColor="#26B346"
+          outlineColor={errors.confirmNewPassword ? "#FF0000" : "#EEEFEF"}
+          activeOutlineColor={errors.confirmNewPassword ? "#FF0000" : "#26B346"}
           value={confirmNewPassword}
-          onChangeText={setConfirmNewPassword}
+          onChangeText={(value) => {
+            setConfirmNewPassword(value);
+            setErrors((prev) => ({ ...prev, confirmNewPassword: "" }));
+          }}
           secureTextEntry={!showConfirmNewPassword}
           mode="outlined"
           style={styles.input}
@@ -128,6 +172,9 @@ const ChangePasswordScreen: React.FC<Props> = ({ navigation }) => {
             />
           }
         />
+        {errors.confirmNewPassword ? (
+          <Text style={styles.errorText}>{errors.confirmNewPassword}</Text>
+        ) : null}
       </View>
       <TouchableOpacity
         style={styles.saveButton}
@@ -158,8 +205,12 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 14,
-    backgroundColor: "#f2f6f9",
-    borderRadius: 200, // Set the desired border radius here
+    backgroundColor: "#FFF",
+  },
+  errorText: {
+    color: "#FF0000",
+    fontSize: 12,
+    marginTop: 5,
   },
   saveButton: {
     backgroundColor: "#28a745",

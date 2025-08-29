@@ -65,6 +65,7 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
   const [result, setResult] = useState<AnalysisResults | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [recommendations, setRecommendations] = useState<string[]>([]);
+  const [error, setError] = useState<boolean>(false);
 
   // Nutrient to Ingredient Mapping (based on available ingredients)
   const nutrientIngredientMap: { [key: string]: string[] } = {
@@ -201,11 +202,6 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
 
         setRecommendations(recs);
       } catch (error) {
-        console.error("Error fetching nutrient analysis:", error);
-        Alert.alert(
-          "Error",
-          "An error occurred while fetching the nutrient analysis. Please try again."
-        );
       } finally {
         setLoading(false);
       }
@@ -214,16 +210,57 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
     fetchData();
   }, [selectedIngredients, numSwine, type]);
 
+  // Fetch analysis data
+  const fetchAnalysis = async () => {
+    setLoading(true);
+    setError(false); // Reset error state before retrying
+    try {
+      const response = await calculateFeed({
+        selectedIngredients,
+        numSwine,
+        type: type as "starter" | "grower" | "finisher",
+      });
+      setResult(response.data as AnalysisResults);
+    } catch (error) {
+      setError(true); // Set error state if API call fails
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnalysis(); // Fetch data when the component is mounted
+  }, [selectedIngredients, numSwine, type]);
+
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.centeredContainer}>
         <ActivityIndicator size="large" color="#18BD18" />
       </View>
     );
   }
 
+  if (error) {
+    // Error UI with Retry button
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorMessage}>
+          Oops! Something went wrong. Please check your internet connection or
+          try again later.
+        </Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchAnalysis}>
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   if (!result) {
-    return <Text>Error loading results.</Text>;
+    return (
+      <View style={styles.centeredContainer}>
+        <Text style={styles.errorMessage}>Error loading results.</Text>
+      </View>
+    );
   }
 
   const nutrientData = [
@@ -358,6 +395,38 @@ const styles = StyleSheet.create({
     color: "#FFFFFF", // White text
     fontSize: 16,
     fontWeight: "600",
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  errorContainer: {
+    // Added error container styling
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#f2f6f9",
+    borderRadius: 8,
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: "#353434",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  retryButton: {
+    // Added retry button styling
+    backgroundColor: "#f2f6f9",
+    padding: 10,
+    borderRadius: 5,
+    elevation: 4,
+  },
+  retryButtonText: {
+    color: "#353434",
+    fontWeight: "bold",
   },
 });
 

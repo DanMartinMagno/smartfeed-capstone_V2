@@ -9,8 +9,9 @@ import {
   Alert,
   Animated,
   ActivityIndicator,
+  Button,
 } from "react-native";
-import axiosInstance from "../api/axiosInstance"; // Import axiosInstance
+import axiosInstance from "../api/axiosInstance";
 import {
   HomeScreenNavigationProp,
   HomeScreenRouteProp,
@@ -93,7 +94,6 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     );
   };
 
-  // Use axiosInstance to ensure the authorization token is included
   const handleDeleteSwine = (swineId: string) => {
     axiosInstance
       .delete(`/swine/${swineId}`)
@@ -105,14 +105,27 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.centeredContainer}>
         <ActivityIndicator size="large" color="#18BD18" />
       </View>
     );
   }
 
   if (error) {
-    return <Text>{error}</Text>;
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorMessage}>
+          Oops! Somthing went wrong. Please check your internet
+          connection or try again later.
+        </Text>
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={() => fetchSwines()}
+        >
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   const renderSwineItem = ({ item }: any) => (
@@ -151,12 +164,18 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#f2f6f9",
   },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
   cardStyle: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     padding: 15,
-    marginVertical: 8,
+    marginVertical: 5,
     backgroundColor: "#fff",
     borderRadius: 10,
     shadowColor: "#000",
@@ -164,7 +183,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
-    marginBottom: 1,
   },
   infoContainer: {
     flex: 1,
@@ -195,6 +213,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     elevation: 4,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#f2f6f9",
+    borderRadius: 8,
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: "#353434",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: "#f2f6f9",
+    padding: 10,
+    borderRadius: 5,
+    elevation: 4,
+  },
+  retryButtonText: {
+    color: "#353434",
+    fontWeight: "bold",
   },
 });
 

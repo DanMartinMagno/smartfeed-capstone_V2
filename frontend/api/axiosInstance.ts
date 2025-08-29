@@ -1,11 +1,11 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL } from "@env"; // Importing API_URL from .env
+import { EXPO_PUBLIC_API_URL } from "@env"; // Importing API_URL from .env
 import { Alert } from "react-native"; // For showing alerts to users
 
 // Create an axios instance with the base URL from .env
 const axiosInstance = axios.create({
-  baseURL: API_URL, // Dynamically uses API_URL from .env
+  baseURL: EXPO_PUBLIC_API_URL, // Dynamically uses API_URL from .env
 });
 
 axiosInstance.interceptors.request.use(

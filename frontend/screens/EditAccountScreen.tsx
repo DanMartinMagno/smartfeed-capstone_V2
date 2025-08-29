@@ -1,14 +1,12 @@
-// frontend/screens/EditAccountScreen.tsx
-
 import React, { useState, useEffect } from "react";
 import {
   View,
   ScrollView,
   StyleSheet,
-  Alert,
   ActivityIndicator,
   TouchableOpacity,
   Text,
+  Alert,
 } from "react-native";
 import { TextInput } from "react-native-paper";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -31,6 +29,12 @@ const EditAccountScreen: React.FC<Props> = ({ navigation }) => {
   const [middleInitial, setMiddleInitial] = useState("");
   const [email, setEmail] = useState("");
 
+  const [errors, setErrors] = useState({
+    lastName: "",
+    firstName: "",
+    email: "",
+  });
+
   if (loading || !user) {
     return (
       <View style={styles.loadingContainer}>
@@ -48,19 +52,51 @@ const EditAccountScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [user]);
 
+  const isValidEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const validateInputs = () => {
+    let isValid = true;
+    const newErrors = { lastName: "", firstName: "", email: "" };
+
+    if (!lastName.trim()) {
+      newErrors.lastName = "Last Name is required.";
+      isValid = false;
+    }
+    if (!firstName.trim()) {
+      newErrors.firstName = "First Name is required.";
+      isValid = false;
+    }
+    if (!email.trim()) {
+      newErrors.email = "Email is required.";
+      isValid = false;
+    } else if (!isValidEmail(email)) {
+      newErrors.email = "Invalid email format.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSave = async () => {
+    if (!validateInputs()) return;
+
     try {
       await updateUser({
-        lastName,
-        firstName,
-        middleInitial,
-        email,
-        userId: "",
+        lastName: lastName.trim(),
+        firstName: firstName.trim(),
+        middleInitial: middleInitial.trim(),
+        email: email.trim(),
+        userId: user.userId,
       });
       Alert.alert("Success", "Profile updated successfully!");
       navigation.goBack();
     } catch (error) {
-      Alert.alert("Error", "Failed to update profile.");
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "Failed to update profile. Please try again.",
+      }));
     }
   };
 
@@ -69,29 +105,41 @@ const EditAccountScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.inputContainer}>
         <TextInput
           label="Last Name"
-          outlineColor="#cccccc"
-          activeOutlineColor="#26B346"
+          outlineColor={errors.lastName ? "#FF0000" : "#EEEFEF"}
+          activeOutlineColor={errors.lastName ? "#FF0000" : "#26B346"}
           value={lastName}
-          onChangeText={setLastName}
+          onChangeText={(value) => {
+            setLastName(value);
+            setErrors((prev) => ({ ...prev, lastName: "" }));
+          }}
           mode="outlined"
           style={styles.input}
         />
+        {errors.lastName ? (
+          <Text style={styles.errorText}>{errors.lastName}</Text>
+        ) : null}
       </View>
       <View style={styles.inputContainer}>
         <TextInput
           label="First Name"
-          outlineColor="#cccccc"
-          activeOutlineColor="#26B346"
+          outlineColor={errors.firstName ? "#FF0000" : "#EEEFEF"}
+          activeOutlineColor={errors.firstName ? "#FF0000" : "#26B346"}
           value={firstName}
-          onChangeText={setFirstName}
+          onChangeText={(value) => {
+            setFirstName(value);
+            setErrors((prev) => ({ ...prev, firstName: "" }));
+          }}
           mode="outlined"
           style={styles.input}
         />
+        {errors.firstName ? (
+          <Text style={styles.errorText}>{errors.firstName}</Text>
+        ) : null}
       </View>
       <View style={styles.inputContainer}>
         <TextInput
           label="Middle Initial"
-          outlineColor="#cccccc"
+          outlineColor="#EEEFEF"
           activeOutlineColor="#26B346"
           value={middleInitial}
           onChangeText={setMiddleInitial}
@@ -102,14 +150,20 @@ const EditAccountScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.inputContainer}>
         <TextInput
           label="Email"
-          outlineColor="#cccccc"
-          activeOutlineColor="#26B346"
+          outlineColor={errors.email ? "#FF0000" : "#EEEFEF"}
+          activeOutlineColor={errors.email ? "#FF0000" : "#26B346"}
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(value) => {
+            setEmail(value);
+            setErrors((prev) => ({ ...prev, email: "" }));
+          }}
           keyboardType="email-address"
           mode="outlined"
           style={styles.input}
         />
+        {errors.email ? (
+          <Text style={styles.errorText}>{errors.email}</Text>
+        ) : null}
       </View>
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>Save</Text>
@@ -129,21 +183,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#515252",
-    textAlign: "center",
-    marginBottom: 20,
-  },
   inputContainer: {
     position: "relative",
     marginBottom: 15,
   },
   input: {
     fontSize: 14,
-    backgroundColor: "#f2f6f9",
-    borderRadius: 200,
+    backgroundColor: "#FFF",
+  },
+  errorText: {
+    color: "#FF0000",
+    fontSize: 12,
+    marginTop: 5,
   },
   saveButton: {
     backgroundColor: "#28a745",

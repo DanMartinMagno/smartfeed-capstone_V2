@@ -43,11 +43,14 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
   const [nameError, setNameError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [expirationDateError, setExpirationDateError] = useState("");
+  const [loading, setLoading] = useState(false); // New state to prevent double-click
 
   const { user } = useContext(AuthContext) ?? {};
   const userId = user?.userId;
 
   const handleSave = async () => {
+    if (loading) return; // Prevent multiple clicks during save
+
     let isValid = true;
 
     // Validation
@@ -75,9 +78,11 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
     if (!isValid) return;
 
     try {
+      setLoading(true); // Disable the button
       const token = await AsyncStorage.getItem("token");
       if (!token) {
         setNameError("Authorization token is missing. Please log in again.");
+        setLoading(false); // Re-enable the button on error
         return;
       }
 
@@ -97,7 +102,7 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
           description,
           userId,
           expirationDate:
-            expirationDate?.toISOString() || new Date().toISOString(), // Handle possible null
+            expirationDate?.toISOString() || new Date().toISOString(),
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -108,8 +113,9 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
         navigation.navigate("Dashboard");
       }
     } catch (error) {
-      console.error("Error saving formulation:", error);
       setNameError("Failed to save formulation. Please try again.");
+    } finally {
+      setLoading(false); // Re-enable the button after completion
     }
   };
 
@@ -123,7 +129,9 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Save New Formulation</Text>
+      <Text style={styles.subHeader}>
+        Note: This formulation is suitable for {numSwine} swine for 1 day.
+      </Text>
 
       <TextInput
         label="Feed Name"
@@ -196,8 +204,17 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
         />
       )}
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Save Formulation</Text>
+      <TouchableOpacity
+        style={[
+          styles.saveButton,
+          loading && { backgroundColor: "#28a745" }, // Change style when disabled
+        ]}
+        onPress={handleSave}
+        disabled={loading} // Disable the button when loading
+      >
+        <Text style={styles.saveButtonText}>
+          {loading ? "Saving..." : "Save Formulation"}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -215,6 +232,12 @@ const styles = StyleSheet.create({
     color: "#515252",
     textAlign: "center",
     marginBottom: 20,
+  },
+  subHeader: {
+    fontSize: 16,
+    color: "#555",
+    marginBottom: 15,
+    fontStyle: "italic",
   },
   input: {
     borderRadius: 15,

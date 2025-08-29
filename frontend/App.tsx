@@ -6,7 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Provider } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/Ionicons";
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, StatusBar } from "react-native";
 import store from "./store";
 import { SwineProvider } from "./context/SwineContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -37,84 +37,87 @@ const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
 const DashboardStack = () => (
-  <Stack.Navigator
-    initialRouteName="Dashboard"
-    screenOptions={{
-      headerStyle: {
-        backgroundColor: "#39AD3D", // Green background for the header
-        height: 85,
-      },
-      headerTintColor: "#FFFFFF", // White text for the header
-      headerTitleStyle: {
-        fontWeight: "700", // Bold title
-        fontSize: 24,
-      },
-    }}
-  >
-    <Stack.Screen
-      name="Dashboard"
-      component={DashboardScreen}
-      options={{
-        title: "SmartFeed",
-        headerTitleAlign: "center", // Center the title only for this screen
-      }}
-    />
-    <Stack.Screen
-      name="Input"
-      component={InputScreen}
-      options={{
-        title: "Input Data",
+  <View style={{ flex: 1 }}>
+    <StatusBar barStyle="light-content" backgroundColor="#39AD3D" />
+    <Stack.Navigator
+      initialRouteName="Dashboard"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#39AD3D",
+          height: 50,
+        },
+        headerTintColor: "#FFFFFF",
         headerTitleStyle: {
-          fontWeight: "600", // Semi-bold font
-          fontSize: 21, // Adjusted font size
+          fontWeight: "700",
+          fontSize: 24,
         },
       }}
-    />
-    <Stack.Screen
-      name="Result"
-      component={ResultScreen}
-      options={{
-        title: "Results",
-        headerTitleStyle: {
-          fontWeight: "600", // Bold font
-          fontSize: 21, // Larger font size
-        },
-      }}
-    />
-    <Stack.Screen
-      name="Nutrient Analysis"
-      component={NutrientAnalysisScreen}
-      options={{
-        title: "Nutrient Analysis",
-        headerTitleStyle: {
-          fontWeight: "600", // Medium font weight
-          fontSize: 21, // Smaller font size
-        },
-      }}
-    />
-    <Stack.Screen
-      name="SaveFormulation"
-      component={SaveFormulationScreen}
-      options={{
-        title: "Save Formulation",
-        headerTitleStyle: {
-          fontWeight: "600", // Semi-bold font
-          fontSize: 21,
-        },
-      }}
-    />
-    <Stack.Screen
-      name="SavedFormulationDetail"
-      component={SavedFormulationDetailScreen}
-      options={{
-        title: "Formulation Details",
-        headerTitleStyle: {
-          fontWeight: "600", // Bold font
-          fontSize: 21,
-        },
-      }}
-    />
-  </Stack.Navigator>
+    >
+      <Stack.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{
+          title: "SmartFeed",
+          headerTitleAlign: "center", // Center the title for this screen only
+        }}
+      />
+      <Stack.Screen
+        name="Input"
+        component={InputScreen}
+        options={{
+          title: "Input Data",
+          headerTitleStyle: {
+            fontWeight: "600",
+            fontSize: 21,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Result"
+        component={ResultScreen}
+        options={{
+          title: "Results",
+          headerTitleStyle: {
+            fontWeight: "600",
+            fontSize: 21,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Nutrient Analysis"
+        component={NutrientAnalysisScreen}
+        options={{
+          title: "Nutrient Analysis",
+          headerTitleStyle: {
+            fontWeight: "600",
+            fontSize: 21,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="SaveFormulation"
+        component={SaveFormulationScreen}
+        options={{
+          title: "Save Formulation",
+          headerTitleStyle: {
+            fontWeight: "600",
+            fontSize: 21,
+          },
+        }}
+      />
+      <Stack.Screen
+        name="SavedFormulationDetail"
+        component={SavedFormulationDetailScreen}
+        options={{
+          title: "Formulation Details",
+          headerTitleStyle: {
+            fontWeight: "600",
+            fontSize: 21,
+          },
+        }}
+      />
+    </Stack.Navigator>
+  </View>
 );
 
 const SwineStack = () => (
@@ -123,7 +126,7 @@ const SwineStack = () => (
     screenOptions={{
       headerStyle: {
         backgroundColor: "#39AD3D", // Green background for the header
-        height: 85, // Increased header height
+        height: 50, // Increased header height
       },
       headerTintColor: "#FFFFFF", // White text for the header
       headerTitleStyle: {
@@ -207,7 +210,7 @@ const FAQStack = () => (
     screenOptions={{
       headerStyle: {
         backgroundColor: "#39AD3D", // Green background for the header
-        height: 85, // Increased header height
+        height: 50, // Increased header height
       },
       headerTintColor: "#FFFFFF", // White text for the header
       headerTitleStyle: {
@@ -246,7 +249,7 @@ const SettingsStack = () => (
     screenOptions={{
       headerStyle: {
         backgroundColor: "#39AD3D", // Green background for the header
-        height: 85, // Increased header height
+        height: 50, // Increased header height
       },
       headerTintColor: "#FFFFFF", // White text for the header
       headerTitleStyle: {
@@ -361,12 +364,12 @@ const App: React.FC = () => {
         <AuthProvider>
           <NavigationContainer>
             {isOnboardingCompleted ? (
-              <AuthNavigation />
+              <AuthNavigation /> // Main authenticated navigation stack
             ) : (
               <Stack.Navigator>
                 <Stack.Screen
                   name="Onboarding"
-                  options={{ headerShown: false }}
+                  options={{ headerShown: false }} // Disable header for OnboardingScreen
                 >
                   {() => (
                     <OnboardingScreen onComplete={handleOnboardingComplete} />

@@ -5,9 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
 } from "react-native";
-import axiosInstance from "../api/axiosInstance"; // Use axiosInstance for authenticated requests
+import axiosInstance from "../api/axiosInstance";
 import {
   AddWeightScreenNavigationProp,
   AddWeightScreenRouteProp,
@@ -24,44 +23,53 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
   const { swineId } = route.params;
   const { addWeight, swines, fetchSwines } = useSwineContext();
   const [weight, setWeight] = useState<string>("");
-  const [date, setDate] = useState<string>(
-    new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  );
   const [weightError, setWeightError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const validateWeight = (text: string) => {
+  // Get today's date as a string
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const validateWeight = (text: string): boolean => {
     const weightValue = parseFloat(text);
-    if (!text) {
+    if (!text.trim()) {
       setWeightError("Weight is required.");
+      return false;
     } else if (isNaN(weightValue) || weightValue < 1 || weightValue > 1000) {
       setWeightError("Weight must be between 1 kg and 1000 kg.");
-    } else {
-      setWeightError("");
+      return false;
     }
+    setWeightError("");
+    return true;
   };
 
   const handleSubmit = async () => {
+    if (loading) return; // Prevent further actions if already loading
+
     const weightValue = parseFloat(weight);
 
-    // Fetch the latest weight for validation
+    if (!validateWeight(weight)) return; // Stop if validation fails
+
+    setLoading(true); // Disable button while processing
+
+    // Optional: Fetch the latest weight for validation
     const swine = swines.find((sw) => sw.id === swineId);
     if (swine && swine.weights.length > 0) {
       const latestWeight = swine.weights[swine.weights.length - 1].weight;
-      // Uncomment the next lines for strict weight increase validation
+      // Uncomment this section to enforce strict weight validation
       // if (weightValue <= latestWeight) {
-      //   Alert.alert("Validation Error", `New weight must be strictly greater than ${latestWeight} kg.`);
+      //   setWeightError(`New weight must be strictly greater than ${latestWeight} kg.`);
+      //   setLoading(false);
       //   return;
       // }
     }
 
-    // Submit new weight entry
     try {
       const response = await axiosInstance.post(`/swine/${swineId}/weights`, {
-        date,
+        date: currentDate,
         weight: weightValue,
       });
       addWeight(
@@ -73,26 +81,23 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.data) {
-          Alert.alert("Error", error.response.data.message);
+          setWeightError(error.response.data.message || "Error occurred.");
         }
       } else if (error instanceof Error) {
-        Alert.alert("Error", error.message);
-      } else {
-        console.error("Unknown error", error);
+        setWeightError(error.message);
       }
+      console.error("Error adding weight:", error);
+    } finally {
+      setLoading(false); // Re-enable button after API call
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Date</Text>
-      <TextInput
-        value={date}
-        onChangeText={setDate}
-        style={styles.input}
-        placeholder="Enter Date"
-        placeholderTextColor="#888"
-      />
+      <View style={styles.readOnlyField}>
+        <Text style={styles.readOnlyText}>{currentDate}</Text>
+      </View>
 
       <Text style={styles.label}>Weight (kg)</Text>
       <TextInput
@@ -104,12 +109,22 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
         keyboardType="numeric"
         style={[styles.input, weightError ? styles.inputError : null]}
         placeholder="Enter Weight"
-        placeholderTextColor="#888"
+        placeholderTextColor="#888" // Sets placeholder text color
       />
+
       {weightError ? <Text style={styles.errorText}>{weightError}</Text> : null}
 
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Submit</Text>
+      <TouchableOpacity
+        style={[
+          styles.submitButton,
+          loading && { backgroundColor: "#28a745" }, // Indicate disabled state
+        ]}
+        onPress={handleSubmit}
+        disabled={loading} // Disable button during loading
+      >
+        <Text style={styles.submitButtonText}>
+          {loading ? "Submitting..." : "Submit"}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -122,20 +137,31 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f6f9",
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#333",
     marginBottom: 5,
-
     marginLeft: 5,
+  },
+  readOnlyField: {
+    backgroundColor: "#f2f6f9",
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    marginBottom: 15,
+  },
+  readOnlyText: {
+    fontSize: 15,
+    color: "#333",
   },
   input: {
     backgroundColor: "#FFF",
-    padding: 10,
-    borderRadius: 8,
+    padding: 15,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#DDD",
+    borderColor: "#EEEFEF",
     marginBottom: 15,
-    fontSize: 16,
+    fontSize: 14,
     color: "#333",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

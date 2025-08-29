@@ -41,7 +41,9 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
   const [error, setError] = useState("");
 
   const fetchSwines = () => {
-    setLoading(true);
+    setError(""); // Clear any previous error
+    setLoading(true); // Show loading while retrying
+
     axiosInstance
       .get("/swine")
       .then((response) => {
@@ -49,7 +51,7 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
         setLoading(false);
       })
       .catch((error) => {
-        setError("Error fetching data");
+        setError("Error fetching swine data. Please try again.");
         setLoading(false);
       });
   };

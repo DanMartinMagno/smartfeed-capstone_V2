@@ -4,7 +4,7 @@ import User from "../models/user";
 import bcrypt from "bcrypt";
 
 export const updateUser = async (req: Request, res: Response) => {
-  console.log("Request user:", req.user); // Log to confirm user presence
+
   const { lastName, firstName, middleInitial, email } = req.body;
 
   if (!req.user || !req.user.userId) {
@@ -44,20 +44,15 @@ export const changePassword = async (req: Request, res: Response) => {
     const user = await User.findById(req.user.userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // console.log("Old password input:", oldPassword);
-    // console.log("New password input:", newPassword);
 
-    // Check if the old password is correct
     const isMatch = await user.comparePassword(oldPassword);
     if (!isMatch) {
-      // Return a specific message if the current password is incorrect
       return res.status(400).json({ message: "Current password is incorrect" });
     }
 
-    // Hash and save the new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
-    // console.log("New hashed password (before update):", hashedPassword);
+ 
 
     await User.findOneAndUpdate(
       { _id: req.user.userId },
