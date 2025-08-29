@@ -1,4 +1,4 @@
-# SMARTFEED: ANDROID-BASED ALTERNATIVE FEEDFORMULATION FOR NATIVE SWINE NUTRITION
+# SmartFeed: Android-Based Alternative Feed Formulation for Native Swine Nutrition
 
 ## Overview
 
@@ -92,24 +92,15 @@ Before you begin, ensure you have the following installed:
 2. Install backend dependencies:
 
    ```bash
-   cd backend
    npm install
    ```
 
 3. Install frontend dependencies:
 
    ```bash
-   cd ../frontend
    npm install
    ```
 
-4. Set up environment variables:
-   - Backend (.env):
-     ```
-     MONGO_URI=your_mongodb_connection_string
-     PORT=4000
-     JWT_SECRET=your_jwt_secret
-     ```
    - Frontend (.env):
      ```
      EXPO_PUBLIC_API_URL=your_backend_api_url
@@ -120,18 +111,14 @@ Before you begin, ensure you have the following installed:
 1. Start the backend server:
 
    ```bash
-   cd backend
    npm run dev
    ```
 
 2. Start the frontend application:
 
    ```bash
-   cd frontend
    npx expo start
    ```
-
-3. Use the Expo Go app on your mobile device to scan the QR code, or run on an emulator.
 
 ## Project Structure
 
