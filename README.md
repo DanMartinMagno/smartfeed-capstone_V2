@@ -10,11 +10,13 @@ SmartFeed was developed to assist swine raisers in Lupi, Camarines Sur, by provi
 
 ## 📸 Screenshots
 
-![App Screenshot](https://github.com/user-attachments/assets/8b05d161-6255-4223-b97d-d411a14be657)
-![App Screenshot](https://github.com/user-attachments/assets/95d8213c-f46c-4415-a939-c5adbccbca24)
-![App Screenshot](https://github.com/user-attachments/assets/6c75a68a-f432-4fa8-84f4-7e3216a108c8)
-![App Screenshot](https://github.com/user-attachments/assets/785160c7-d9d1-459c-8a06-45548005d93f)
-![App Screenshot](https://github.com/user-attachments/assets/69c71895-22b2-4908-8d23-23fcae7d85c7)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8b05d161-6255-4223-b97d-d411a14be657" alt="App Screenshot" width="200"/>
+  <img src="https://github.com/user-attachments/assets/95d8213c-f46c-4415-a939-c5adbccbca24" alt="App Screenshot" width="200"/>
+  <img src="https://github.com/user-attachments/assets/6c75a68a-f432-4fa8-84f4-7e3216a108c8" alt="App Screenshot" width="300"/>
+  <img src="https://github.com/user-attachments/assets/785160c7-d9d1-459c-8a06-45548005d93f" alt="App Screenshot" width="300"/>
+  <img src="https://github.com/user-attachments/assets/69c71895-22b2-4908-8d23-23fcae7d85c7" alt="App Screenshot" width="300"/>
+</p>
 
 ---
 
