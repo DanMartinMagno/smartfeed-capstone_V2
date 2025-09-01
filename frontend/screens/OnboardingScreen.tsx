@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
-} from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../types";
-import { useNavigation } from "@react-navigation/native";
+} from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types';
+import { useNavigation } from '@react-navigation/native';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 type OnboardingScreenProps = {
   onComplete: () => void;
@@ -20,25 +20,25 @@ type OnboardingScreenProps = {
 
 const slides = [
   {
-    id: "1",
-    title: "Start efficient feeding with SmartFeed",
+    id: '1',
+    title: 'Start efficient feeding with SmartFeed',
     description:
-      "Formulate the perfect feed, monitor growth, and optimize nutrition for your native swine effortlessly.",
-    image: require("../assets/getstarted.png"),
+      'Formulate the perfect feed, monitor growth, and optimize nutrition for your native swine effortlessly.',
+    image: require('../assets/getstarted.png'),
   },
   {
-    id: "2",
-    title: "Get accurate feed recipes in minutes!",
+    id: '2',
+    title: 'Get accurate feed recipes in minutes!',
     description:
-      "Simply enter number of swine, pick a recipe, and get a complete nutrient breakdown for effective feed formulation.",
-    image: require("../assets/onboarding2.png"),
+      'Simply enter number of swine, pick a recipe, and get a complete nutrient breakdown for effective feed formulation.',
+    image: require('../assets/onboarding2.png'),
   },
   {
-    id: "3",
-    title: "Nourish Success with SmartFeed",
+    id: '3',
+    title: 'Nourish Success with SmartFeed',
     description:
-      "Experience easy-to-use tools for formulating feeds, tracking growth, and boosting swine health.",
-    image: require("../assets/onboarding3.png"),
+      'Experience easy-to-use tools for formulating feeds, tracking growth, and boosting swine health.',
+    image: require('../assets/onboarding3.png'),
   },
 ];
 
@@ -46,7 +46,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
-  // Function to handle button press for advancing slides
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
       // Scroll to the next slide
@@ -60,7 +59,6 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
     }
   };
 
-  // Render each slide
   const renderItem = ({ item }: { item: (typeof slides)[0] }) => (
     <View style={styles.slide}>
       <Image source={item.image} style={styles.image} />
@@ -87,10 +85,10 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
         <TouchableOpacity style={styles.button} onPress={handleNext}>
           <Text style={styles.buttonText}>
             {currentIndex === 0
-              ? "Get Started"
+              ? 'Get Started'
               : currentIndex === slides.length - 1
-                ? "Done"
-                : "Next"}
+                ? 'Done'
+                : 'Next'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -101,50 +99,50 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f2f6f9",
+    backgroundColor: '#f2f6f9',
   },
   slide: {
     width,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
   },
   image: {
-    width: "100%",
+    width: '100%',
     height: height * 0.4,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   title: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginTop: 20,
-    textAlign: "center",
+    textAlign: 'center',
   },
   description: {
     fontSize: 16,
-    textAlign: "center",
-    color: "#707070",
+    textAlign: 'center',
+    color: '#707070',
     marginTop: 10,
     paddingHorizontal: 20,
   },
   footer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 50,
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
     width: 200,
     padding: 15,
-    backgroundColor: "#28a745",
+    backgroundColor: '#28a745',
     borderRadius: 30,
-    alignItems: "center",
+    alignItems: 'center',
   },
   buttonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 

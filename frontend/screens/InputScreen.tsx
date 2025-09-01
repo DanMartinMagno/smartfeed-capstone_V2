@@ -1,10 +1,15 @@
-import React, { useState } from "react";
-import { View, ScrollView, TouchableWithoutFeedback, TouchableOpacity } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../store";
-import { setNumSwine, setSelectedIngredients } from "../store/feedSlice";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../types";
+import React, { useState } from 'react';
+import {
+  View,
+  ScrollView,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+} from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store';
+import { setNumSwine, setSelectedIngredients } from '../store/feedSlice';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types';
 import {
   Card,
   Text,
@@ -12,13 +17,13 @@ import {
   Button,
   Checkbox,
   HelperText,
-} from "react-native-paper";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { styles } from "../styles/InputScreen_styles";
+} from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { styles } from '../styles/InputScreen_styles';
 
 type InputScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  "Input"
+  'Input'
 >;
 
 type Props = {
@@ -31,24 +36,24 @@ const MAX_SWINE = 100;
 const InputScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch();
   const type = useSelector((state: RootState) => state.feed.type);
-  const [numSwine, setNumSwineState] = useState("");
+  const [numSwine, setNumSwineState] = useState('');
   const [selectedIngredients, setSelectedIngredientsState] = useState<
     { ingredient: string; amount: number }[]
   >([]); // Updated type to array of objects
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const ingredients = [
-    { name: "Coconut Residue", icon: "food-apple" },
-    { name: "Water Spinach", icon: "leaf" },
-    { name: "Sweet Potato Leaves", icon: "corn" },
-    { name: "Cassava Leaves", icon: "leaf" },
-    { name: "Banana Pseudostem", icon: "food-apple" },
-    { name: "Duckweed Fern", icon: "leaf" },
-    { name: "Lead Tree Leaves", icon: "tree" },
-    { name: "Taro Leaves", icon: "leaf" },
-    { name: "Madre De Agua Leaves", icon: "leaf" },
-    { name: "Water Hyacinth Leaves", icon: "water" },
-    { name: "Rice Bran", icon: "grain" },
+    { name: 'Coconut Residue', icon: 'food-apple' },
+    { name: 'Water Spinach', icon: 'leaf' },
+    { name: 'Sweet Potato Leaves', icon: 'corn' },
+    { name: 'Cassava Leaves', icon: 'leaf' },
+    { name: 'Banana Pseudostem', icon: 'food-apple' },
+    { name: 'Duckweed Fern', icon: 'leaf' },
+    { name: 'Lead Tree Leaves', icon: 'tree' },
+    { name: 'Taro Leaves', icon: 'leaf' },
+    { name: 'Madre De Agua Leaves', icon: 'leaf' },
+    { name: 'Water Hyacinth Leaves', icon: 'water' },
+    { name: 'Rice Bran', icon: 'grain' },
   ];
 
   const toggleIngredient = (ingredientName: string) => {
@@ -70,7 +75,6 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
         return;
       }
 
-      // Add the ingredient with a default amount of 0
       setSelectedIngredientsState((prev) => [
         ...prev,
         { ingredient: ingredientName, amount: 0 },
@@ -81,7 +85,7 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleSubmit = () => {
     if (selectedIngredients.length < 2) {
-      setErrorMessage("Please select at least 2 ingredients.");
+      setErrorMessage('Please select at least 2 ingredients.');
       return;
     }
 
@@ -101,7 +105,7 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
     setErrorMessage(null);
     dispatch(setNumSwine(numSwineInt));
     dispatch(setSelectedIngredients(selectedIngredients));
-    navigation.navigate("Result", {
+    navigation.navigate('Result', {
       type,
       numSwine: numSwineInt,
       selectedIngredients,
@@ -135,8 +139,8 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
               style={styles.input}
               theme={{
                 colors: {
-                  primary: "#20B742",
-                  placeholder: "#9E9E9E",
+                  primary: '#20B742',
+                  placeholder: '#9E9E9E',
                 },
               }}
             />
@@ -180,8 +184,8 @@ const InputScreen: React.FC<Props> = ({ navigation }) => {
                       selectedIngredients.some(
                         (item) => item.ingredient === ingredient.name
                       )
-                        ? "checked"
-                        : "unchecked"
+                        ? 'checked'
+                        : 'unchecked'
                     }
                     color="green"
                   />

@@ -1,5 +1,4 @@
-//NutrientAnalysisScreen.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,21 +8,21 @@ import {
   Alert,
   Button,
   TouchableOpacity,
-} from "react-native";
-import { RouteProp } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../types";
-import { calculateFeed } from "../api";
-import NutrientCard from "../styles/NutrientAnalysisScreen_style";
-import NutrientGraph from "../components/NutrientGraph";
+} from 'react-native';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types';
+import { calculateFeed } from '../api';
+import NutrientCard from '../styles/NutrientAnalysisScreen_style';
+import NutrientGraph from '../components/NutrientGraph';
 
 type NutrientAnalysisScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  "Nutrient Analysis"
+  'Nutrient Analysis'
 >;
 type NutrientAnalysisScreenRouteProp = RouteProp<
   RootStackParamList,
-  "Nutrient Analysis"
+  'Nutrient Analysis'
 >;
 
 type Props = {
@@ -58,7 +57,6 @@ interface AnalysisResults {
     phosphorus: string;
   };
 }
-// the rest of your codes.
 
 const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
   const { type, numSwine, selectedIngredients, totalNutrients } = route.params;
@@ -69,12 +67,12 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
 
   // Nutrient to Ingredient Mapping (based on available ingredients)
   const nutrientIngredientMap: { [key: string]: string[] } = {
-    crudeProtein: ["Water Spinach", "Sweet Potato Leaves", "Lead Tree Leaves"],
-    crudeFiber: ["Coconut Residue", "Cassava Leaves", "Rice Bran"],
-    crudeFat: ["Coconut Residue", "Duckweed Fern"],
-    calcium: ["Taro Leaves", "Madre De Agua Leaves"],
-    moisture: ["Banana Pseudostem", "Water Hyacinth Leaves"],
-    phosphorus: ["Sweet Potato Leaves", "Duckweed Fern"],
+    crudeProtein: ['Water Spinach', 'Sweet Potato Leaves', 'Lead Tree Leaves'],
+    crudeFiber: ['Coconut Residue', 'Cassava Leaves', 'Rice Bran'],
+    crudeFat: ['Coconut Residue', 'Duckweed Fern'],
+    calcium: ['Taro Leaves', 'Madre De Agua Leaves'],
+    moisture: ['Banana Pseudostem', 'Water Hyacinth Leaves'],
+    phosphorus: ['Sweet Potato Leaves', 'Duckweed Fern'],
   };
 
   useEffect(() => {
@@ -84,7 +82,7 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
         const response = await calculateFeed({
           selectedIngredients,
           numSwine,
-          type: type as "starter" | "grower" | "finisher",
+          type: type as 'starter' | 'grower' | 'finisher',
         });
         const responseData = response.data as AnalysisResults;
         setResult(responseData);
@@ -103,15 +101,15 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
           );
         };
 
-        if (responseData.analysis.crudeProtein === "Deficient") {
+        if (responseData.analysis.crudeProtein === 'Deficient') {
           const deficiency = (
             responseData.recommendations.crudeProtein -
             responseData.totalNutrients.crudeProtein
           ).toFixed(2);
-          const availableIngredients = getAvailableIngredients("crudeProtein");
+          const availableIngredients = getAvailableIngredients('crudeProtein');
           if (availableIngredients.length > 0) {
             recs.push(
-              `Increase crude protein by ${deficiency}%. Consider adding more ${availableIngredients.join(" or ")}.`
+              `Increase crude protein by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`
             );
           } else {
             recs.push(
@@ -119,15 +117,15 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
             );
           }
         }
-        if (responseData.analysis.crudeFiber === "Deficient") {
+        if (responseData.analysis.crudeFiber === 'Deficient') {
           const deficiency = (
             responseData.recommendations.crudeFiber -
             responseData.totalNutrients.crudeFiber
           ).toFixed(2);
-          const availableIngredients = getAvailableIngredients("crudeFiber");
+          const availableIngredients = getAvailableIngredients('crudeFiber');
           if (availableIngredients.length > 0) {
             recs.push(
-              `Increase crude fiber by ${deficiency}%. Consider adding more ${availableIngredients.join(" or ")}.`
+              `Increase crude fiber by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`
             );
           } else {
             recs.push(
@@ -135,15 +133,15 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
             );
           }
         }
-        if (responseData.analysis.crudeFat === "Deficient") {
+        if (responseData.analysis.crudeFat === 'Deficient') {
           const deficiency = (
             responseData.recommendations.crudeFat -
             responseData.totalNutrients.crudeFat
           ).toFixed(2);
-          const availableIngredients = getAvailableIngredients("crudeFat");
+          const availableIngredients = getAvailableIngredients('crudeFat');
           if (availableIngredients.length > 0) {
             recs.push(
-              `Increase crude fat by ${deficiency}%. Consider adding more ${availableIngredients.join(" or ")}.`
+              `Increase crude fat by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`
             );
           } else {
             recs.push(
@@ -151,15 +149,15 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
             );
           }
         }
-        if (responseData.analysis.calcium === "Deficient") {
+        if (responseData.analysis.calcium === 'Deficient') {
           const deficiency = (
             responseData.recommendations.calcium -
             responseData.totalNutrients.calcium
           ).toFixed(2);
-          const availableIngredients = getAvailableIngredients("calcium");
+          const availableIngredients = getAvailableIngredients('calcium');
           if (availableIngredients.length > 0) {
             recs.push(
-              `Increase calcium by ${deficiency}%. Consider adding more ${availableIngredients.join(" or ")}.`
+              `Increase calcium by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`
             );
           } else {
             recs.push(
@@ -167,15 +165,15 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
             );
           }
         }
-        if (responseData.analysis.moisture === "Deficient") {
+        if (responseData.analysis.moisture === 'Deficient') {
           const deficiency = (
             responseData.recommendations.moisture -
             responseData.totalNutrients.moisture
           ).toFixed(2);
-          const availableIngredients = getAvailableIngredients("moisture");
+          const availableIngredients = getAvailableIngredients('moisture');
           if (availableIngredients.length > 0) {
             recs.push(
-              `Increase moisture by ${deficiency}%. Consider adding more ${availableIngredients.join(" or ")}.`
+              `Increase moisture by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`
             );
           } else {
             recs.push(
@@ -183,19 +181,19 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
             );
           }
         }
-        if (responseData.analysis.phosphorus === "Deficient") {
+        if (responseData.analysis.phosphorus === 'Deficient') {
           const deficiency = (
             responseData.recommendations.phosphorus -
             responseData.totalNutrients.phosphorus
           ).toFixed(2);
-          const availableIngredients = getAvailableIngredients("phosphorus");
+          const availableIngredients = getAvailableIngredients('phosphorus');
           if (availableIngredients.length > 0) {
             recs.push(
-              `Increase phosphorus by ${deficiency}%. Consider adding more ${availableIngredients.join(" or ")}.`
+              `Increase phosphorus by ${deficiency}%. Consider adding more ${availableIngredients.join(' or ')}.`
             );
           } else {
             recs.push(
-              `Phosphorus is still deficient by ${deficiency}%. Try increasing the proportion of ${nutrientIngredientMap.phosphorus.join(" or ")} in your formulation.`
+              `Phosphorus is still deficient by ${deficiency}%. Try increasing the proportion of ${nutrientIngredientMap.phosphorus.join(' or ')} in your formulation.`
             );
           }
         }
@@ -218,7 +216,7 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
       const response = await calculateFeed({
         selectedIngredients,
         numSwine,
-        type: type as "starter" | "grower" | "finisher",
+        type: type as 'starter' | 'grower' | 'finisher',
       });
       setResult(response.data as AnalysisResults);
     } catch (error) {
@@ -264,16 +262,16 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
   }
 
   const nutrientData = [
-    { name: "Crude Protein", value: result.totalNutrients.crudeProtein },
-    { name: "Crude Fiber", value: result.totalNutrients.crudeFiber },
-    { name: "Crude Fat", value: result.totalNutrients.crudeFat },
-    { name: "Calcium", value: result.totalNutrients.calcium },
-    { name: "Moisture", value: result.totalNutrients.moisture },
-    { name: "Phosphorus", value: result.totalNutrients.phosphorus },
+    { name: 'Crude Protein', value: result.totalNutrients.crudeProtein },
+    { name: 'Crude Fiber', value: result.totalNutrients.crudeFiber },
+    { name: 'Crude Fat', value: result.totalNutrients.crudeFat },
+    { name: 'Calcium', value: result.totalNutrients.calcium },
+    { name: 'Moisture', value: result.totalNutrients.moisture },
+    { name: 'Phosphorus', value: result.totalNutrients.phosphorus },
   ];
 
   const handleSaveFormulation = () => {
-    navigation.navigate("SaveFormulation", {
+    navigation.navigate('SaveFormulation', {
       type,
       numSwine,
       selectedIngredients, // Now properly typed as { ingredient: string; amount: number }[]
@@ -289,42 +287,42 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
           title="Crude Protein"
           value={result.totalNutrients.crudeProtein}
           unit="%"
-          isDeficient={result.analysis.crudeProtein === "Deficient"}
+          isDeficient={result.analysis.crudeProtein === 'Deficient'}
           recommendation={result.recommendations.crudeProtein}
         />
         <NutrientCard
           title="Crude Fiber"
           value={result.totalNutrients.crudeFiber}
           unit="%"
-          isDeficient={result.analysis.crudeFiber === "Deficient"}
+          isDeficient={result.analysis.crudeFiber === 'Deficient'}
           recommendation={result.recommendations.crudeFiber}
         />
         <NutrientCard
           title="Crude Fat"
           value={result.totalNutrients.crudeFat}
           unit="%"
-          isDeficient={result.analysis.crudeFat === "Deficient"}
+          isDeficient={result.analysis.crudeFat === 'Deficient'}
           recommendation={result.recommendations.crudeFat}
         />
         <NutrientCard
           title="Calcium"
           value={result.totalNutrients.calcium}
           unit="%"
-          isDeficient={result.analysis.calcium === "Deficient"}
+          isDeficient={result.analysis.calcium === 'Deficient'}
           recommendation={result.recommendations.calcium}
         />
         <NutrientCard
           title="Moisture"
           value={result.totalNutrients.moisture}
           unit="%"
-          isDeficient={result.analysis.moisture === "Deficient"}
+          isDeficient={result.analysis.moisture === 'Deficient'}
           recommendation={result.recommendations.moisture}
         />
         <NutrientCard
           title="Phosphorus"
           value={result.totalNutrients.phosphorus}
           unit="%"
-          isDeficient={result.analysis.phosphorus === "Deficient"}
+          isDeficient={result.analysis.phosphorus === 'Deficient'}
           recommendation={result.recommendations.phosphorus}
         />
 
@@ -355,78 +353,76 @@ const NutrientAnalysisScreen: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: "#f2f6f9",
+    backgroundColor: '#f2f6f9',
   },
   header: {
-    color: "#515252",
+    color: '#515252',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginVertical: 10,
   },
   buttonContainer: {
     marginTop: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   recommendationContainer: {
     marginTop: 20,
     padding: 15,
-    backgroundColor: "#E7E7FD",
+    backgroundColor: '#E7E7FD',
     borderRadius: 10,
   },
   recommendationHeader: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   recommendationText: {
     fontSize: 14,
     marginVertical: 2,
   },
   button: {
-    backgroundColor: "#28a745",
+    backgroundColor: '#28a745',
     paddingVertical: 15,
     paddingHorizontal: 24,
     borderRadius: 8,
-    alignItems: "center",
+    alignItems: 'center',
     marginVertical: 16,
     margin: 15,
   },
   buttonText: {
-    color: "#FFFFFF", // White text
+    color: '#FFFFFF', // White text
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   centeredContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
   errorContainer: {
-    // Added error container styling
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
-    backgroundColor: "#f2f6f9",
+    backgroundColor: '#f2f6f9',
     borderRadius: 8,
   },
   errorMessage: {
     fontSize: 16,
-    color: "#353434",
-    textAlign: "center",
+    color: '#353434',
+    textAlign: 'center',
     marginBottom: 20,
   },
   retryButton: {
-    // Added retry button styling
-    backgroundColor: "#f2f6f9",
+    backgroundColor: '#f2f6f9',
     padding: 10,
     borderRadius: 5,
     elevation: 4,
   },
   retryButtonText: {
-    color: "#353434",
-    fontWeight: "bold",
+    color: '#353434',
+    fontWeight: 'bold',
   },
 });
 

@@ -1,37 +1,34 @@
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { EXPO_PUBLIC_API_URL } from "@env"; // Importing API_URL from .env
-import { Alert } from "react-native"; // For showing alerts to users
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { EXPO_PUBLIC_API_URL } from '@env';
+import { Alert } from 'react-native';
 
-// Create an axios instance with the base URL from .env
 const axiosInstance = axios.create({
-  baseURL: EXPO_PUBLIC_API_URL, // Dynamically uses API_URL from .env
+  baseURL: EXPO_PUBLIC_API_URL,
 });
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem("token"); // Retrieve token from AsyncStorage
+    const token = await AsyncStorage.getItem('token');
     if (token) {
-      // Use backticks for string interpolation
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error) // Pass request errors to be handled later
+  (error) => Promise.reject(error)
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => response, // Pass successful responses directly
+  (response) => response,
   async (error) => {
-    // Handle token expiration or other server-side errors
     if (
       error.response?.status === 403 &&
-      error.response?.data?.message === "Token expired, please log in again."
+      error.response?.data?.message === 'Token expired, please log in again.'
     ) {
-      await AsyncStorage.clear(); // Clear stored user data
-      Alert.alert("Session expired", "Please log in again.");
+      await AsyncStorage.clear();
+      Alert.alert('Session expired', 'Please log in again.');
     }
-    return Promise.reject(error); // Pass errors to be handled by the caller
+    return Promise.reject(error);
   }
 );
 

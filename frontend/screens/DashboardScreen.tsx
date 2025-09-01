@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState, useContext } from 'react';
 import {
   ScrollView,
   View,
@@ -10,23 +10,23 @@ import {
   Alert,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
+} from 'react-native';
 
-import { useDispatch } from "react-redux";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons"; // or any other icon library you prefer
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../types";
-import { setType } from "../store/feedSlice";
-import { LinearGradient } from "expo-linear-gradient";
-import axiosInstance from "../api/axiosInstance";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AuthContext } from "../context/AuthContext";
-import { useFocusEffect } from "@react-navigation/native";
-import { deleteFormulation as apiDeleteFormulation } from "../api/formulationApi";
+import { useDispatch } from 'react-redux';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types';
+import { setType } from '../store/feedSlice';
+import { LinearGradient } from 'expo-linear-gradient';
+import axiosInstance from '../api/axiosInstance';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../context/AuthContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { deleteFormulation as apiDeleteFormulation } from '../api/formulationApi';
 
 type DashboardScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  "Dashboard"
+  'Dashboard'
 >;
 
 type Props = {
@@ -35,7 +35,7 @@ type Props = {
 
 interface Formulation {
   numSwine: number;
-  type: "starter" | "grower" | "finisher";
+  type: 'starter' | 'grower' | 'finisher';
   isExpired: boolean;
   expirationDate: string;
   _id: string;
@@ -74,7 +74,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
 
   const handlePressOut = (
     scaleAnim: Animated.Value,
-    cardType: "starter" | "grower" | "finisher"
+    cardType: 'starter' | 'grower' | 'finisher'
   ) => {
     Animated.spring(scaleAnim, {
       toValue: 1,
@@ -83,7 +83,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
       // Only trigger navigation if not scrolling
       if (!isScrolling.current) {
         dispatch(setType(cardType));
-        navigation.navigate("Input");
+        navigation.navigate('Input');
       }
     });
   };
@@ -102,14 +102,14 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
     React.useCallback(() => {
       const fetchFormulations = async () => {
         try {
-          const token = await AsyncStorage.getItem("token");
+          const token = await AsyncStorage.getItem('token');
           if (!token) {
-            console.warn("No token found, please log in again.");
+            console.warn('No token found, please log in again.');
             return;
           }
 
           const response = await axiosInstance.get(
-            "/formulations/user-formulations",
+            '/formulations/user-formulations',
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -141,39 +141,38 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
           prev.filter((formulation) => formulation._id !== formulationId)
         );
       } else {
-        Alert.alert("Error", "Failed to delete formulation");
+        Alert.alert('Error', 'Failed to delete formulation');
       }
     } catch (error) {
-      console.error("Error deleting formulation:", error);
-      Alert.alert("Error", "Failed to delete formulation");
+      console.error('Error deleting formulation:', error);
+      Alert.alert('Error', 'Failed to delete formulation');
     }
   };
 
   // Usage of handleDeleteFormulation in your confirmDelete function
   const confirmDelete = (formulationId: string) => {
     Alert.alert(
-      "Delete Formulation",
-      "Are you sure you want to delete this formulation?",
+      'Delete Formulation',
+      'Are you sure you want to delete this formulation?',
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: "Delete",
-          style: "destructive",
+          text: 'Delete',
+          style: 'destructive',
           onPress: () => handleDeleteFormulation(formulationId), // Use handleDeleteFormulation here
         },
       ]
     );
   };
 
-  // Function to map formulation types to icons and background colors
-  const getIconDetails = (type: "starter" | "grower" | "finisher") => {
+  const getIconDetails = (type: 'starter' | 'grower' | 'finisher') => {
     switch (type) {
-      case "starter":
-        return { icon: "database" as const, color: "#6EB743" };
-      case "grower":
-        return { icon: "save" as const, color: "#85B6F1" };
-      case "finisher":
-        return { icon: "archive" as const, color: "#F1B56A" };
+      case 'starter':
+        return { icon: 'database' as const, color: '#6EB743' };
+      case 'grower':
+        return { icon: 'save' as const, color: '#85B6F1' };
+      case 'finisher':
+        return { icon: 'archive' as const, color: '#F1B56A' };
       default:
         throw new Error(`Unsupported formulation type: ${type}`);
     }
@@ -202,21 +201,21 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
           activeOpacity={1}
           onPressIn={() => setIsStarterPressed(true)}
           onPressOut={() => setIsStarterPressed(false)}
-          onPress={() => handlePressOut(starterScaleAnim, "starter")}
+          onPress={() => handlePressOut(starterScaleAnim, 'starter')}
         >
           <Animated.View style={{ transform: [{ scale: starterScaleAnim }] }}>
             <LinearGradient
-              colors={["#39AD3D", "#95D642"]}
+              colors={['#39AD3D', '#95D642']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.featureCard, { position: "relative" }]}
+              style={[styles.featureCard, { position: 'relative' }]}
             >
               {/* Hover effect overlay */}
               {isStarterPressed && (
                 <View
                   style={{
                     ...StyleSheet.absoluteFillObject,
-                    backgroundColor: "rgba(107, 107, 107, 0.2)",
+                    backgroundColor: 'rgba(107, 107, 107, 0.2)',
                     borderRadius: 13,
                   }}
                 />
@@ -226,7 +225,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                 <View style={styles.cardHeader}>
                   <View style={styles.iconBackground}>
                     <Image
-                      source={require("../assets/starter-icon.png")}
+                      source={require('../assets/starter-icon.png')}
                       style={styles.featureIcon}
                     />
                   </View>
@@ -246,21 +245,21 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
           activeOpacity={1}
           onPressIn={() => setIsGrowerPressed(true)}
           onPressOut={() => setIsGrowerPressed(false)}
-          onPress={() => handlePressOut(growerScaleAnim, "grower")}
+          onPress={() => handlePressOut(growerScaleAnim, 'grower')}
         >
           <Animated.View style={{ transform: [{ scale: growerScaleAnim }] }}>
             <LinearGradient
-              colors={["#1E90FF", "#87CEFA"]}
+              colors={['#1E90FF', '#87CEFA']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.featureCard, { position: "relative" }]}
+              style={[styles.featureCard, { position: 'relative' }]}
             >
               {/* Hover effect overlay */}
               {isGrowerPressed && (
                 <View
                   style={{
                     ...StyleSheet.absoluteFillObject,
-                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
                     borderRadius: 13,
                   }}
                 />
@@ -270,7 +269,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                 <View style={styles.cardHeader}>
                   <View style={styles.iconBackground}>
                     <Image
-                      source={require("../assets/grower-icon.png")}
+                      source={require('../assets/grower-icon.png')}
                       style={styles.featureIcon}
                     />
                   </View>
@@ -290,21 +289,21 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
           activeOpacity={1}
           onPressIn={() => setIsFinisherPressed(true)}
           onPressOut={() => setIsFinisherPressed(false)}
-          onPress={() => handlePressOut(finisherScaleAnim, "finisher")}
+          onPress={() => handlePressOut(finisherScaleAnim, 'finisher')}
         >
           <Animated.View style={{ transform: [{ scale: finisherScaleAnim }] }}>
             <LinearGradient
-              colors={["#FF7F50", "#ebb886"]}
+              colors={['#FF7F50', '#ebb886']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.featureCard, { position: "relative" }]}
+              style={[styles.featureCard, { position: 'relative' }]}
             >
               {/* Hover effect overlay */}
               {isFinisherPressed && (
                 <View
                   style={{
                     ...StyleSheet.absoluteFillObject,
-                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
                     borderRadius: 13,
                   }}
                 />
@@ -314,7 +313,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                 <View style={styles.cardHeader}>
                   <View style={styles.iconBackground}>
                     <Image
-                      source={require("../assets/finisher-icon.png")}
+                      source={require('../assets/finisher-icon.png')}
                       style={styles.featureIcon}
                     />
                   </View>
@@ -345,10 +344,10 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                 onLongPress={() => confirmDelete(formulation._id)}
                 onPress={() =>
                   !formulation.isExpired &&
-                  navigation.navigate("SavedFormulationDetail", {
+                  navigation.navigate('SavedFormulationDetail', {
                     formulation: {
                       ...formulation,
-                      type: formulation.type || "starter",
+                      type: formulation.type || 'starter',
                       expirationDate:
                         formulation.expirationDate || new Date().toISOString(),
                       numSwine: formulation.numSwine,
@@ -378,7 +377,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                     ]}
                   >
                     {formulation.isExpired
-                      ? "Expired"
+                      ? 'Expired'
                       : `Valid until ${new Date(
                           formulation.expirationDate
                         ).toLocaleDateString()}`}
@@ -397,45 +396,45 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    backgroundColor: "#f2f6f9",
+    backgroundColor: '#f2f6f9',
   },
   container: {
     flex: 1,
-    backgroundColor: "#f2f6f9",
-    alignItems: "center",
+    backgroundColor: '#f2f6f9',
+    alignItems: 'center',
   },
   greetingsContainer: {
-    alignSelf: "stretch",
+    alignSelf: 'stretch',
     marginLeft: 12,
     marginBottom: 1,
   },
   greetingsText: {
     fontSize: 14,
-    fontWeight: "600",
-    color: "#7D7D7D",
+    fontWeight: '600',
+    color: '#7D7D7D',
 
-    textAlign: "left",
+    textAlign: 'left',
     marginBottom: 10,
   },
   greetingsHeader: {
     fontSize: 17,
-    fontWeight: "800",
-    color: "#4C4C4C",
+    fontWeight: '800',
+    color: '#4C4C4C',
     marginVertical: 5,
-    textAlign: "left",
+    textAlign: 'left',
     marginTop: 10,
   },
 
   featureCard: {
-    alignItems: "center",
+    alignItems: 'center',
     padding: 10,
     margin: 10,
-    width: Dimensions.get("window").width * 0.95,
+    width: Dimensions.get('window').width * 0.95,
     borderRadius: 13,
     marginBottom: 0.1,
     marginTop: 10,
     elevation: 3,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
@@ -444,21 +443,21 @@ const styles = StyleSheet.create({
   cardContent: {
     padding: 9,
     margin: 9,
-    width: "95%",
+    width: '95%',
     flex: 1,
   },
   cardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 3,
   },
   iconBackground: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 10,
   },
   featureIcon: {
@@ -467,58 +466,58 @@ const styles = StyleSheet.create({
   },
   featureTitle: {
     fontSize: 20,
-    fontWeight: "700",
-    color: "#fff",
+    fontWeight: '700',
+    color: '#fff',
     marginBottom: 10,
   },
   featureDescription: {
     fontSize: 14,
-    color: "#f1f1f1",
-    fontWeight: "500",
+    color: '#f1f1f1',
+    fontWeight: '500',
     marginBottom: 10,
     lineHeight: 18,
   },
   expiredText: {
-    color: "red",
-    textDecorationLine: "line-through",
+    color: 'red',
+    textDecorationLine: 'line-through',
   },
   formulationName: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#4C4C4C",
+    fontWeight: 'bold',
+    color: '#4C4C4C',
   },
   headerText: {
     marginBottom: 9,
     marginLeft: 10,
     fontSize: 15,
-    fontWeight: "bold",
-    color: "#515252",
+    fontWeight: 'bold',
+    color: '#515252',
     marginVertical: 15,
     paddingHorizontal: 16,
   },
   card: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 15,
     marginVertical: 3,
     marginHorizontal: 16,
-    width: "95%",
-    backgroundColor: "white",
+    width: '95%',
+    backgroundColor: 'white',
     borderRadius: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
 
     elevation: 1,
   },
   expiredCard: {
-    backgroundColor: "#f9f9f9",
+    backgroundColor: '#f9f9f9',
   },
   iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 25,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 15,
   },
   textContainer: {
@@ -526,26 +525,26 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: "#666",
+    color: '#666',
     marginTop: 4,
   },
   expirationText: {
     fontSize: 14,
-    fontWeight: "500",
-    color: "#7D7D7D",
+    fontWeight: '500',
+    color: '#7D7D7D',
     marginTop: 2,
   },
   deleteButtonContainer: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     width: 80,
-    backgroundColor: "red",
+    backgroundColor: 'red',
     borderRadius: 10,
     marginVertical: 8,
     marginRight: 16,
   },
   deleteText: {
-    color: "white",
+    color: 'white',
     fontSize: 14,
     marginTop: 5,
   },
@@ -553,5 +552,5 @@ const styles = StyleSheet.create({
 
 export default DashboardScreen;
 function deleteFormulation(formulationId: string) {
-  throw new Error("Function not implemented.");
+  throw new Error('Function not implemented.');
 }

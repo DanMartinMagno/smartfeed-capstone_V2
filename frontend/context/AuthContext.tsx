@@ -1,7 +1,5 @@
-// frontend/context/AuthContext.tsx
-
-import React, { createContext, useContext, useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   login,
   signup,
@@ -9,8 +7,8 @@ import {
   changePassword as changePasswordAPI,
   User,
   getUserProfile,
-} from "../api/authApi";
-import { useSwineContext } from "./SwineContext";
+} from '../api/authApi';
+import { useSwineContext } from './SwineContext';
 
 interface AuthContextType {
   user: User | null;
@@ -44,11 +42,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const loadUserData = async () => {
     try {
-      const storedUser = await AsyncStorage.getItem("user");
-      const token = await AsyncStorage.getItem("token");
+      const storedUser = await AsyncStorage.getItem('user');
+      const token = await AsyncStorage.getItem('token');
 
       if (token && storedUser) {
-        const base64Payload = token.split(".")[1];
+        const base64Payload = token.split('.')[1];
         const decodedPayload = JSON.parse(decodeBase64Url(base64Payload));
         const tokenExpiry = decodedPayload.exp * 1000;
 
@@ -56,20 +54,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setUser(JSON.parse(storedUser));
         } else {
           await handleLogout();
-          console.warn("Session expired, please log in again.");
+          console.warn('Session expired, please log in again.');
         }
       }
     } catch (error) {
-      console.error("Failed to load user data", error);
+      console.error('Failed to load user data', error);
     } finally {
       setLoading(false);
     }
   };
 
   const decodeBase64Url = (base64UrlString: string) => {
-    let base64 = base64UrlString.replace(/-/g, "+").replace(/_/g, "/");
+    let base64 = base64UrlString.replace(/-/g, '+').replace(/_/g, '/');
     while (base64.length % 4 !== 0) {
-      base64 += "=";
+      base64 += '=';
     }
     return atob(base64);
   };
@@ -80,19 +78,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const token = userData.token;
 
       if (userData && token) {
-        await AsyncStorage.setItem("token", token);
+        await AsyncStorage.setItem('token', token);
 
         // Fetch complete user profile after login
         const fullUserData = await getUserProfile(token);
         setUser(fullUserData);
 
-        await AsyncStorage.setItem("user", JSON.stringify(fullUserData));
+        await AsyncStorage.setItem('user', JSON.stringify(fullUserData));
         fetchSwines(); // Load any additional user-specific data
       } else {
-        throw new Error("Failed to retrieve user data");
+        throw new Error('Failed to retrieve user data');
       }
     } catch (error: any) {
-      throw error.response?.data?.message || "An unexpected error occurred";
+      throw error.response?.data?.message || 'An unexpected error occurred';
     }
   };
 
@@ -114,25 +112,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // Automatically log in after signup
       const token = signupData.token;
-      await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem('token', token);
 
       const fullUserData = await getUserProfile(token);
       setUser(fullUserData);
-      await AsyncStorage.setItem("user", JSON.stringify(fullUserData));
+      await AsyncStorage.setItem('user', JSON.stringify(fullUserData));
     } catch (error: any) {
-      console.error("Signup failed", error.message);
-      throw error.response?.data?.message || "An unexpected error occurred";
+      console.error('Signup failed', error.message);
+      throw error.response?.data?.message || 'An unexpected error occurred';
     }
   };
 
   const handleLogout = async () => {
     try {
       setUser(null);
-      await AsyncStorage.removeItem("user");
-      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('token');
       clearSwines(); // Clear swine data on logout
     } catch (error) {
-      console.error("Error during logout:", error);
+      console.error('Error during logout:', error);
     }
   };
 
@@ -140,11 +138,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const loadUserData = async () => {
       try {
         setLoading(true); // Ensure loading state is true during initialization
-        const storedUser = await AsyncStorage.getItem("user");
-        const token = await AsyncStorage.getItem("token");
+        const storedUser = await AsyncStorage.getItem('user');
+        const token = await AsyncStorage.getItem('token');
 
         if (token && storedUser) {
-          const base64Payload = token.split(".")[1];
+          const base64Payload = token.split('.')[1];
           const decodedPayload = JSON.parse(decodeBase64Url(base64Payload));
           const tokenExpiry = decodedPayload.exp * 1000;
 
@@ -152,11 +150,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             setUser(JSON.parse(storedUser));
           } else {
             await handleLogout();
-            console.warn("Session expired, please log in again.");
+            console.warn('Session expired, please log in again.');
           }
         }
       } catch (error) {
-        console.error("Failed to load user data", error);
+        console.error('Failed to load user data', error);
       } finally {
         setLoading(false); // Ensure loading state is false after initialization
       }
@@ -175,7 +173,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         updateUser: async (userData: User) => {
           const updatedUser = await updateUserData(userData);
           setUser(updatedUser);
-          await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+          await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
         },
         changePassword: async (
           currentPassword: string,
@@ -183,7 +181,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         ) => {
           await changePasswordAPI(currentPassword, newPassword);
           await handleLogout();
-          alert("Password changed successfully. Please log in again.");
+          alert('Password changed successfully. Please log in again.');
         },
         logout: handleLogout,
       }}
@@ -196,7 +194,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };

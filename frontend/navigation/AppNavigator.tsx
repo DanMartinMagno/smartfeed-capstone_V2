@@ -1,10 +1,9 @@
-// AppNavigator.tsx
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
-import { useAuth } from "../context/AuthContext";
-import LoginScreen from "../screens/LoginScreen";
-import SignupScreen from "../screens/SignupScreen";
-import MainTabNavigator from "../navigation/MainTabNavigator"; // Existing main tab navigator
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import { useAuth } from '../context/AuthContext';
+import LoginScreen from '../screens/LoginScreen';
+import SignupScreen from '../screens/SignupScreen';
+import MainTabNavigator from '../navigation/MainTabNavigator'; // Existing main tab navigator
 
 const Stack = createStackNavigator();
 
