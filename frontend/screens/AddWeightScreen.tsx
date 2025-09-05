@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-} from "react-native";
-import axiosInstance from "../api/axiosInstance";
+} from 'react-native';
+import axiosInstance from '../api/axiosInstance';
 import {
   AddWeightScreenNavigationProp,
   AddWeightScreenRouteProp,
-} from "../types/navigation";
-import { useSwineContext } from "../context/SwineContext";
-import axios from "axios";
+} from '../types/navigation';
+import { useSwineContext } from '../context/SwineContext';
+import axios from 'axios';
 
 type Props = {
   navigation: AddWeightScreenNavigationProp;
@@ -22,27 +22,27 @@ type Props = {
 const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
   const { swineId } = route.params;
   const { addWeight, swines, fetchSwines } = useSwineContext();
-  const [weight, setWeight] = useState<string>("");
-  const [weightError, setWeightError] = useState<string>("");
+  const [weight, setWeight] = useState<string>('');
+  const [weightError, setWeightError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
   // Get today's date as a string
-  const currentDate = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  const currentDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 
   const validateWeight = (text: string): boolean => {
     const weightValue = parseFloat(text);
     if (!text.trim()) {
-      setWeightError("Weight is required.");
+      setWeightError('Weight is required.');
       return false;
     } else if (isNaN(weightValue) || weightValue < 1 || weightValue > 1000) {
-      setWeightError("Weight must be between 1 kg and 1000 kg.");
+      setWeightError('Weight must be between 1 kg and 1000 kg.');
       return false;
     }
-    setWeightError("");
+    setWeightError('');
     return true;
   };
 
@@ -55,7 +55,6 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
 
     setLoading(true); // Disable button while processing
 
-    // Optional: Fetch the latest weight for validation
     const swine = swines.find((sw) => sw.id === swineId);
     if (swine && swine.weights.length > 0) {
       const latestWeight = swine.weights[swine.weights.length - 1].weight;
@@ -77,16 +76,16 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
         response.data.weights[response.data.weights.length - 1]
       );
       await fetchSwines(); // Ensure context is up to date
-      navigation.navigate("Swine Detail", { swineId });
+      navigation.navigate('Swine Detail', { swineId });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.data) {
-          setWeightError(error.response.data.message || "Error occurred.");
+          setWeightError(error.response.data.message || 'Error occurred.');
         }
       } else if (error instanceof Error) {
         setWeightError(error.message);
       }
-      console.error("Error adding weight:", error);
+      console.error('Error adding weight:', error);
     } finally {
       setLoading(false); // Re-enable button after API call
     }
@@ -117,13 +116,13 @@ const AddWeightScreen: React.FC<Props> = ({ navigation, route }) => {
       <TouchableOpacity
         style={[
           styles.submitButton,
-          loading && { backgroundColor: "#28a745" }, // Indicate disabled state
+          loading && { backgroundColor: '#28a745' }, // Indicate disabled state
         ]}
         onPress={handleSubmit}
         disabled={loading} // Disable button during loading
       >
         <Text style={styles.submitButtonText}>
-          {loading ? "Submitting..." : "Submit"}
+          {loading ? 'Submitting...' : 'Submit'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -134,67 +133,67 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f2f6f9",
+    backgroundColor: '#f2f6f9',
   },
   label: {
     fontSize: 15,
-    color: "#333",
+    color: '#333',
     marginBottom: 5,
     marginLeft: 5,
   },
   readOnlyField: {
-    backgroundColor: "#f2f6f9",
+    backgroundColor: '#f2f6f9',
     padding: 15,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     marginBottom: 15,
   },
   readOnlyText: {
     fontSize: 15,
-    color: "#333",
+    color: '#333',
   },
   input: {
-    backgroundColor: "#FFF",
+    backgroundColor: '#FFF',
     padding: 15,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#EEEFEF",
+    borderColor: '#EEEFEF',
     marginBottom: 15,
     fontSize: 14,
-    color: "#333",
-    shadowColor: "#000",
+    color: '#333',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
   inputError: {
-    borderColor: "#E74C3C",
+    borderColor: '#E74C3C',
     borderWidth: 2,
   },
   errorText: {
-    color: "#E74C3C",
+    color: '#E74C3C',
     fontSize: 14,
     marginBottom: 10,
     marginLeft: 5,
   },
   submitButton: {
-    backgroundColor: "#28a745",
+    backgroundColor: '#28a745',
     padding: 15,
     borderRadius: 8,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
   submitButtonText: {
-    color: "#FFF",
+    color: '#FFF',
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 

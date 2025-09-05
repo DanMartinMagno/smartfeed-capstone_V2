@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
 interface NutrientCardProps {
   title: string;
@@ -13,13 +13,13 @@ interface NutrientCardProps {
 const NutrientCard: React.FC<NutrientCardProps> = ({
   title,
   value,
-  unit = "",
+  unit = '',
   isDeficient,
   recommendation,
   isRatioCard,
 }) => {
   // Format value and recommendation
-  const formattedValue = typeof value === "number" ? value.toFixed(2) : value;
+  const formattedValue = typeof value === 'number' ? value.toFixed(2) : value;
   const formattedRecommendation =
     recommendation !== undefined ? recommendation.toFixed(2) : undefined;
 
@@ -31,7 +31,7 @@ const NutrientCard: React.FC<NutrientCardProps> = ({
       ]}
       accessible={true} // Accessible for screen readers
       accessibilityLabel={`${title} ${formattedValue} ${unit} ${
-        isDeficient ? "deficient" : ""
+        isDeficient ? 'deficient' : ''
       }`} // Custom label for better context
     >
       {/* Nutrient Title */}
@@ -61,49 +61,49 @@ const NutrientCard: React.FC<NutrientCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 15,
     marginVertical: 5,
     borderRadius: 10,
     elevation: 3,
     borderWidth: 2,
-    borderColor: "transparent",
-    flexDirection: "row",
-    justifyContent: "space-between", // Align text on left and right
-    alignItems: "center", // Center the text vertically
+    borderColor: 'transparent',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   deficient: {
-    borderColor: "red",
+    borderColor: 'red',
   },
   title: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   value: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#28a745",
+    fontWeight: 'bold',
+    color: '#28a745',
   },
   recommendation: {
     fontSize: 14,
-    color: "grey",
+    color: 'grey',
   },
   deficientText: {
     fontSize: 14,
-    color: "red",
-    fontWeight: "bold",
+    color: 'red',
+    fontWeight: 'bold',
     marginTop: 5,
   },
   ratioContainer: {
-    backgroundColor: "#28a745", // Green background for ingredient ratios
-    paddingVertical: 5, // Vertical padding for pill design
-    paddingHorizontal: 10, // Horizontal padding for pill design
-    borderRadius: 15, // Rounded corners for pill-like appearance
+    backgroundColor: '#28a745',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 15,
   },
   ratioValue: {
-    color: "white", // White text for contrast inside the green pill
+    color: 'white',
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 

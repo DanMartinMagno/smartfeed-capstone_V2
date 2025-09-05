@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
 interface NutrientCardProps {
   title: string;
@@ -12,11 +12,11 @@ interface NutrientCardProps {
 const NutrientAnalysisScreen_style: React.FC<NutrientCardProps> = ({
   title,
   value,
-  unit = "",
+  unit = '',
   isDeficient,
   recommendation,
 }) => {
-  const formattedValue = typeof value === "number" ? value.toFixed(2) : value;
+  const formattedValue = typeof value === 'number' ? value.toFixed(2) : value;
   const formattedRecommendation =
     recommendation !== undefined ? recommendation.toFixed(2) : undefined;
 
@@ -49,39 +49,39 @@ const NutrientAnalysisScreen_style: React.FC<NutrientCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 15,
     marginVertical: 5,
     borderRadius: 10,
     elevation: 3,
     borderWidth: 2,
-    borderColor: "transparent",
+    borderColor: 'transparent',
   },
   deficient: {
-    borderColor: "red",
+    borderColor: 'red',
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between", // Align items left and right
-    width: "100%", // Full width row
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   title: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   value: {
     fontSize: 16,
-    color: "#28a745",
-    fontWeight: "bold",
+    color: '#28a745',
+    fontWeight: 'bold',
   },
   recommendation: {
     fontSize: 14,
-    color: "grey",
+    color: 'grey',
   },
   deficientText: {
     fontSize: 14,
-    color: "red",
-    fontWeight: "bold",
+    color: 'red',
+    fontWeight: 'bold',
   },
 });
 

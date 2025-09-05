@@ -1,6 +1,4 @@
-// frontend/store/feedSlice.ts
-
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // Define the Formulation type
 interface Formulation {
@@ -26,26 +24,25 @@ interface Ingredient {
 
 interface FeedState {
   savedFormulations: Formulation[];
-  type: "starter" | "grower" | "finisher";
+  type: 'starter' | 'grower' | 'finisher';
   numSwine: number;
-  selectedIngredients: Ingredient[]; // Update to expect an array of Ingredient objects
+  selectedIngredients: Ingredient[];
 }
 
-// Initialize FeedState with savedFormulations as an empty array
 const initialState: FeedState = {
-  savedFormulations: [], // Initialize as empty array
-  type: "starter",
+  savedFormulations: [],
+  type: 'starter',
   numSwine: 0,
   selectedIngredients: [],
 };
 
 const feedSlice = createSlice({
-  name: "feed",
+  name: 'feed',
   initialState,
   reducers: {
     setType: (
       state,
-      action: PayloadAction<"starter" | "grower" | "finisher">
+      action: PayloadAction<'starter' | 'grower' | 'finisher'>
     ) => {
       state.type = action.payload;
     },

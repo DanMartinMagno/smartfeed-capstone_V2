@@ -137,7 +137,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        setLoading(true); // Ensure loading state is true during initialization
+        setLoading(true);
         const storedUser = await AsyncStorage.getItem('user');
         const token = await AsyncStorage.getItem('token');
 
@@ -156,7 +156,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       } catch (error) {
         console.error('Failed to load user data', error);
       } finally {
-        setLoading(false); // Ensure loading state is false after initialization
+        setLoading(false);
       }
     };
 

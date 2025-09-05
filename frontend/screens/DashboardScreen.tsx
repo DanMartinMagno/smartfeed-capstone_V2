@@ -159,7 +159,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => handleDeleteFormulation(formulationId), // Use handleDeleteFormulation here
+          onPress: () => handleDeleteFormulation(formulationId),
         },
       ]
     );

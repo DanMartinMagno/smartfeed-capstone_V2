@@ -1,7 +1,7 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
-import axios from "axios";
-import { Alert } from "react-native";
-import axiosInstance from "../api/axiosInstance";
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { Alert } from 'react-native';
+import axiosInstance from '../api/axiosInstance';
 
 interface WeightEntry {
   date: string;
@@ -38,20 +38,20 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [swines, setSwines] = useState<Swine[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const fetchSwines = () => {
-    setError(""); // Clear any previous error
+    setError('');
     setLoading(true); // Show loading while retrying
 
     axiosInstance
-      .get("/swine")
+      .get('/swine')
       .then((response) => {
         setSwines(response.data);
         setLoading(false);
       })
       .catch((error) => {
-        setError("Error fetching swine data. Please try again.");
+        setError('Error fetching swine data. Please try again.');
         setLoading(false);
       });
   };
@@ -101,13 +101,13 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
       // Find the specific swine by ID in the current context state
       const swine = swines.find((sw) => sw.id === swineId);
       if (!swine) {
-        Alert.alert("Error", "Swine not found.");
+        Alert.alert('Error', 'Swine not found.');
         return;
       }
 
       // Check if this is the last weight entry to prevent deletion
       if (swine.weights.length === 1) {
-        Alert.alert("Error", "Cannot delete the last weight entry.");
+        Alert.alert('Error', 'Cannot delete the last weight entry.');
         return;
       }
 
@@ -131,12 +131,12 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
       // Handle Axios-specific errors and show appropriate alerts
       if (axios.isAxiosError(error)) {
         const errorMessage =
-          error.response?.data?.message || "Unknown error occurred";
-        Alert.alert("Error", errorMessage);
+          error.response?.data?.message || 'Unknown error occurred';
+        Alert.alert('Error', errorMessage);
       } else {
         // Log unexpected errors and show a generic alert
-        console.error("Error deleting weight entry", error);
-        Alert.alert("Error", "Failed to delete the weight entry.");
+        console.error('Error deleting weight entry', error);
+        Alert.alert('Error', 'Failed to delete the weight entry.');
       }
     }
   };
@@ -153,7 +153,7 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
         error,
         fetchSwines,
         clearSwines,
-        addSwine, // Ensure addSwine is provided here
+        addSwine,
         addWeight,
         editWeight,
         deleteWeight,
@@ -168,7 +168,7 @@ export const SwineProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useSwineContext = () => {
   const context = useContext(SwineContext);
   if (!context) {
-    throw new Error("useSwineContext must be used within a SwineProvider");
+    throw new Error('useSwineContext must be used within a SwineProvider');
   }
   return context;
 };

@@ -1,8 +1,6 @@
-// formulationApi.ts
-
-import axios from "axios";
-import axiosInstance from "./axiosInstance";
-import { EXPO_PUBLIC_API_URL } from "@env";
+import axios from 'axios';
+import axiosInstance from './axiosInstance';
+import { EXPO_PUBLIC_API_URL } from '@env';
 
 export const saveFormulation = async (formulationData: any, token: string) => {
   const response = await axios.post(
@@ -23,7 +21,6 @@ export const getFormulations = async (token: string) => {
   return response.data;
 };
 
-// Define a type for the delete response to ensure consistent structure
 interface DeleteResponse {
   success: boolean;
   data?: any;
@@ -39,7 +36,7 @@ export const deleteFormulation = async (
     );
     return { success: true, data: response.data };
   } catch (error) {
-    console.error("Error deleting formulation:", error);
+    console.error('Error deleting formulation:', error);
     return { success: false, error };
   }
 };

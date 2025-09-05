@@ -1,7 +1,5 @@
-//api/index.ts
-
-import axios from "axios";
-import { EXPO_PUBLIC_API_URL } from "@env";
+import axios from 'axios';
+import { EXPO_PUBLIC_API_URL } from '@env';
 
 const api = axios.create({
   baseURL: EXPO_PUBLIC_API_URL, // Uses the environment variable
@@ -10,7 +8,7 @@ const api = axios.create({
 interface FeedCalculationRequest {
   selectedIngredients: { ingredient: string; amount: number }[];
   numSwine: number;
-  type: "starter" | "grower" | "finisher";
+  type: 'starter' | 'grower' | 'finisher';
 }
 
 interface FeedCalculationResult {
@@ -26,4 +24,4 @@ interface FeedCalculationResult {
 }
 
 export const calculateFeed = (data: FeedCalculationRequest) =>
-  api.post<FeedCalculationResult>("/calculate-feed", data);
+  api.post<FeedCalculationResult>('/calculate-feed', data);

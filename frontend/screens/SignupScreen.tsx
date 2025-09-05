@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,10 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
-} from "react-native";
-import Icon from "react-native-vector-icons/Ionicons"; // Import Ionicons from react-native-vector-icons
-import { useAuth } from "../context/AuthContext";
-import { SignupScreenNavigationProp } from "../types/navigation";
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useAuth } from '../context/AuthContext';
+import { SignupScreenNavigationProp } from '../types/navigation';
 
 type Props = {
   navigation: SignupScreenNavigationProp;
@@ -19,18 +19,18 @@ type Props = {
 
 const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const { signup } = useAuth();
-  const [lastName, setLastName] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [middleInitial, setMiddleInitial] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false); // State to toggle password visibility
+  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [middleInitial, setMiddleInitial] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [errors, setErrors] = useState({
-    lastName: "",
-    firstName: "",
-    email: "",
-    password: "",
-    general: "",
+    lastName: '',
+    firstName: '',
+    email: '',
+    password: '',
+    general: '',
   });
 
   const validateEmail = (email: string) => {
@@ -40,41 +40,41 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleSignup = async () => {
     const newErrors = {
-      lastName: "",
-      firstName: "",
-      email: "",
-      password: "",
-      general: "",
+      lastName: '',
+      firstName: '',
+      email: '',
+      password: '',
+      general: '',
     };
 
     // Validate fields
-    if (!lastName) newErrors.lastName = "Last name is required.";
-    if (!firstName) newErrors.firstName = "First name is required.";
-    if (!email) newErrors.email = "Email is required.";
-    else if (!validateEmail(email)) newErrors.email = "Enter a valid email.";
-    if (!password) newErrors.password = "Password is required.";
+    if (!lastName) newErrors.lastName = 'Last name is required.';
+    if (!firstName) newErrors.firstName = 'First name is required.';
+    if (!email) newErrors.email = 'Email is required.';
+    else if (!validateEmail(email)) newErrors.email = 'Enter a valid email.';
+    if (!password) newErrors.password = 'Password is required.';
 
     setErrors(newErrors);
 
     // If there are errors, stop the submission
-    if (Object.values(newErrors).some((error) => error !== "")) {
+    if (Object.values(newErrors).some((error) => error !== '')) {
       return;
     }
 
     try {
       await signup(lastName, firstName, middleInitial, email, password);
-      navigation.navigate("Login");
+      navigation.navigate('Login');
     } catch (err: any) {
       if (
         err.response &&
         err.response.status === 400 &&
-        err.response.data.message === "Email already in use"
+        err.response.data.message === 'Email already in use'
       ) {
-        setErrors({ ...newErrors, email: "Email already exists." });
+        setErrors({ ...newErrors, email: 'Email already exists.' });
       } else {
         setErrors({
           ...newErrors,
-          general: "Error creating account. Please try again.",
+          general: 'Error creating account. Please try again.',
         });
       }
     }
@@ -83,7 +83,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
         contentContainerStyle={styles.container}
@@ -102,7 +102,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
             value={lastName}
             onChangeText={(text) => {
               setLastName(text);
-              if (text) setErrors({ ...errors, lastName: "" });
+              if (text) setErrors({ ...errors, lastName: '' });
             }}
             style={[
               styles.input,
@@ -120,7 +120,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
             value={firstName}
             onChangeText={(text) => {
               setFirstName(text);
-              if (text) setErrors({ ...errors, firstName: "" });
+              if (text) setErrors({ ...errors, firstName: '' });
             }}
             style={[
               styles.input,
@@ -147,7 +147,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
             value={email}
             onChangeText={(text) => {
               setEmail(text);
-              if (text) setErrors({ ...errors, email: "" });
+              if (text) setErrors({ ...errors, email: '' });
             }}
             style={[styles.input, errors.email ? styles.inputError : undefined]}
             keyboardType="email-address"
@@ -171,9 +171,9 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
               value={password}
               onChangeText={(text) => {
                 setPassword(text);
-                if (text) setErrors({ ...errors, password: "" });
+                if (text) setErrors({ ...errors, password: '' });
               }}
-              secureTextEntry={!passwordVisible} // Toggles secureTextEntry based on visibility state
+              secureTextEntry={!passwordVisible}
               style={styles.passwordInput}
               autoCapitalize="none"
             />
@@ -181,7 +181,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
               onPress={() => setPasswordVisible(!passwordVisible)}
             >
               <Icon
-                name={passwordVisible ? "eye" : "eye-off"}
+                name={passwordVisible ? 'eye' : 'eye-off'}
                 size={24}
                 color="#888"
               />
@@ -197,9 +197,9 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
         </TouchableOpacity>
 
         <Text style={styles.signupPrompt}>
-          Already have an account?{" "}
+          Already have an account?{' '}
           <Text
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => navigation.navigate('Login')}
             style={styles.signupLink}
           >
             Sign In
@@ -213,52 +213,52 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     padding: 20,
-    backgroundColor: "#f2f6f9",
+    backgroundColor: '#f2f6f9',
   },
   headerContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 20,
   },
   headerText: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: 'bold',
+    color: '#333',
     marginBottom: 5,
-    textAlign: "center",
+    textAlign: 'center',
   },
   subHeaderText: {
     fontSize: 14,
-    color: "#666",
-    textAlign: "center",
+    color: '#666',
+    textAlign: 'center',
   },
   inputContainer: {
     marginBottom: 10,
   },
   input: {
     borderWidth: 2,
-    borderColor: "#EEEFEF",
+    borderColor: '#EEEFEF',
     padding: 12,
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     fontSize: 16,
   },
   inputError: {
-    borderColor: "red",
+    borderColor: 'red',
   },
   errorText: {
-    color: "red",
+    color: 'red',
     fontSize: 12,
     marginTop: 5,
   },
   passwordContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 2,
-    borderColor: "#EDEFEF",
+    borderColor: '#EDEFEF',
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     paddingHorizontal: 12,
   },
   passwordInput: {
@@ -267,27 +267,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   signupButton: {
-    backgroundColor: "#28a745",
+    backgroundColor: '#28a745',
     paddingVertical: 15,
     borderRadius: 10,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 10,
   },
   signupButtonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   signupPrompt: {
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 14,
     marginTop: 17,
-    color: "gray",
+    color: 'gray',
     marginBottom: 15,
   },
   signupLink: {
-    color: "#28a745",
-    fontWeight: "bold",
+    color: '#28a745',
+    fontWeight: 'bold',
   },
 });
 

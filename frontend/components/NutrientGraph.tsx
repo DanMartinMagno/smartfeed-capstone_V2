@@ -1,6 +1,6 @@
-import React from "react";
-import { LineChart } from "react-native-chart-kit";
-import { View, Dimensions, Text } from "react-native";
+import React from 'react';
+import { LineChart } from 'react-native-chart-kit';
+import { View, Dimensions, Text } from 'react-native';
 
 type NutrientData = {
   name: string;
@@ -23,7 +23,7 @@ const NutrientGraph: React.FC<NutrientGraphProps> = ({
   data,
   recommendations,
 }) => {
-  const screenWidth = Dimensions.get("window").width;
+  const screenWidth = Dimensions.get('window').width;
 
   const labels = data.map((item) => item.name);
   const nutrientValues = data.map((item) => item.value);
@@ -37,9 +37,9 @@ const NutrientGraph: React.FC<NutrientGraphProps> = ({
   ];
 
   const chartConfig = {
-    backgroundColor: "#ffffff",
-    backgroundGradientFrom: "#ffffff",
-    backgroundGradientTo: "#ffffff",
+    backgroundColor: '#ffffff',
+    backgroundGradientFrom: '#ffffff',
+    backgroundGradientTo: '#ffffff',
     decimalPlaces: 2,
     color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
@@ -47,18 +47,18 @@ const NutrientGraph: React.FC<NutrientGraphProps> = ({
       borderRadius: 16,
     },
     propsForDots: {
-      r: "",
-      strokeWidth: "2",
-      stroke: "#ffa726",
+      r: '',
+      strokeWidth: '2',
+      stroke: '#ffa726',
     },
     propsForLabels: {
-      fontSize: 10, // Adjust the font size for labels
+      fontSize: 10,
     },
     propsForBackgroundLines: {
-      strokeDasharray: "", // solid lines for grid
+      strokeDasharray: '',
     },
-    fillShadowGradient: "#0DA813", // Custom color (Green in this case)
-    fillShadowGradientOpacity: 0.2, // Adjust opacity of the fill
+    fillShadowGradient: '#0DA813',
+    fillShadowGradientOpacity: 0.2,
   };
 
   return (
@@ -66,10 +66,10 @@ const NutrientGraph: React.FC<NutrientGraphProps> = ({
       <Text
         style={{
           fontSize: 16,
-          fontWeight: "bold",
+          fontWeight: 'bold',
           marginTop: 12,
           marginBottom: 9,
-          color: "#515252",
+          color: '#515252',
         }}
       >
         Nutrient Analysis
@@ -80,34 +80,34 @@ const NutrientGraph: React.FC<NutrientGraphProps> = ({
           datasets: [
             {
               data: nutrientValues,
-              color: () => `rgba(0, 255, 0, 1)`, // Green line for actual values
-              strokeWidth: 2, // Solid line
+              color: () => `rgba(0, 255, 0, 1)`,
+              strokeWidth: 2,
             },
             {
               data: recommendedValues,
-              color: () => `rgba(255, 165, 0, 1)`, // Orange line for recommended values
-              strokeWidth: 2, // Solid line
+              color: () => `rgba(255, 165, 0, 1)`,
+              strokeWidth: 2,
             },
           ],
-          legend: ["Actual", "Recommended"],
+          legend: ['Actual', 'Recommended'],
         }}
-        width={screenWidth - 35} // Slightly increase the width to utilize space
+        width={screenWidth - 35}
         height={280}
         chartConfig={chartConfig}
         bezier
         style={{
           marginVertical: 8,
           borderRadius: 16,
-          paddingRight: 20, // Add some padding to the right to balance the chart
-          paddingLeft: 0, // Remove left padding to compensate for no Y-axis labels
+          paddingRight: 20,
+          paddingLeft: 0,
         }}
-        fromZero={true} // Start the graph from zero
-        xLabelsOffset={-10} // Adjust label position slightly
-        verticalLabelRotation={35} // Rotate x-axis labels by 45 degrees
-        yAxisLabel={""} // Remove Y-axis label
-        withInnerLines={true} // Keep inner grid lines
-        withOuterLines={false} // Remove outer grid lines
-        withHorizontalLabels={false} // Remove Y-axis labels
+        fromZero={true}
+        xLabelsOffset={-10}
+        verticalLabelRotation={35}
+        yAxisLabel={''}
+        withInnerLines={true}
+        withOuterLines={false}
+        withHorizontalLabels={false}
       />
     </View>
   );

@@ -1,6 +1,6 @@
-import React from "react";
-import { ScrollView, Dimensions, View, Text, StyleSheet } from "react-native";
-import { LineChart } from "react-native-chart-kit";
+import React from 'react';
+import { ScrollView, Dimensions, View, Text, StyleSheet } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
 
 interface WeightEntry {
   date: string;
@@ -15,7 +15,7 @@ interface Props {
 
 // Define expected weekly growth rates for each stage (these values are examples)
 const expectedGrowthRates = {
-  starter: { min: 0.8, max: 1.2 }, // in kg/week
+  starter: { min: 0.8, max: 1.2 },
   grower: { min: 1.3, max: 1.7 },
   finisher: { min: 1.8, max: 2.2 },
 };
@@ -55,17 +55,17 @@ const getGrowthInsights = (
   ageInWeeks: number,
   hasWeightDrop: boolean
 ): string => {
-  let stage = "";
+  let stage = '';
   let expectedRange = { min: 0, max: 0 };
 
   if (ageInWeeks >= 2 && ageInWeeks <= 4) {
-    stage = "starter";
+    stage = 'starter';
     expectedRange = expectedGrowthRates.starter;
   } else if (ageInWeeks >= 5 && ageInWeeks <= 12) {
-    stage = "grower";
+    stage = 'grower';
     expectedRange = expectedGrowthRates.grower;
   } else if (ageInWeeks > 12) {
-    stage = "finisher";
+    stage = 'finisher';
     expectedRange = expectedGrowthRates.finisher;
   }
 
@@ -85,14 +85,14 @@ const Graph: React.FC<Props> = ({
   swineID,
   swineAgeInWeeks,
 }) => {
-  const screenWidth = Dimensions.get("window").width;
+  const screenWidth = Dimensions.get('window').width;
   const chartWidth = screenWidth - 32;
 
   const rawDates = weightEntries.map((entry) => entry.date);
   const formattedDates = weightEntries.map((entry) =>
-    new Date(entry.date).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
+    new Date(entry.date).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
     })
   );
 
@@ -101,7 +101,7 @@ const Graph: React.FC<Props> = ({
 
   const data = {
     labels: formattedDates.map((date, index) =>
-      index % labelInterval === 0 ? date : ""
+      index % labelInterval === 0 ? date : ''
     ),
     datasets: [{ data: weights }],
   };
@@ -141,17 +141,17 @@ const Graph: React.FC<Props> = ({
           height={220}
           yAxisSuffix=" kg"
           chartConfig={{
-            backgroundColor: "#e26a00",
-            backgroundGradientFrom: "#fb8c00",
-            backgroundGradientTo: "#ffa726",
+            backgroundColor: '#e26a00',
+            backgroundGradientFrom: '#fb8c00',
+            backgroundGradientTo: '#ffa726',
             decimalPlaces: 0,
             color: (opacity = 1) => `rgba(255, 255, 225, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             style: { borderRadius: 16 },
-            propsForDots: { r: "6", strokeWidth: "2", stroke: "#ffa726" },
+            propsForDots: { r: '6', strokeWidth: '2', stroke: '#ffa726' },
             propsForBackgroundLines: {
-              strokeDasharray: "",
-              stroke: "#FFB03C",
+              strokeDasharray: '',
+              stroke: '#FFB03C',
               strokeWidth: 1,
             },
           }}
@@ -177,7 +177,7 @@ const Graph: React.FC<Props> = ({
         <View style={styles.card}>
           <Text style={styles.statText}>Growth Rate</Text>
           <Text style={styles.statValue}>
-            {growthRate > 0 ? "+" : ""}
+            {growthRate > 0 ? '+' : ''}
             {growthRate.toFixed(2)} kg/week
           </Text>
         </View>
@@ -195,34 +195,34 @@ const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#f2f6f9", // Updated background color
+    backgroundColor: '#f2f6f9',
   },
   graphContainer: {
     padding: 3,
     marginTop: 1,
-    backgroundColor: "#f2f6f9",
+    backgroundColor: '#f2f6f9',
     borderRadius: 16,
     marginVertical: 8,
-    alignItems: "center",
+    alignItems: 'center',
     paddingTop: 1,
   },
   swineInfoContainer: {
-    alignSelf: "stretch",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 8,
     paddingHorizontal: 1,
   },
   swineID: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: 'bold',
+    color: '#333',
     marginTop: 1,
     paddingTop: 1,
   },
   date: {
     fontSize: 16,
-    color: "#666",
+    color: '#666',
     marginTop: 1,
     paddingTop: 1,
   },
@@ -231,9 +231,9 @@ const styles = StyleSheet.create({
   },
   summaryText: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-    textAlign: "center",
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
     marginVertical: 16,
     marginBottom: 1,
     marginTop: 1,
@@ -244,56 +244,56 @@ const styles = StyleSheet.create({
     marginHorizontal: 1,
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 10,
     paddingVertical: 20,
     paddingHorizontal: 24,
-    flexDirection: "row",
-    justifyContent: "space-between", // Label and value in a row
-    alignItems: "center",
-    marginBottom: 10, // Space between cards
-    shadowColor: "#000",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 2, // Shadow for Android
+    elevation: 2,
   },
   statText: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: 'bold',
+    color: '#333',
   },
   statValue: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#28a745", // Green color for value
+    fontWeight: 'bold',
+    color: '#28a745',
   },
 
   insightText: {
     fontSize: 16,
 
-    color: "#333",
-    backgroundColor: "#E7E7FD",
+    color: '#333',
+    backgroundColor: '#E7E7FD',
     padding: 10,
     borderRadius: 8,
   },
   noDataContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
   noDataText: {
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: 20,
-    color: "#888",
+    color: '#888',
   },
   insightContainer: {
     fontSize: 16,
     marginTop: 10,
-    color: "#333",
-    textAlign: "center",
-    backgroundColor: "#E7E7FD",
+    color: '#333',
+    textAlign: 'center',
+    backgroundColor: '#E7E7FD',
     padding: 10,
     borderRadius: 8,
     marginBottom: 20,

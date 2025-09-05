@@ -1,6 +1,4 @@
-// frontend/screens/SaveFormulationScreen.tsx
-
-import React, { useContext, useState } from "react";
+import React, { useContext, useState } from 'react';
 import {
   View,
   Text,
@@ -8,24 +6,24 @@ import {
   StyleSheet,
   Platform,
   TouchableOpacity,
-} from "react-native";
-import { TextInput, Divider } from "react-native-paper";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import axiosInstance from "../api/axiosInstance";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RouteProp } from "@react-navigation/native";
-import { RootStackParamList } from "../types";
-import { AuthContext } from "../context/AuthContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Icon from "react-native-vector-icons/Ionicons";
+} from 'react-native';
+import { TextInput, Divider } from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import axiosInstance from '../api/axiosInstance';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
+import { RootStackParamList } from '../types';
+import { AuthContext } from '../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 type SaveFormulationScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  "SaveFormulation"
+  'SaveFormulation'
 >;
 type SaveFormulationScreenRouteProp = RouteProp<
   RootStackParamList,
-  "SaveFormulation"
+  'SaveFormulation'
 >;
 
 interface Props {
@@ -35,14 +33,14 @@ interface Props {
 
 const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
   const { type, numSwine, selectedIngredients, totalNutrients } = route.params;
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [expirationDate, setExpirationDate] = useState<Date | null>(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const [nameError, setNameError] = useState("");
-  const [descriptionError, setDescriptionError] = useState("");
-  const [expirationDateError, setExpirationDateError] = useState("");
+  const [nameError, setNameError] = useState('');
+  const [descriptionError, setDescriptionError] = useState('');
+  const [expirationDateError, setExpirationDateError] = useState('');
   const [loading, setLoading] = useState(false); // New state to prevent double-click
 
   const { user } = useContext(AuthContext) ?? {};
@@ -55,33 +53,33 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
 
     // Validation
     if (!name.trim()) {
-      setNameError("Please enter a feed name.");
+      setNameError('Please enter a feed name.');
       isValid = false;
     } else {
-      setNameError("");
+      setNameError('');
     }
 
     if (!description.trim()) {
-      setDescriptionError("Please enter a description.");
+      setDescriptionError('Please enter a description.');
       isValid = false;
     } else {
-      setDescriptionError("");
+      setDescriptionError('');
     }
 
     if (!expirationDate) {
-      setExpirationDateError("Please select an expiration date.");
+      setExpirationDateError('Please select an expiration date.');
       isValid = false;
     } else {
-      setExpirationDateError("");
+      setExpirationDateError('');
     }
 
     if (!isValid) return;
 
     try {
       setLoading(true); // Disable the button
-      const token = await AsyncStorage.getItem("token");
+      const token = await AsyncStorage.getItem('token');
       if (!token) {
-        setNameError("Authorization token is missing. Please log in again.");
+        setNameError('Authorization token is missing. Please log in again.');
         setLoading(false); // Re-enable the button on error
         return;
       }
@@ -92,7 +90,7 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
       }));
 
       const response = await axiosInstance.post(
-        "/formulations/save",
+        '/formulations/save',
         {
           type,
           numSwine,
@@ -110,10 +108,10 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
       );
 
       if (response.status === 201) {
-        navigation.navigate("Dashboard");
+        navigation.navigate('Dashboard');
       }
     } catch (error) {
-      setNameError("Failed to save formulation. Please try again.");
+      setNameError('Failed to save formulation. Please try again.');
     } finally {
       setLoading(false); // Re-enable the button after completion
     }
@@ -123,7 +121,7 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
     setShowDatePicker(false);
     if (selectedDate) {
       setExpirationDate(selectedDate);
-      setExpirationDateError("");
+      setExpirationDateError('');
     }
   };
 
@@ -138,7 +136,7 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
         value={name}
         onChangeText={(text) => {
           setName(text);
-          setNameError("");
+          setNameError('');
         }}
         placeholder="Enter feed name"
         mode="outlined"
@@ -148,9 +146,9 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
         placeholderTextColor="#888888"
         theme={{
           colors: {
-            primary: "#26B346",
-            text: "#838383",
-            placeholder: "#888888",
+            primary: '#26B346',
+            text: '#838383',
+            placeholder: '#888888',
           },
         }}
       />
@@ -161,7 +159,7 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
         value={description}
         onChangeText={(text) => {
           setDescription(text);
-          setDescriptionError("");
+          setDescriptionError('');
         }}
         placeholder="Enter description"
         mode="outlined"
@@ -171,7 +169,7 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
         placeholderTextColor="#888888"
         multiline
         theme={{
-          colors: { primary: "#26B346", text: "#333", placeholder: "#888888" },
+          colors: { primary: '#26B346', text: '#333', placeholder: '#888888' },
         }}
       />
       {descriptionError ? (
@@ -186,7 +184,7 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
       >
         <Text style={styles.datePickerLabel}>Expiration Date</Text>
         <Text style={styles.datePickerText}>
-          {expirationDate ? expirationDate.toLocaleDateString() : "Select Date"}
+          {expirationDate ? expirationDate.toLocaleDateString() : 'Select Date'}
         </Text>
         <Icon name="calendar-outline" size={20} color="#26B346" />
       </TouchableOpacity>
@@ -198,7 +196,7 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
         <DateTimePicker
           value={expirationDate || new Date()}
           mode="date"
-          display={Platform.OS === "ios" ? "inline" : "calendar"}
+          display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
           onChange={handleDateChange}
           minimumDate={new Date()}
         />
@@ -207,13 +205,13 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
       <TouchableOpacity
         style={[
           styles.saveButton,
-          loading && { backgroundColor: "#28a745" }, // Change style when disabled
+          loading && { backgroundColor: '#28a745' }, // Change style when disabled
         ]}
         onPress={handleSave}
         disabled={loading} // Disable the button when loading
       >
         <Text style={styles.saveButtonText}>
-          {loading ? "Saving..." : "Save Formulation"}
+          {loading ? 'Saving...' : 'Save Formulation'}
         </Text>
       </TouchableOpacity>
     </ScrollView>
@@ -223,77 +221,77 @@ const SaveFormulationScreen: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: "#f2f6f9",
+    backgroundColor: '#f2f6f9',
     flexGrow: 1,
   },
   header: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#515252",
-    textAlign: "center",
+    fontWeight: 'bold',
+    color: '#515252',
+    textAlign: 'center',
     marginBottom: 20,
   },
   subHeader: {
     fontSize: 16,
-    color: "#555",
+    color: '#555',
     marginBottom: 15,
-    fontStyle: "italic",
+    fontStyle: 'italic',
   },
   input: {
     borderRadius: 15,
     marginBottom: 5,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   textInput: {
     fontSize: 15,
     borderRadius: 15,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   errorText: {
     fontSize: 14,
-    color: "red",
+    color: 'red',
     marginBottom: 10,
   },
   divider: {
     marginVertical: 15,
   },
   datePickerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderColor: "#EDEFEF",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderColor: '#EDEFEF',
     borderWidth: 1,
     borderRadius: 6,
     padding: 13,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     marginBottom: 5,
   },
   datePickerLabel: {
     fontSize: 15,
-    color: "#666",
+    color: '#666',
   },
   datePickerText: {
     fontSize: 15,
-    color: "#333",
+    color: '#333',
   },
   saveButton: {
-    backgroundColor: "#28a745",
+    backgroundColor: '#28a745',
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 8,
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     marginTop: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
     elevation: 3,
   },
   saveButtonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });
 

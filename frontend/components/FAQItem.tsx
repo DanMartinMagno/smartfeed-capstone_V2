@@ -1,8 +1,7 @@
-// FAQItem.tsx
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, LayoutAnimation } from "react-native";
-import { styles } from "../styles/faqScreen_styles";
-import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, LayoutAnimation } from 'react-native';
+import { styles } from '../styles/faqScreen_styles';
+import { Ionicons } from '@expo/vector-icons';
 
 interface FAQItemProps {
   question: string;
@@ -27,9 +26,9 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
           {question}
         </Text>
         <Ionicons
-          name={isOpen ? "chevron-up-outline" : "chevron-down-outline"}
+          name={isOpen ? 'chevron-up-outline' : 'chevron-down-outline'}
           size={20}
-          color={isOpen ? "#19AA1F" : "#19AA1F"}
+          color={isOpen ? '#19AA1F' : '#19AA1F'}
           style={styles.arrow}
         />
       </View>

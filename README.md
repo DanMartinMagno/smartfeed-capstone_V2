@@ -4,7 +4,7 @@
 
 SmartFeed was developed to assist swine raisers in Lupi, Camarines Sur, by providing a mobile-based solution for sustainable feeding practices and improving livestock productivity. The application combines feed formulation capabilities with weight tracking features to provide an all-in-one solution for swine management.
 
-## 🚀 Download APK
+## Download APK
 
 [Download the latest SmartFeed APK](https://github.com/DanMartinMagno/smartfeed-capstone_V2/releases/download/v2.0.0/SmartFeed.apk)
 
